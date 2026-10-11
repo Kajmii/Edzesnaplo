@@ -334,6 +334,8 @@ function Hist({hist,del}){
 Object.assign(P,{gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',calc:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01"/>',cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>'});
 const SBU='https://agbicihwrzgzodwdvype.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnYmljaWh3cnpnem9kd2R2eXBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3MDY3MjAsImV4cCI6MjEwNzI4MjcyMH0.imJ-dWCDYkOhcul8ADV_HXOmGwYNkqbd0nC0w1uXL2Y';
 let SESS=null,SYB=false,CTG=[];
+const NATIVE=()=>!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+const getLN=()=>NATIVE()&&Capacitor.registerPlugin?Capacitor.registerPlugin('LocalNotifications'):null;
 const ssave=()=>{try{SESS?localStorage.setItem('en_sb',JSON.stringify(SESS)):localStorage.removeItem('en_sb')}catch(e){}};
 const sload=()=>{try{SESS=JSON.parse(localStorage.getItem('en_sb')||'null')}catch(e){SESS=null}};
 const hdr=t=>({apikey:SBK,'Content-Type':'application/json',Authorization:'Bearer '+(t||SBK)});
@@ -384,7 +386,7 @@ function Auth({on}){
   <div class='text-center mb-6'><div class='relative w-20 h-20 mx-auto mb-4'><div class='absolute inset-0 rounded-3xl bg-lime-400 blur-xl opacity-60 glow'></div><div class='relative w-20 h-20 rounded-3xl bg-lime-400 text-black flex items-center justify-center float'><${Ic} n='dumbbell' s=${38}/></div></div><h1 class='fd text-5xl font-bold grad'>Edzésnapló</h1><p class='text-zinc-400 text-sm mt-1'>Kövesd, tervezd és told a határaidat</p></div>
   <div class='bg-zinc-900 border border-zinc-800 rounded-3xl p-4'>
    <div class='grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-zinc-800 mb-4'>${[['in','Belépés'],['up','Regisztráció']].map(([k,l])=>html`<button key=${k} onClick=${()=>{setM(k);setEr('');setOk('')}} class=${'h-10 rounded-xl text-sm font-semibold transition-all duration-300 '+(m===k?'bg-lime-400 text-black':'text-zinc-400')}>${l}</button>`)}</div>
-   ${!/Electron/.test(navigator.userAgent)&&html`<button onClick=${goog} class='w-full h-12 rounded-xl bg-white text-zinc-800 font-semibold flex items-center justify-center gap-3 mb-3'><span class='w-6 h-6 rounded-full flex items-center justify-center font-bold text-white' style=${{background:'conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0)'}}>G</span>Folytatás Google-lel</button>
+   ${!(/Electron/.test(navigator.userAgent)||NATIVE())&&html`<button onClick=${goog} class='w-full h-12 rounded-xl bg-white text-zinc-800 font-semibold flex items-center justify-center gap-3 mb-3'><span class='w-6 h-6 rounded-full flex items-center justify-center font-bold text-white' style=${{background:'conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0)'}}>G</span>Folytatás Google-lel</button>
    <div class='flex items-center gap-3 text-xs text-zinc-500 mb-3'><span class='flex-1 h-px bg-zinc-700'></span>vagy<span class='flex-1 h-px bg-zinc-700'></span></div>`}
    <div class='grid gap-3'>
     <${Fld} ic='mail'><input class=${ip} type='email' placeholder='E-mail' autoCapitalize='none' value=${em} onChange=${e=>setEm(e.target.value)} onKeyDown=${ky}/><//>
@@ -420,7 +422,7 @@ function Plan({plan,setPlan,hist,begin,today}){
  const set=(d,v)=>setPlan(p=>({...p,days:{...p.days,[d]:v||null}}));
  const tgl=async()=>{if(!plan.on){try{await Notification.requestPermission()}catch(e){}}setPlan(p=>({...p,on:!p.on}))};
  const gl=d=>{const v=plan.days[d],m=remind(hist,v),t=new Date(),[hh,mm]=plan.time.split(':');t.setDate(t.getDate()+((d-t.getDay()+7)%7));const ymd=`${t.getFullYear()}${pad(t.getMonth()+1)}${pad(t.getDate())}`,en=+hh<23?pad(+hh+1)+mm:'2359';return 'https://calendar.google.com/calendar/render?'+new URLSearchParams({action:'TEMPLATE',text:tr('Edzés')+': '+tr(dayOf(v).n),details:m.b,dates:`${ymd}T${hh}${mm}00/${ymd}T${en}00`,recur:'RRULE:FREQ=WEEKLY;BYDAY='+BDY[d]}).toString()};
- const test=()=>{const v=Object.values(plan.days).find(Boolean),m=v?remind(hist,v):{t:tr('Teszt értesítés'),b:tr('Így fog kinézni az emlékeztető.')};toast(m.t+': '+m.b.split('\n')[0]);try{Notification.permission==='granted'&&new Notification(m.t,{body:m.b})}catch(e){}};
+ const test=()=>{try{const L=getLN();L&&L.schedule({notifications:[{id:7002,title:tr('Teszt értesítés'),body:tr('Így fog kinézni az emlékeztető.'),schedule:{at:new Date(Date.now()+3000)}}]})}catch(e){}const v=Object.values(plan.days).find(Boolean),m=v?remind(hist,v):{t:tr('Teszt értesítés'),b:tr('Így fog kinézni az emlékeztető.')};toast(m.t+': '+m.b.split('\n')[0]);try{Notification.permission==='granted'&&new Notification(m.t,{body:m.b})}catch(e){}};
  const ics=()=>{
   const BD=['SU','MO','TU','WE','TH','FR','SA'],[hh,mm]=plan.time.split(':'),esc=s=>s.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
   const f=t=>`${t.getFullYear()}${pad(t.getMonth()+1)}${pad(t.getDate())}T${hh}${mm}00`;
@@ -730,10 +732,13 @@ function App({user,out}){
  sjt('opt',opt);
  useEffect(()=>{const a=ACCS[opt.ac]||ACCS.lime,t=THEMES[opt.th]||THEMES.alap,r=document.documentElement,st=r.style;st.setProperty('--a3',a[1]);st.setProperty('--a4',a[2]);st.setProperty('--z7',t[1]);st.setProperty('--z8',t[2]);st.setProperty('--z9',t[3]);st.setProperty('--bg',t[4]);st.fontSize=opt.fs+'px';r.classList.toggle('noanim',!opt.an)},[opt]);
  useEffect(()=>setRd(opt.rest),[opt.rest]);
+ useEffect(()=>{const LN=getLN();LN&&LN.requestPermissions().catch(()=>{})},[]);
+ useEffect(()=>{if(!rest){const LN=getLN();LN&&LN.cancel({notifications:[{id:7001}]}).catch(()=>{})}},[rest]);
+ useEffect(()=>{const LN=getLN();if(!LN)return;(async()=>{try{await LN.cancel({notifications:[1,2,3,4,5,6,7].map(i=>({id:8000+i}))});if(!plan.on)return;const[hh,mm]=plan.time.split(':').map(Number),ns=[];for(let d=0;d<7;d++){const v=plan.days[d];if(!v||!dayOf(v))continue;const m=remind(hist,v);ns.push({id:8001+d,title:m.t,body:m.b,schedule:{on:{weekday:d+1,hour:hh,minute:mm},allowWhileIdle:true}})}if(ns.length)await LN.schedule({notifications:ns})}catch(e){}})()},[plan,hist,opt.lang]);
  useEffect(()=>{const c=()=>{if(!plan.on)return;const d=new Date(),k=dk(d),v=plan.days[d.getDay()];if(!v||pad(d.getHours())+':'+pad(d.getMinutes())<plan.time||gj('n','')===k)return;sj('n',k);const m=remind(hist,v);toast(m.t+': '+m.b.split('\n')[0]);try{Notification.permission==='granted'&&new Notification(m.t,{body:m.b})}catch(e){}};c();const i=setInterval(c,30000);return()=>clearInterval(i)},[plan,hist]);
  useEffect(()=>{let t;const f=e=>{setTs(e.detail);clearTimeout(t);t=setTimeout(()=>setTs(null),2800)};window.addEventListener('toast',f);return()=>window.removeEventListener('toast',f)},[]);
  useEffect(()=>{let l;if(aw&&opt.wake&&navigator.wakeLock)navigator.wakeLock.request('screen').then(x=>l=x).catch(()=>{});return()=>{l&&l.release().catch(()=>{})}},[!!aw,opt.wake]);
- const startRest=()=>{if(!opt.auto)return;setRest({end:Date.now()+rd*1000,total:rd});try{const LN=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.LocalNotifications;LN&&LN.schedule({notifications:[{id:7001,title:tr('Pihenő vége'),body:tr('Mehet a következő sorozat'),schedule:{at:new Date(Date.now()+rd*1000),allowWhileIdle:true}}]})}catch(e){}};
+ const startRest=()=>{if(!opt.auto)return;setRest({end:Date.now()+rd*1000,total:rd});try{const LN=getLN();LN&&LN.schedule({notifications:[{id:7001,title:tr('Pihenő vége'),body:tr('Mehet a következő sorozat'),schedule:{at:new Date(Date.now()+rd*1000),allowWhileIdle:true}}]})}catch(e){}};
  const begin=(name,names,gl={},date)=>setAw({date:date||sel,name,t:Date.now(),ex:names.map(n=>newEx(n,hist,gl[n]))});
  const finish=()=>{
   const ex=aw.ex.map(e=>({n:e.n,sets:e.sets.filter(s=>s.done)})).filter(e=>e.sets.length);
