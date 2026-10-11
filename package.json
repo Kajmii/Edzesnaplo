@@ -1,0 +1,32 @@
+{
+  "name": "edzesnaplo-desktop",
+  "version": "1.0.0",
+  "description": "Edzesnaplo asztali alkalmazas",
+  "author": "Edzesnaplo",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "electron": "^37.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "hu.edzesnaplo.app",
+    "productName": "Edzesnaplo",
+    "files": ["main.js", "package.json", "icon.png"],
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "Edzesnaplo-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Edzesnaplo-Portable.${ext}"
+    }
+  }
+}
