@@ -1,0 +1,92 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['apk-*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Capacitor projekt létrehozása
+        run: |
+          mkdir -p app/www
+          echo '<!doctype html><meta charset="utf-8"><title>Edzésnapló</title>' > app/www/index.html
+          cd app
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "hu.edzesnaplo.app",
+            "appName": "Edzésnapló",
+            "webDir": "www",
+            "server": {
+              "url": "https://kajmii.github.io/Edzesnaplo/",
+              "androidScheme": "https"
+            },
+            "plugins": {
+              "LocalNotifications": { "iconColor": "#a3e635" }
+            }
+          }
+          EOF
+          npm init -y
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 @capacitor/local-notifications@6 sharp
+          npx cap add android
+
+      - name: Ikonok cseréje
+        run: |
+          cd app
+          cat > make-icons.js <<'EOF'
+          const sharp = require('sharp'), fs = require('fs'), path = require('path');
+          const root = path.join(__dirname, '..');
+          const any = path.join(root, 'icon-512.png'), mask = path.join(root, 'icon-maskable-512.png');
+          const res = path.join(__dirname, 'android', 'app', 'src', 'main', 'res');
+          (async () => {
+            for (const d of fs.readdirSync(res).filter(x => x.startsWith('mipmap-'))) {
+              for (const f of fs.readdirSync(path.join(res, d)).filter(x => /^ic_launcher.*\.png$/.test(x))) {
+                const p = path.join(res, d, f), m = await sharp(p).metadata();
+                await sharp(/foreground/.test(f) ? mask : any).resize(m.width, m.height).png().toFile(p + '.tmp');
+                fs.renameSync(p + '.tmp', p);
+                console.log('ikon:', d, f);
+              }
+            }
+          })().catch(e => console.log('ikoncsere kihagyva:', e.message));
+          EOF
+          node make-icons.js
+
+      - name: Engedélyek és aláírókulcs
+        run: |
+          sed -i 's#</manifest>#<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/><uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/></manifest>#' app/android/app/src/main/AndroidManifest.xml
+          mkdir -p ~/.android
+          if [ -f debug.keystore ]; then cp debug.keystore ~/.android/debug.keystore; fi
+
+      - name: APK építése
+        run: |
+          cd app
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Edzesnaplo-apk
+          path: app/android/app/build/outputs/apk/debug/app-debug.apk
+
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: app/android/app/build/outputs/apk/debug/app-debug.apk
