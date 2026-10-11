@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Edzésnapló</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#090b0e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>if("serviceWorker" in navigator)addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>window.tailwind&&(tailwind.config={theme:{extend:{colors:{lime:{300:"rgb(var(--a3) / <alpha-value>)",400:"rgb(var(--a4) / <alpha-value>)"},zinc:{700:"rgb(var(--z7) / <alpha-value>)",800:"rgb(var(--z8) / <alpha-value>)",900:"rgb(var(--z9) / <alpha-value>)",950:"rgb(var(--bg) / <alpha-value>)"}}}}})</script>
