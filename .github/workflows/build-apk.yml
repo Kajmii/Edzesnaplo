@@ -43,7 +43,7 @@ jobs:
           }
           EOF
           npm init -y
-          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 @capacitor/local-notifications@6 sharp
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 @capacitor/local-notifications@6 @capacitor/browser@6 @capacitor/app@6 sharp
           npx cap add android
 
       - name: Ikonok cseréje
@@ -70,6 +70,21 @@ jobs:
       - name: Engedélyek és aláírókulcs
         run: |
           sed -i 's#</manifest>#<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/><uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/></manifest>#' app/android/app/src/main/AndroidManifest.xml
+          python3 - <<'PY'
+          import re
+          p = 'app/android/app/src/main/AndroidManifest.xml'
+          x = open(p, encoding='utf-8').read()
+          deep = ('<intent-filter android:autoVerify="false">'
+                  '<action android:name="android.intent.action.VIEW"/>'
+                  '<category android:name="android.intent.category.DEFAULT"/>'
+                  '<category android:name="android.intent.category.BROWSABLE"/>'
+                  '<data android:scheme="edzesnaplo" android:host="auth"/>'
+                  '</intent-filter>')
+          x = re.sub(r'(<activity[^>]*android:name="\.MainActivity"[^>]*launchMode=")[^"]*"', r'\1singleTask"', x, count=1) if 'launchMode' in x else x.replace('android:name=".MainActivity"', 'android:name=".MainActivity" android:launchMode="singleTask"', 1)
+          x = x.replace('</activity>', deep + '</activity>', 1)
+          open(p, 'w', encoding='utf-8').write(x)
+          print('deep link filter added' if 'edzesnaplo' in x else 'WARNING: deep link not added')
+          PY
           mkdir -p ~/.android
           if [ -f debug.keystore ]; then cp debug.keystore ~/.android/debug.keystore; fi
 
