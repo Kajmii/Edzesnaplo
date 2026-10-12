@@ -3,10 +3,14 @@ const FD=FOODS.split(';').map(x=>{const[n,v]=x.split(':'),[k,p,c,f]=v.split(',')
 const MEALS=['Reggeli','Ebéd','Vacsora','Snack'];
 const MR=({l,v,m,c})=>html`<div class='flex flex-col items-center'><${Ring} v=${v} max=${m} col=${c} s=${64} w=${7}><div class='text-xs font-semibold'>${Math.round(v)}</div><//><div class='text-[11px] text-zinc-300 mt-1'>${l}</div><div class='text-[10px] text-zinc-500'>/ ${m} g</div></div>`;
 function Food(){
- const[f,setF]=useState(()=>gj('food',{})),[d,setD]=useState(dk(new Date())),[ad,setAd]=useState(null),[q,setQ]=useState(''),[gm,setGm]=useState(100),[ch,setCh]=useState(null),[cu,setCu]=useState({n:'',k:'',p:'',c:'',f:''});
+ const[f,setF]=useState(()=>gj('food',{})),[d,setD]=useState(dk(new Date())),[ad,setAd]=useState(null),[q,setQ]=useState(''),[gm,setGm]=useState(100),[ch,setCh]=useState(null),[cu,setCu]=useState({n:'',k:'',p:'',c:'',f:''}),[sub,setSub]=useState('log'),[rcp,setRcp]=useState(null),[diet,setDiet0]=useState(()=>gj('rdiet',[])),[fitF,setFitF]=useState(false);
  useEffect(()=>sjt('food',f),[f]);
+ const setDiet=v=>{setDiet0(v);sj('rdiet',v)};
  const P2=gj('prof',{}),tg=P2.tg||{k:2200,p:150,c:250,f:70},day=f[d]||{e:[],w:0},e=day.e,sum=e.reduce((a,x)=>({k:a.k+x.k,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{k:0,p:0,c:0,f:0});
  const upd=fn=>setF(o=>({...o,[d]:fn(o[d]||{e:[],w:0})}));
+ // hátralévő keret a napi célból; recept hozzáadása a naplóhoz
+ const rem={k:Math.max(0,tg.k-sum.k),p:Math.max(0,tg.p-sum.p),c:Math.max(0,tg.c-sum.c),f:Math.max(0,tg.f-sum.f)},ok=r=>diet.every(k=>recTags(r)[k]);
+ const addRec=(mi,name,m)=>{upd(x=>({...x,e:[...x.e,{id:Date.now(),m:mi,n:name,k:Math.round(m.k),p:Math.round(m.p*10)/10,c:Math.round(m.c*10)/10,f:Math.round(m.f*10)/10,g:0}]}));setRcp(null);toast('Hozzáadva a naplóhoz')};
  const put=(n,k,p,c,fa,g)=>{upd(x=>({...x,e:[...x.e,{id:Date.now(),m:ad,n,k:Math.round(k),p:Math.round(p*10)/10,c:Math.round(c*10)/10,f:Math.round(fa*10)/10,g}]}));setAd(null);setQ('');setCh(null);setCu({n:'',k:'',p:'',c:'',f:''})};
  const shift=n=>{const x=pd(d);x.setDate(x.getDate()+n);setD(dk(x))};
  const wt=+P2.kg?Math.round(+P2.kg*35/250)*250:2500,days7=Array.from({length:7},(_,i)=>{const x=pd(d);x.setDate(x.getDate()-6+i);const k=dk(x);return f[k]?f[k].e.reduce((a,y)=>a+y.k,0):0}),labs=Array.from({length:7},(_,i)=>{const x=pd(d);x.setDate(x.getDate()-6+i);return(LANG==='en'?['S','M','T','W','T','F','S']:DN)[x.getDay()]});
@@ -14,10 +18,13 @@ function Food(){
  const fi=(l,k,u)=>html`<${F} l=${l} u=${u} v=${cu[k]} on=${x=>setCu(o=>({...o,[k]:x}))}/>`;
  return html`<div>
   <div class='flex items-center justify-between mb-4'><h1 class='fd text-4xl font-bold'>Étel</h1><div class='flex items-center'><button onClick=${()=>shift(-1)} class='h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n='chevL'/></button><span class='text-sm w-24 text-center'>${d===dk(new Date())?'Ma':fs(d)}</span><button onClick=${()=>shift(1)} class='h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n='chevR'/></button></div></div>
+  <div class='flex gap-2 mb-3'>${[['log','Napló'],['rec','Receptek']].map(([k,n])=>html`<button key=${k} onClick=${()=>setSub(k)} class=${'flex-1 h-10 rounded-xl text-sm font-semibold '+(sub===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${n}</button>`)}</div>
+  ${sub==='rec'?html`<${Recipes} rem=${rem} diet=${diet} setDiet=${setDiet} open=${setRcp} fit=${fitF} setFit=${setFitF}/>`:html`<div>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-3xl p-4 mb-3'><div class='flex items-center gap-4'>
    <${Ring} v=${sum.k} max=${tg.k} col='rgb(var(--a4))' s=${120} w=${11}><div class='fd text-3xl font-bold leading-none'>${Math.round(Math.max(0,tg.k-sum.k))}</div><div class='text-[11px] text-zinc-400'>kcal maradt</div><//>
    <div class='flex-1 grid grid-cols-3 gap-1'><${MR} l='Fehérje' v=${sum.p} m=${tg.p} c='#22d3ee'/><${MR} l='Szénhidrát' v=${sum.c} m=${tg.c} c='#facc15'/><${MR} l='Zsír' v=${sum.f} m=${tg.f} c='#f472b6'/></div></div>
    <div class='text-xs text-zinc-400 mt-3 text-center'>${Math.round(sum.k)} / ${tg.k} kcal${!P2.tg?' (alap cél: a Kalória számolóban állíthatod be)':''}</div></div>
+  <${Sugg} rem=${rem} ok=${ok} open=${setRcp} all=${()=>{setFitF(true);setSub('rec')}}/>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='flex items-center justify-between'><div class='flex items-center gap-2'><${Ic} n='drop' c='text-cyan-400'/><span class='font-semibold'>Víz</span></div><div class='flex items-center gap-2'><button onClick=${()=>upd(x=>({...x,w:Math.max(0,(x.w||0)-250)}))} class='h-10 w-10 rounded-xl bg-zinc-800 flex items-center justify-center'><${Ic} n='minus' s=${18}/></button><span class='fd text-2xl w-28 text-center'>${day.w||0} / ${wt} ml</span><button onClick=${()=>{upd(x=>({...x,w:(x.w||0)+250}));buzz()}} class='h-10 w-10 rounded-xl bg-cyan-400 text-black flex items-center justify-center'><${Ic} n='plus' s=${18}/></button></div></div>
    <div class='h-2 rounded-full bg-zinc-800 overflow-hidden mt-3'><div class='h-full rounded-full bg-cyan-400 transition-all duration-700' style=${{width:Math.min(100,(day.w||0)/wt*100)+'%'}}></div></div></div>
   ${MEALS.map((mn,mi)=>{const es=e.filter(x=>x.m===mi);return html`<div key=${mi} class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-3 mb-2' style=${{animationDelay:mi*60+'ms'}}>
@@ -31,5 +38,6 @@ function Food(){
     ${!q&&rec.length>0&&html`<div class='flex gap-2 overflow-x-auto pb-3'>${rec.map(n=>{const o=FD.find(z=>z.n===n);return o?html`<button key=${n} onClick=${()=>{setCh(o);setGm(100)}} class='h-9 px-3 rounded-full border border-lime-400/40 text-lime-300 text-xs shrink-0'>${n}</button>`:null})}</div>`}
     ${fl.map(x=>html`<button key=${x.n} onClick=${()=>{setCh(x);setGm(100)}} class='w-full text-left py-3 px-1 border-b border-zinc-800 flex justify-between'><span>${x.n}</span><span class='text-xs text-zinc-500'>${x.k} kcal / 100 g</span></button>`)}
     <div class='font-semibold mt-5 mb-2'>Saját tétel</div><div class='grid grid-cols-2 gap-2'><div class='col-span-2'>${fi('Név','n','')}</div>${fi('Kalória','k','kcal')}${fi('Fehérje','p','g')}${fi('Szénhidrát','c','g')}${fi('Zsír','f','g')}</div>
-    <button onClick=${()=>{if(cu.n.trim()&&+cu.k)put(cu.n.trim(),+cu.k,+cu.p||0,+cu.c||0,+cu.f||0,0)}} class='w-full h-12 rounded-xl bg-lime-400 text-black font-bold mt-3'>Hozzáadás</button></div>`}</div></div>`}</div>`;
+    <button onClick=${()=>{if(cu.n.trim()&&+cu.k)put(cu.n.trim(),+cu.k,+cu.p||0,+cu.c||0,+cu.f||0,0)}} class='w-full h-12 rounded-xl bg-lime-400 text-black font-bold mt-3'>Hozzáadás</button></div>`}</div></div>`}</div>`}
+  ${rcp&&html`<${RecSheet} key=${rcp.id} r=${rcp} onClose=${()=>setRcp(null)} add=${addRec}/>`}</div>`;
 }
