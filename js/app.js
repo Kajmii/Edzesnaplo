@@ -36,6 +36,7 @@ function App({user,out}){
   const ex=aw.ex.map(e=>({n:e.n,sets:e.sets.filter(s=>s.done)})).filter(e=>e.sets.length);
   if(!ex.length)return;
   setHist([{id:aw.t,date:aw.date,name:aw.name,ex,vol:ex.reduce((a,e)=>a+vol(e.sets),0)},...hist]);
+  socPublish({id:aw.t,name:aw.name,ex,vol:ex.reduce((a,e)=>a+vol(e.sets),0)},ex.reduce((a,e)=>a+e.sets.filter(s=>s.pr).length,0));
   setFin({name:aw.name,n:ex.length,vol:ex.reduce((a,e)=>a+vol(e.sets),0),sets:ex.reduce((a,e)=>a+e.sets.length,0),pr:ex.reduce((a,e)=>a+e.sets.filter(s=>s.pr).length,0)});setAw(null);setRest(null);setTab('home');
  };
  const quit=()=>{setAw(null);setRest(null)};

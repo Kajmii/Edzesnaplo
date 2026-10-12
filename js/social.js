@@ -31,12 +31,12 @@ function Avatar({p,s=64}){
 }
 
 function Social(){
- const id=SESS&&SESS.user&&SESS.user.id,[st,setSt]=useState('load'),[pr,setPr]=useState(null),[se,setSe]=useState(null),[f,setF]=useState({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'}),[terms,setTerms]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[cf,setCf]=useState(false),[tb,setTb]=useState('conn');
+ const id=SESS&&SESS.user&&SESS.user.id,[st,setSt]=useState('load'),[pr,setPr]=useState(null),[se,setSe]=useState(null),[f,setF]=useState({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'}),[terms,setTerms]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[cf,setCf]=useState(false),[tb,setTb]=useState('feed'),[pv,setPv]=useState(null);
  const fill=p=>setF({username:p.username,display_name:p.display_name,avatar_color:p.avatar_color,avatar_icon:p.avatar_icon});
  const load=async()=>{setSt('load');setMsg('');
   try{const[a,b]=await Promise.all([sbf('/rest/v1/profiles?select=*&user_id=eq.'+id),sbf('/rest/v1/profile_settings?select=*&user_id=eq.'+id)]);
    if(!a.ok||!b.ok){setMsg(socErr(a.ok?b:a));return setSt('err')}
-   const p=a.j&&a.j[0];setSe(b.j&&b.j[0]||null);
+   const p=a.j&&a.j[0];setSe(b.j&&b.j[0]||null);sj('socshare',!!(b.j&&b.j[0]&&b.j[0].share_activity));
    if(p){setPr(p);fill(p);setSt('ok')}else{setPr(null);setSt('none')}
   }catch(e){setMsg('Nincs kapcsolat. Próbáld újra.');setSt('err')}};
  useEffect(()=>{id?load():setSt('err')},[]);
@@ -62,9 +62,9 @@ function Social(){
   try{const r=await sbf('/rest/v1/profiles?user_id=eq.'+id,{method:'PATCH',headers:rep,body:JSON.stringify(o)});
    if(!r.ok||!r.j||!r.j[0])throw r;setPr(r.j[0]);fill(r.j[0]);toast('Profil mentve');
   }catch(r){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.')}setBusy(false)};
- const pub=async v=>{setBusy(true);setMsg('');
-  try{const r=await sbf('/rest/v1/profile_settings?user_id=eq.'+id,{method:'PATCH',headers:rep,body:JSON.stringify({is_public:v})});
-   if(!r.ok||!r.j||!r.j[0])throw r;setSe(r.j[0])}catch(r){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.')}setBusy(false)};
+ const pub=async(v,k)=>{setBusy(true);setMsg('');
+  try{const r=await sbf('/rest/v1/profile_settings?user_id=eq.'+id,{method:'PATCH',headers:rep,body:JSON.stringify({[k||'is_public']:v})});
+   if(!r.ok||!r.j||!r.j[0])throw r;setSe(r.j[0]);sj('socshare',!!r.j[0].share_activity)}catch(r){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.')}setBusy(false)};
  const del=async()=>{if(!cf)return setCf(true);setBusy(true);setMsg('');
   try{const a=await sbf('/rest/v1/profiles?user_id=eq.'+id,{method:'DELETE',headers:{Prefer:'return=minimal'}});if(!a.ok)throw a;
    const b=await sbf('/rest/v1/profile_settings?user_id=eq.'+id,{method:'DELETE',headers:{Prefer:'return=minimal'}});if(!b.ok)throw b;
@@ -91,12 +91,15 @@ function Social(){
    <ul class='text-xs text-zinc-400 grid gap-1 mb-3'><li>Tilos a zaklatás, a gyűlöletkeltés és a mások megsértése.</li><li>Tilos a spam és a megtévesztő vagy jogsértő tartalom.</li><li>A jelentett tartalmat és a szabályt sértő fiókot eltávolíthatjuk.</li><li>Bárkit tilthatsz, és bármit jelenthetsz.</li></ul>
    <button onClick=${()=>setTerms(!terms)} class='w-full flex items-center gap-3 text-left text-sm'><span class=${'w-6 h-6 rounded-md flex items-center justify-center shrink-0 '+(terms?'bg-lime-400 text-black':'bg-zinc-800')}>${terms&&html`<${Ic} n='check' s=${16}/>`}</span>Elfogadom a közösségi szabályokat</button></div>
   <button onClick=${create} disabled=${busy} class=${bt}>Profil létrehozása</button>${Msg()}</div>`;
+ if(pv)return html`<div><h1 class='fd text-4xl font-bold mb-3'>Közösség</h1><${SocProfile} u=${pv} me=${id} back=${()=>setPv(null)}/></div>`;
  return html`<div><h1 class='fd text-4xl font-bold mb-3'>Közösség</h1>
-  <div class='flex gap-2 mb-3'>${[['conn','Kapcsolatok'],['prof','Profil']].map(([k,l])=>html`<button key=${k} onClick=${()=>setTb(k)} class=${'flex-1 h-11 rounded-xl text-sm font-semibold '+(tb===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${l}</button>`)}</div>
-  ${tb==='conn'?html`<${SocConn} me=${id}/>`:html`<div>
+  <div class='flex gap-2 mb-3'>${[['feed','Hírfolyam'],['conn','Kapcsolatok'],['prof','Profil']].map(([k,l])=>html`<button key=${k} onClick=${()=>setTb(k)} class=${'flex-1 h-11 rounded-xl text-sm font-semibold '+(tb===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${l}</button>`)}</div>
+  ${tb==='feed'?html`<${SocFeed} me=${id} open=${setPv}/>`:tb==='conn'?html`<${SocConn} me=${id} open=${setPv}/>`:html`<div>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'>${Form()}<button onClick=${save} disabled=${busy} class=${bt+' mt-4'}>Mentés</button>${Msg()}</div>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Adatvédelem</div>
-   <${Sw} l='Nyilvános profil' s=${se&&se.is_public?'Bárki látja a profilod és a megosztott aktivitásaid.':'Privát: idegenek csak a felhasználóneved, a neved és az avatarod látják.'} v=${!!(se&&se.is_public)} on=${pub}/></div>
+   <${Sw} l='Nyilvános profil' s=${se&&se.is_public?'Bárki látja a profilod és a megosztott aktivitásaid.':'Privát: idegenek csak a felhasználóneved, a neved és az avatarod látják.'} v=${!!(se&&se.is_public)} on=${v=>pub(v,'is_public')}/>
+   <${Sw} l='Edzéseim megosztása' s=${se&&se.share_activity?'A befejezett edzéseid összefoglalója megjelenik a követőidnél és a barátaidnál, a profilod láthatósága szerint.':'Kikapcsolva: az edzéseid nem jelennek meg a közösségben.'} v=${!!(se&&se.share_activity)} on=${v=>pub(v,'share_activity')}/></div>
+  <${SocMine} me=${id}/>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Profil törlése</div><p class='text-xs text-zinc-500 mb-3'>A profil és a közösségi beállításaid törlődnek. Az edzéseid és a többi adatod nem érintett.</p>
    <button onClick=${del} disabled=${busy} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Profil törlése'}</button></div></div>`}</div>`;
 }

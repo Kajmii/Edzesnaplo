@@ -46,3 +46,28 @@ assert.ok(code2.includes("social_check_rate('follow'")&&code2.includes("social_c
 assert.ok(code2.includes('friend_requests_pair_key'),'a pár egyedisége hiányzik');
 assert.ok(!/service_role/i.test(code2+fs.readFileSync(path.join(__dirname,'../js/social-follow.js'),'utf8')),'service role nem szerepelhet');
 console.log('rendben: közösségi profil (SQL és kliens egyezik)');
+// 4. lépés: aktivitások, profil nézet, feed (supabase/social_2b_activities.sql)
+const sql3=fs.readFileSync(path.join(__dirname,'../supabase/social_2b_activities.sql'),'utf8'),code3=sql3.replace(/--.*$/gm,''),flat3=code3.replace(/\s+/g,' ');
+assert.ok(flat3.includes('alter table public.activities enable row level security'),'activities: RLS hiányzik');
+assert.ok(flat3.includes('revoke all on public.activities from anon'),'activities: anon jog nincs elvéve');
+const pols3=code3.split('create policy ').slice(1).map(x=>{const w=x.split(/\s+/);return w[2].replace('public.','')+'.'+w[4]});
+assert.deepStrictEqual(pols3.sort(),['activities.delete','activities.insert','activities.select'],'az activities szabályai eltérnek (szerkesztés nem lehet)');
+assert.ok(flat3.includes('user_id = (select auth.uid()) or public.social_can_view(user_id)'),'a láthatóság nem a social_can_view-ból jön');
+assert.ok(flat3.includes('s.share_activity'),'a közzététel nem függ a megosztás-kapcsolótól');
+assert.ok(flat3.includes('public.social_is_public(u) or public.social_is_friend(auth.uid(), u)'),'a nyilvános/barát szabály hiányzik');
+assert.ok(flat3.includes('security invoker'),'a feed nem a hívó jogán fut (az RLS-t megkerülhetné)');
+assert.ok(flat3.includes("social_check_rate('activity'")&&flat3.includes("social_check_rate('profile_view'"),'rate limit hiányzik');
+assert.ok(flat3.includes('case when v then'),'a profil-számokat nem védi a láthatóság');
+assert.ok(!/service_role/i.test(code3+fs.readFileSync(path.join(__dirname,'../js/social-feed.js'),'utf8')),'service role nem szerepelhet');
+// kliens: a közzététel csak bekapcsolt megosztásnál megy ki, és csak összefoglalót küld (nyers sorozatokat nem)
+const fsrc=fs.readFileSync(path.join(__dirname,'../js/social-feed.js'),'utf8');
+let sent=[],flag=false;
+const f=new Function('SESS','gj','sbf','fmt','fd','dk','LANG','html','useState','useEffect','Avatar','Ic','SOC_PF','socErr','toast',fsrc+';return{socPublish,socSum}')({user:{id:'u1'}},()=>flag,async(p,o)=>{sent.push([p,JSON.parse(o.body)]);return{ok:true}},x=>String(x),x=>x,x=>x,'hu',()=>0,()=>0,()=>0,0,0,'',0,()=>0);
+const w={id:123,name:'Push',vol:5230.7,ex:[{n:'Fekvenyomás',sets:[{kg:80,reps:5,done:true},{kg:80,reps:5}]},{n:'Vállnyomás',sets:[{kg:40,reps:8}]}]};
+(async()=>{await f.socPublish(w,1);assert.strictEqual(sent.length,0,'kikapcsolt megosztásnál is elküldte');flag=true;await f.socPublish(w,1);
+ assert.strictEqual(sent.length,1);const b=sent[0][1];assert.strictEqual(b.user_id,'u1');assert.strictEqual(b.workout_id,'123');assert.strictEqual(b.title,'Push');
+ assert.deepStrictEqual(b.summary,{exercises:2,sets:3,volume:5231,prs:1,names:['Fekvenyomás','Vállnyomás']});
+ assert.ok(!JSON.stringify(b).includes('"kg"'),'nyers sorozatadat ment ki');
+ assert.strictEqual(f.socSum({exercises:2,sets:3,volume:100}),'2 gyakorlat · 3 sorozat · 100 kg');
+ console.log('rendben: közösségi aktivitás (SQL és kliens)')})();
+
