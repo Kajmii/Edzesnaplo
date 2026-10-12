@@ -294,3 +294,43 @@ Minden fázisban:
 - A tokenekkel való átképzés a ~20 meglévő képernyőn **nem lesz pixelre azonos** a mockupokkal, mert azok más szerkezetűek. A jóváhagyott 15 képernyő pontos, a többi a stílushoz illeszkedő, de nem mockup-hű. Ezt a 2. fejezet táblázata és a 4. nyitott kérdés is jelzi.
 - Három új Kezdőlap és három új Edzés-képernyő sok kód. Ezért menet közben, irányonként, külön ágon, külön jóváhagyással haladok.
 - A Family nagy betűmérete (20 px alap) a 360 px-es szélességen tördelést okozhat a meglévő képernyőkön, ezt az ellenőrző minden fázisban méri.
+
+## 14. Döntések és módosítások (a terv jóváhagyása után)
+
+A válaszaid alapján a hatókör **bővül**, a terv fenti része ehhez igazodik:
+
+| # | Döntés | Következmény |
+|---|---|---|
+| 1 | A mockupokon látható funkciókat meg kell csinálni, és hasznos, működő kiegészítések is jöhetnek | A Kezdőlap, az Edzés és a Beállítások tartalma a mockupokkal azonos, valódi adatokból (rekordok, heti volumen, izomcsoportonkénti heti sorozatok célértékkel, széria, tárcsakalkulátor, lépésenkénti edzésvezetés) |
+| 2 | A leírásokban szereplő, de még nem létező funkciókat is meg kell csinálni | Külön **B fázis** (lent): haladási fotók, csoportok és kihívások, mentett ételek |
+| 3 | Az SVG `stroke-dashoffset` kivétel elfogadva | Marad a 6. fejezet szerint |
+| 4 | A menüben legyen több pont | A tíz pont után további pontok: Számolók, Tervszerkesztő, Export és adatok (lásd lent) |
+| 5 | A mockupon kívüli képernyők is legyenek mockup-hűek, egy irány mindenhol ugyanúgy néz ki | A „csak tokenekből örökölnek" megoldás **nem elég**. Közös **komponens-készlet** készül (kártya, szakasz, lista-sor, gomb, bevitel, szegmens, kapcsoló, fül, cím, mutató, grafikon), amelyet minden irány saját megjelenéssel valósít meg, és minden meglévő képernyő erre épül át |
+| 6 | A Közösség fül (amit eddig elkészítettünk) kerüljön be | A Közösség menüpont a meglévő Hírfolyam / Kapcsolatok / Profil képernyőkre mutat, és ezek a komponens-készletre épülnek át. Ide kerülnek a csoportok és kihívások is |
+| 7 | Python és Playwright | **Nem kell telepíteni.** A `tests/ui-check.js` a beépített böngészőben fut. Ha később mégis szeretnéd a `check_overflow.py`-t, akkor érdemes, de ehhez a munkához nem szükséges |
+
+**Új menüpontok** (a tíz pont után, a sorszámozás folytatódik, a Ciklus továbbra is feltételes):
+
+| # | Pont | Meglévő képernyő | Pro | Gym | Family |
+|---|---|---|---|---|---|
+| 11 | Számolók | `Tools` (Kardió, Kalória, Erő, Intervall fülekkel) | Kardió, kalória, erő, intervall | Kardió, kalória, erő | Kalória és kardió |
+| 12 | Tervszerkesztő | `Editor` | Saját edzések szerkesztése | Saját edzések | Saját edzéseid |
+| 13 | Export és adatok | `Opts` Adatok kártya | CSV, PDF, mentés | Export, mentés | Adataid mentése |
+
+Angol: *Cardio, calories, strength, interval / Cardio, calories, strength / Calories and cardio*; *Edit your workouts / Your workouts / Your workouts*; *CSV, PDF, backup / Export, backup / Save your data*.
+
+**Komponens-készlet (a „mockup-hű mindenhol" alapja):** a közös segédkomponensek (`Cd`, `Lb`, `Sw`, `Sg`, `F`, `R`, `Ring`, `Bars`, a bevitel-stílus, a fejlécek) és a gyakori nyers Tailwind-minták (kártya, gomb, szegmens, lista-sor) egy `ui-*` osztálykészletre épülnek, amelyet a `css/ui-pro.css`, `ui-gym.css`, `ui-family.css` irányonként definiál. A mockupokból vett mintákat követem: Pro lapos szakaszok és vékony elválasztók, négyzetes sarok, mono számok. Gym tömör blokkok, csíkos jelzősáv, nagybetűs Anton cím, éles sarok. Family fehér kártya 2 px kerettel, nagy sarok, nagy érintési felület. Az átépítés képernyőnként történik, minden képernyő a saját irányában ellenőrizve (360/390/430 px).
+
+**Fázisok (módosított sorrend):**
+
+| Fázis | Tartalom | Ág |
+|---|---|---|
+| A1 | Témarendszer, tokenek, váltó, színsémák (2–3. lépés) | `feature/settings-switch` |
+| A2 | Lenyitható menü (4. lépés) | `feature/settings-switch` |
+| A3 | Komponens-készlet és a meglévő képernyők átépítése | `feature/settings-switch` |
+| A4–A6 | Pro, Gym, Family: Kezdőlap, Edzés, Töltés a mockup szerint + a többi képernyő finomítása | `feature/theme-pro`, `-gym`, `-family` |
+| B1 | Mentett ételek (kedvencek, saját étel) | `feature/mentett-etelek` |
+| B2 | Haladási fotók (Supabase Storage + RLS, `supabase/progress_photos.sql`) | `feature/fotok` |
+| B3 | Csoportok és kihívások (Supabase táblák + RLS, `supabase/social_4_groups.sql`) | `feature/csoportok` |
+
+Minden fázis végén megállok, és jóváhagyást kérek. A B2 és B3 adatbázis-változása csak SQL-fájlban lesz, amit te futtatsz le. A B3 a közösségi 5. lépéshez (jelentés és tiltás) kapcsolódik: a csoportok tartalma jelenthető kell legyen, ezért javaslom, hogy az 5. lépés előbb készüljön el.
