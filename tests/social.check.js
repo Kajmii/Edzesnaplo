@@ -28,4 +28,21 @@ assert.ok(sql.includes("raise exception 'name_blocked'"),'a trigger nem ellenőr
 for(const w of [...m.SOC_BAD_STRONG,...m.SOC_BAD_EXACT])assert.ok(/^[a-z]+$/.test(w),'a lista csak kisbetűs ASCII lehet: '+w);
 for(const bad of ['kurva','Kurva_Anyad','fu_ck','FUUUCK','f.u.c.k','fűck'.replace('ű','u'),'Sh1t','sh!t','n1gger','B4stard','h1tler','Adolf_1488','1 4 8 8','szar','Szar','buzi','KuRvA','b@stard','fa$z','Nazi','nazi_88','my.ass','pu55y','p0rn','Árvíztűrő Fasz','faszfej','kibaszott','bazdmeg_12','heil_hitler','retard','ret4rd','f4gg0t'])assert.ok(!m.socNameOk(bad),'engedte: '+bad);
 for(const good of ['Anna Kiss','anna_fit92','Szarka Péter','Buzinkay Gábor','Scunthorpe','Torpedo','Slutsky','Grape','Dickens','Cockburn','Kovács Béla','edzo_anna','Árpád','Ősz Éva','Rápolti','Vágó István','assist','classic','massza','Bass_Guy','Peter_Cummings','hello_world','Pásztor','Mókus_Sanyi','müller','Zsófi','Kiss_Pista','Szabó Kata','fit1488'.replace('1488','2000')])assert.ok(m.socNameOk(good),'tiltotta: '+good);
+
+// 3. lépés: követés és barátkérés SQL (supabase/social_2_follows.sql)
+const sql2=fs.readFileSync(path.join(__dirname,'../supabase/social_2_follows.sql'),'utf8');
+const code2=sql2.replace(/--.*$/gm,'');
+for(const tb of ['follows','friend_requests']){
+ assert.ok(new RegExp('alter table public\.'+tb+' enable row level security').test(code2),tb+': RLS hiányzik');
+ assert.ok(new RegExp('revoke all on public\.'+tb+' from anon').test(code2),tb+': anon jog nincs elvéve');
+}
+const pols=code2.split('create policy ').slice(1).map(x=>{const w=x.split(/\s+/);return w[2].replace('public.','')+'.'+w[4]});
+for(const p of ['follows.select','follows.insert','follows.delete','friend_requests.select','friend_requests.insert','friend_requests.update','friend_requests.delete'])assert.ok(pols.includes(p),'hiányzó szabály: '+p);
+assert.ok(!pols.includes('follows.update'),'a követés nem módosítható');
+assert.ok(code2.replace(/\s+/g,' ').includes('follower_id = (select auth.uid()) and not public.social_is_blocked'),'a követés beszúrása nem a saját nevemben történik');
+assert.ok(code2.replace(/\s+/g,' ').includes("from_id = (select auth.uid()) and status = 'pending'"),'a barátkérés csak pending lehet');
+assert.ok(code2.replace(/\s+/g,' ').includes("to_id = (select auth.uid()) and status = 'pending'"),'csak a címzett válaszolhat');
+assert.ok(code2.includes("social_check_rate('follow'")&&code2.includes("social_check_rate('friend_request'"),'rate limit hiányzik');
+assert.ok(code2.includes('friend_requests_pair_key'),'a pár egyedisége hiányzik');
+assert.ok(!/service_role/i.test(code2+fs.readFileSync(path.join(__dirname,'../js/social-follow.js'),'utf8')),'service role nem szerepelhet');
 console.log('rendben: közösségi profil (SQL és kliens egyezik)');

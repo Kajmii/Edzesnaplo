@@ -15,8 +15,8 @@ const socNameOk=raw=>{raw=String(raw||'');let n='';for(const ch of raw.toLowerCa
 const socUserOk=u=>/^[a-z0-9_]{3,20}$/.test(u)&&!SOC_RESERVED.includes(u);
 const socClean=v=>v.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,20);
 // Szerverhiba -> érthető üzenet (a PostgREST hibakódjai alapján)
-const socErr=r=>{const j=r.j||{},m=String(j.message||'')+String(j.details||''),c=j.code;
- if(c==='23505')return'Ez a felhasználónév már foglalt.';
+const socErr=(r,dup)=>{const j=r.j||{},m=String(j.message||'')+String(j.details||''),c=j.code;
+ if(c==='23505')return dup||'Ez a felhasználónév már foglalt.';
  if(m.includes('username_cooldown'))return'A felhasználónevet 30 naponta egyszer módosíthatod.';
  if(m.includes('name_blocked'))return'Ez a név nem engedélyezett, válassz másikat.';
  if(m.includes('rate_limit'))return'Túl sok módosítás, próbáld újra később.';
@@ -31,7 +31,7 @@ function Avatar({p,s=64}){
 }
 
 function Social(){
- const id=SESS&&SESS.user&&SESS.user.id,[st,setSt]=useState('load'),[pr,setPr]=useState(null),[se,setSe]=useState(null),[f,setF]=useState({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'}),[terms,setTerms]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[cf,setCf]=useState(false);
+ const id=SESS&&SESS.user&&SESS.user.id,[st,setSt]=useState('load'),[pr,setPr]=useState(null),[se,setSe]=useState(null),[f,setF]=useState({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'}),[terms,setTerms]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[cf,setCf]=useState(false),[tb,setTb]=useState('conn');
  const fill=p=>setF({username:p.username,display_name:p.display_name,avatar_color:p.avatar_color,avatar_icon:p.avatar_icon});
  const load=async()=>{setSt('load');setMsg('');
   try{const[a,b]=await Promise.all([sbf('/rest/v1/profiles?select=*&user_id=eq.'+id),sbf('/rest/v1/profile_settings?select=*&user_id=eq.'+id)]);
@@ -92,9 +92,11 @@ function Social(){
    <button onClick=${()=>setTerms(!terms)} class='w-full flex items-center gap-3 text-left text-sm'><span class=${'w-6 h-6 rounded-md flex items-center justify-center shrink-0 '+(terms?'bg-lime-400 text-black':'bg-zinc-800')}>${terms&&html`<${Ic} n='check' s=${16}/>`}</span>Elfogadom a közösségi szabályokat</button></div>
   <button onClick=${create} disabled=${busy} class=${bt}>Profil létrehozása</button>${Msg()}</div>`;
  return html`<div><h1 class='fd text-4xl font-bold mb-3'>Közösség</h1>
+  <div class='flex gap-2 mb-3'>${[['conn','Kapcsolatok'],['prof','Profil']].map(([k,l])=>html`<button key=${k} onClick=${()=>setTb(k)} class=${'flex-1 h-11 rounded-xl text-sm font-semibold '+(tb===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${l}</button>`)}</div>
+  ${tb==='conn'?html`<${SocConn} me=${id}/>`:html`<div>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'>${Form()}<button onClick=${save} disabled=${busy} class=${bt+' mt-4'}>Mentés</button>${Msg()}</div>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Adatvédelem</div>
    <${Sw} l='Nyilvános profil' s=${se&&se.is_public?'Bárki látja a profilod és a megosztott aktivitásaid.':'Privát: idegenek csak a felhasználóneved, a neved és az avatarod látják.'} v=${!!(se&&se.is_public)} on=${pub}/></div>
   <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Profil törlése</div><p class='text-xs text-zinc-500 mb-3'>A profil és a közösségi beállításaid törlődnek. Az edzéseid és a többi adatod nem érintett.</p>
-   <button onClick=${del} disabled=${busy} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Profil törlése'}</button></div></div>`;
+   <button onClick=${del} disabled=${busy} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Profil törlése'}</button></div></div>`}</div>`;
 }
