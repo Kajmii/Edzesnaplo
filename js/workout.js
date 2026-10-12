@@ -36,6 +36,7 @@ function Home({hist,sel,setSel,today,aw,go,nav,startToday,plan,user,out}){
    <div class='absolute -right-8 -top-8 w-40 h-40 rounded-full bg-white/25 blur-2xl'></div><div class='absolute right-4 bottom-3 opacity-20'><${Ic} n='dumbbell' s=${72} c='text-black'/></div>
    <div class='relative'><div class='text-sm text-black/70'>${x?'Mai edzés':'Ma nincs tervezett edzés'}</div><div class='fd text-4xl font-bold text-black leading-tight'>${x?x.n:'Szabad edzés'}</div><div class='text-sm text-black/70 mb-4'>${x?x.e.length+' gyakorlat, célsúlyokkal':'Indíts egy üres edzést, vagy válassz tervet.'}</div>
    <button onClick=${aw?go:x?startToday:go} class='sh h-12 px-6 rounded-2xl bg-black text-white font-bold flex items-center gap-2'><${Ic} n='play' s=${16}/>${aw?'Edzés folytatása':'Edzés indítása'}</button></div></div>
+  <${CycToday} nav=${nav}/>
   <div class='grid grid-cols-4 gap-2 mb-5'>${[['food','','apple','Étel','#f59e0b,#ef4444'],MENU[2],MENU[4],MENU[5]].map(Tl)}</div>
   <div class='bg-zinc-900 rounded-2xl p-3 border border-zinc-800'>
    <div class='flex items-center justify-between mb-2'><button onClick=${()=>shift(-7)} class='h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n='chevL'/></button><span class='text-sm text-zinc-300'>${fs(wk[0])} – ${fs(wk[6])}</span><button onClick=${()=>shift(7)} class='h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n='chevR'/></button></div>
@@ -166,6 +167,7 @@ function Plan({plan,setPlan,hist,begin,today}){
   <div class='flex gap-2 mb-4'><button onClick=${()=>setPlan(p=>({...p,days:{1:'ppl:0',2:'ppl:1',3:'ppl:2',5:'ul:0',6:'ul:1'}}))} class='flex-1 h-11 rounded-xl bg-zinc-800 text-sm'>Minta terv</button><button onClick=${()=>setPlan(p=>({...p,days:{}}))} class='flex-1 h-11 rounded-xl bg-zinc-800 text-sm text-zinc-400'>Törlés</button></div>
   ${W.map(([d,l])=>{const v=plan.days[d],x=v&&dayOf(v),g=x?goalsFor(hist,x):[];return html`<div key=${d} class=${'up rounded-2xl border p-3 mb-2 bg-zinc-900 '+(d===td?'border-lime-400/60':'border-zinc-800')}>
    <div class='flex items-center gap-3'><span class='fd text-xl w-24'>${l}</span><select value=${v||''} onChange=${e=>set(d,e.target.value)} class='flex-1 h-11 rounded-xl bg-zinc-800 text-white px-3 outline-none'><option value=''>Pihenőnap</option>${daysList().map(o=>html`<option key=${o.v} value=${o.v}>${o.n}</option>`)}</select></div>
+   ${x&&html`<${CycChip} k=${wdNext(d)}/>`}
    ${x&&html`<div class='mt-2 text-xs text-zinc-400 grid gap-0.5'>${g.map(y=>html`<div key=${y.n} class='flex justify-between gap-2'><span>${y.n}</span><span class='text-lime-300 shrink-0'>${y.kg?y.kg+' kg × '+(y.reps||'?'):'új'}</span></div>`)}</div>`}
    ${x&&d===td&&html`<button onClick=${()=>begin(x.n,x.e,Object.fromEntries(g.map(y=>[y.n,y])),today)} class='mt-3 w-full h-12 rounded-xl bg-lime-400 text-black font-bold'>Mai edzés indítása a célokkal</button>`}</div>`})}
   <div class='rounded-2xl border border-zinc-800 bg-zinc-900 p-4 mt-4'>

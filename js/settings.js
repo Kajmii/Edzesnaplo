@@ -30,6 +30,7 @@ function Opts({opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc})
    <${Sw} l='Hang' s='Sípszó a pihenő végén' v=${opt.snd} on=${x=>o({snd:x})}/>
    <${Sw} l='Rezgés' s='Érintéskor és a pihenő végén' v=${opt.vib} on=${x=>o({vib:x})}/>
   <//>
+  ${cycAvail()&&html`<${Cd} t='Ciklus-követés'><${Sw} l='Ciklus-követés' s='Naptár és edzési javaslatok. Az adat csak ezen az eszközön van.' v=${cycGet().on} on=${x=>cycSet({...cycGet(),on:x})}/><//>`}
   <${Cd} t='Adatok'>
    <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
    <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>
