@@ -1,0 +1,70 @@
+/* ---------- Alapstílus az új felületekhez (Pro, Gym, Family): tokenekből ----------
+   Csak akkor él, ha az html elemen van data-ui. Az eredeti kinézethez (css/style.css) nem nyúl.
+   A meglévő Tailwind-osztályokat (bg-zinc-900, text-lime-400, rounded-2xl ...) képezi át tokenekre.
+   Minden szabály html[data-ui] előtaggal, így erősebb a Tailwind CDN és a style.css osztályainál. */
+html[data-ui] body{background:rgb(var(--ui-bg));color:rgb(var(--ui-text));font-family:var(--ui-font-body)}
+html[data-ui] body::before,html[data-ui] body::after{display:none}
+html[data-ui] button,html[data-ui] input,html[data-ui] select,html[data-ui] textarea{font-family:inherit}
+html[data-ui] a,html[data-ui] button{box-sizing:border-box}
+html[data-ui] .fd{font-family:var(--ui-font-head);letter-spacing:normal}
+html[data-ui="gym"] .fd{font-weight:400;text-transform:uppercase;letter-spacing:.02em}
+html[data-ui="pro"] .fd{font-weight:600;letter-spacing:-.01em}
+
+/* felületek és vonalak */
+html[data-ui] .bg-zinc-900{background:rgb(var(--ui-surface))!important;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;border-color:rgb(var(--ui-line))!important}
+html[data-ui] .bg-zinc-800{background:rgb(var(--ui-surface2))!important}
+html[data-ui] .border-zinc-800{border-color:rgb(var(--ui-line))!important}
+html[data-ui] .border-zinc-700{border-color:rgb(var(--ui-line2))!important}
+html[data-ui] .divide-zinc-800>*+*{border-color:rgb(var(--ui-line))}
+
+/* szövegek */
+html[data-ui] .text-zinc-100,html[data-ui] .text-zinc-200,html[data-ui] .text-zinc-300{color:rgb(var(--ui-text))}
+html[data-ui] .text-zinc-400,html[data-ui] .text-zinc-500,html[data-ui] .text-zinc-600{color:rgb(var(--ui-muted))}
+html[data-ui] .text-lime-400,html[data-ui] .text-lime-300,html[data-ui] .text-lime-200,html[data-ui] .text-cyan-400,html[data-ui] .text-cyan-300{color:rgb(var(--ui-accent-text))}
+html[data-ui] .text-red-400,html[data-ui] .text-red-500{color:rgb(var(--ui-danger))}
+html[data-ui] .text-amber-400,html[data-ui] .text-amber-300{color:rgb(var(--ui-warn))}
+html[data-ui] .grad{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:rgb(var(--ui-accent-text))}
+
+/* akcent: kitöltés és a rajta lévő szöveg */
+html[data-ui] .bg-lime-400{background:rgb(var(--ui-accent))!important;background-image:none!important;box-shadow:none!important;color:rgb(var(--ui-on-accent))!important}
+html[data-ui] .bg-lime-400\/15{background:rgb(var(--ui-accent) / .15)!important}
+html[data-ui] .bg-lime-400.text-black *{color:inherit}
+html[data-ui] .sh::after{display:none}
+html[data-ui] .glow,html[data-ui] .float{animation:none}
+
+/* beviteli mezők */
+html[data-ui] input,html[data-ui] select,html[data-ui] textarea{color:rgb(var(--ui-text))}
+html[data-ui] input.bg-zinc-800,html[data-ui] select.bg-zinc-800,html[data-ui] textarea.bg-zinc-800{background:rgb(var(--ui-field))!important;border:1px solid rgb(var(--ui-control))}
+html[data-ui] input::placeholder,html[data-ui] textarea::placeholder{color:rgb(var(--ui-muted));opacity:.8}
+html[data-ui] input:focus-visible,html[data-ui] select:focus-visible,html[data-ui] textarea:focus-visible{outline:2px solid rgb(var(--ui-accent-text));outline-offset:1px}
+html[data-ui] :is(button,a,[role=button]):focus-visible{outline:2px solid rgb(var(--ui-accent-text));outline-offset:2px}
+
+/* sarkok */
+html[data-ui] .rounded-md,html[data-ui] .rounded-lg{border-radius:var(--ui-r-s)}
+html[data-ui] .rounded-xl{border-radius:var(--ui-r-m)}
+html[data-ui] .rounded-2xl,html[data-ui] .rounded-3xl{border-radius:var(--ui-r-l)}
+html[data-ui="pro"] .rounded-t-3xl,html[data-ui="gym"] .rounded-t-3xl{border-top-left-radius:var(--ui-r-l);border-top-right-radius:var(--ui-r-l)}
+html[data-ui="family"] .rounded-t-3xl{border-top-left-radius:24px;border-top-right-radius:24px}
+
+/* érintési méret: a gombok és bemenetek legalább --ui-tap magasak (a h-9 jelű kis jelölők kivételével) */
+html[data-ui] button:not([class*="h-9"]):not([class*="h-8"]):not([class*="w-6"]):not([class*="w-10"]),html[data-ui] input:not([type=checkbox]):not([type=radio]):not([type=range]),html[data-ui] select{min-height:var(--ui-tap)}
+
+/* Pro: lapos szakaszok, négyzetes sarok, monospace számok */
+html[data-ui="pro"] .bg-zinc-900{border-width:0!important}
+html[data-ui="pro"] input.bg-zinc-800,html[data-ui="pro"] select.bg-zinc-800{border-color:rgb(var(--ui-control))}
+html[data-ui="pro"] .fd{font-variant-numeric:tabular-nums}
+
+/* Gym: tömör blokkok, nagybetűs gombfelirat az elsődleges gombokon */
+html[data-ui="gym"] .bg-zinc-900{border-width:0!important}
+html[data-ui="gym"] .bg-lime-400:is(button,a){font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+html[data-ui="gym"] input.bg-zinc-800,html[data-ui="gym"] select.bg-zinc-800{border:2px solid rgb(var(--ui-control))}
+html[data-ui="gym"] input.bg-zinc-800:focus,html[data-ui="gym"] select.bg-zinc-800:focus{border-color:rgb(var(--ui-accent))}
+
+/* Family: fehér kártya vastag kerettel, nagy érintési felület */
+html[data-ui="family"] .bg-zinc-900{border-width:2px!important;border-color:rgb(var(--ui-line))!important}
+html[data-ui="family"] input.bg-zinc-800,html[data-ui="family"] select.bg-zinc-800{border-width:2px;border-color:rgb(var(--ui-control))}
+html[data-ui="family"] .bg-lime-400:is(button,a){font-weight:700}
+html[data-ui="family"] .fd{font-weight:700}
+
+/* a text-zinc-800 a Tailwind-konfigban a felület-változóra van képezve: fehér alapon (pl. Google-gomb) fix sötét szöveg kell */
+html[data-ui] .text-zinc-800,html[data-ui] .text-zinc-900{color:#27272a}

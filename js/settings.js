@@ -12,11 +12,14 @@ function Opts({opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc})
  const imp=()=>{try{const d=JSON.parse(bk);if(d.hist)setHist(d.hist);if(d.plan)setPlan(d.plan);if(d.opt)setOpt(d.opt);toast('Adatok visszatöltve')}catch(e){toast('A mentés szövege hibás')}};
  const bt='h-11 rounded-xl bg-zinc-800 text-sm font-semibold';
  return html`<div><h1 class='fd text-4xl font-bold mb-4'>Beállítások</h1>
+  <${UiSwitcher} opt=${opt} o=${o}/>
   <${Cd} t='Megjelenés'>
    <${Lb} t='Nyelv / Language'/><${Sg} v=${opt.lang} on=${x=>{try{localStorage.setItem('en_lang',x)}catch(e){}o({lang:x})}} o=${[['hu','Magyar'],['en','English']]}/>
+   ${!opt.ui&&html`<div>
    <${Lb} t='Kiemelő szín'/><div class='flex gap-3 flex-wrap'>${Object.entries(ACCS).map(([k,a])=>html`<button key=${k} title=${a[0]} onClick=${()=>o({ac:k})} style=${{background:a[3]}} class=${'w-10 h-10 rounded-full '+(opt.ac===k?'ring-4 ring-white/80':'')}></button>`)}</div>
    <${Lb} t='Kinézet'/><${Sg} v=${opt.mode||'dark'} on=${x=>o({mode:x})} o=${[['dark','Sötét'],['light','Világos']]}/>
    ${opt.mode!=='light'&&html`<div><${Lb} t='Téma'/><div class='grid grid-cols-2 gap-2'>${Object.entries(THEMES).map(([k,t])=>html`<button key=${k} onClick=${()=>o({th:k})} class=${'h-11 rounded-xl text-sm font-semibold '+(opt.th===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${t[0]}</button>`)}</div></div>`}
+   </div>`}
    <${Lb} t='Betűméret'/><${Sg} v=${opt.fs} on=${x=>o({fs:+x})} o=${[[14,'Kicsi'],[16,'Normál'],[18,'Nagy']]}/>
    <${Sw} l='Animációk' s='Kikapcsolva gyorsabb, kíméli az akkut' v=${opt.an} on=${x=>o({an:x})}/>
   <//>
