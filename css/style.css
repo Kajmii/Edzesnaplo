@@ -19,3 +19,20 @@ body::after{width:60vmax;height:60vmax;right:-20vmax;bottom:-15vmax;background:#
 .float{animation:flt 4s ease-in-out infinite}@keyframes flt{50%{transform:translateY(-6px)}}
 .grad{background:linear-gradient(90deg,#fff,rgb(var(--a3)),rgb(var(--a4)));-webkit-background-clip:text;background-clip:text;color:transparent}
 .noanim *,.noanim *::before{animation:none!important;transition:none!important}@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+/* ---------- Világos téma (html.lt): csak felülírások, a sötét kinézethez nem nyúlnak ---------- */
+html.lt{--bg:244 245 248;--z7:190 190 197;--z8:228 228 231;--z9:255 255 255;--at:77 124 15;color-scheme:light}
+.lt body{color:#18181b}
+.lt body::before{opacity:.2}.lt body::after{opacity:.14}
+.lt .bg-zinc-900{background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(255,255,255,.75))!important;border-color:rgba(24,24,27,.09)!important;box-shadow:0 10px 28px -16px rgba(24,24,27,.3),inset 0 1px 0 rgba(255,255,255,.9)}
+.lt .bg-zinc-800{background:rgba(24,24,27,.06)!important}
+.lt .border-zinc-800{border-color:rgba(24,24,27,.1)!important}
+.lt .text-zinc-300{color:#3f3f46}.lt .text-zinc-400{color:#52525b}.lt .text-zinc-500{color:#71717a}.lt .text-zinc-600{color:#a1a1aa}
+.lt .text-lime-400,.lt .text-lime-300,.lt .text-lime-200{color:rgb(var(--at))}
+.lt .text-cyan-400,.lt .text-cyan-300{color:#0e7490}.lt .text-amber-400,.lt .text-amber-300{color:#b45309}.lt .text-red-400{color:#dc2626}
+.lt .bg-zinc-800.text-white,.lt input.text-white,.lt select.text-white,.lt textarea.text-white{color:#18181b}
+.lt .grad{background:linear-gradient(90deg,#18181b,rgb(var(--at)));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lt circle[stroke="rgba(255,255,255,.08)"]{stroke:rgba(24,24,27,.1)}
+.lt circle[stroke="#27272a"]{stroke:#e4e4e7}
+.lt svg [fill="#d4d4d8"]{fill:#3f3f46}
+.lt svg text[fill="#fff"]{fill:#18181b}
+.lt .text-zinc-800{color:#27272a}

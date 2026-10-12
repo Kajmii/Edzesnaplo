@@ -1,6 +1,8 @@
 const BDY=['SU','MO','TU','WE','TH','FR','SA'];
-const ACCS={lime:['Lime','190 242 100','163 230 53','#a3e635'],cyan:['Kék','165 243 252','34 211 238','#22d3ee'],violet:['Lila','196 181 253','167 139 250','#a78bfa'],orange:['Narancs','253 186 116','251 146 60','#fb923c'],pink:['Rózsaszín','249 168 212','244 114 182','#f472b6'],red:['Piros','252 165 165','248 113 113','#f87171']};
+const ACCS={lime:['Lime','190 242 100','163 230 53','#a3e635','77 124 15','#65a30d'],cyan:['Kék','165 243 252','34 211 238','#22d3ee','14 116 144','#0891b2'],violet:['Lila','196 181 253','167 139 250','#a78bfa','109 40 217','#7c3aed'],orange:['Narancs','253 186 116','251 146 60','#fb923c','194 65 12','#ea580c'],pink:['Rózsaszín','249 168 212','244 114 182','#f472b6','190 24 93','#db2777'],red:['Piros','252 165 165','248 113 113','#f87171','185 28 28','#dc2626']};
 const THEMES={alap:['Alap','63 63 70','39 39 42','24 24 27','9 11 14'],amoled:['AMOLED','43 43 48','26 26 29','12 12 14','0 0 0'],kek:['Éjkék','45 63 94','28 42 66','17 26 43','10 16 32'],grafit:['Grafit','68 72 80','46 49 54','32 34 38','18 19 22']};
+// Világos mód: [név, z7 (kapcsoló-sáv, elválasztó), z8, z9, háttér]
+const LIGHT=['Világos','190 190 197','228 228 231','255 255 255','244 245 248'];
 const Cd=({t,children})=>html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-3'>${t}</div>${children}</div>`;
 const Lb=({t})=>html`<div class='text-xs text-zinc-400 mt-3 mb-2'>${t}</div>`;
 const Sw=({l,s,v,on})=>html`<button onClick=${()=>on(!v)} class='w-full flex items-center justify-between gap-3 py-2.5 text-left'><span><span class='block'>${l}</span>${s&&html`<span class='block text-xs text-zinc-500'>${s}</span>`}</span><span class=${'w-12 h-7 rounded-full p-1 shrink-0 '+(v?'bg-lime-400':'bg-zinc-700')}><span class=${'block w-5 h-5 rounded-full bg-white transition-transform '+(v?'translate-x-5':'')}></span></span></button>`;
@@ -13,7 +15,8 @@ function Opts({opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc})
   <${Cd} t='Megjelenés'>
    <${Lb} t='Nyelv / Language'/><${Sg} v=${opt.lang} on=${x=>{try{localStorage.setItem('en_lang',x)}catch(e){}o({lang:x})}} o=${[['hu','Magyar'],['en','English']]}/>
    <${Lb} t='Kiemelő szín'/><div class='flex gap-3 flex-wrap'>${Object.entries(ACCS).map(([k,a])=>html`<button key=${k} title=${a[0]} onClick=${()=>o({ac:k})} style=${{background:a[3]}} class=${'w-10 h-10 rounded-full '+(opt.ac===k?'ring-4 ring-white/80':'')}></button>`)}</div>
-   <${Lb} t='Téma'/><div class='grid grid-cols-2 gap-2'>${Object.entries(THEMES).map(([k,t])=>html`<button key=${k} onClick=${()=>o({th:k})} class=${'h-11 rounded-xl text-sm font-semibold '+(opt.th===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${t[0]}</button>`)}</div>
+   <${Lb} t='Kinézet'/><${Sg} v=${opt.mode||'dark'} on=${x=>o({mode:x})} o=${[['dark','Sötét'],['light','Világos']]}/>
+   ${opt.mode!=='light'&&html`<div><${Lb} t='Téma'/><div class='grid grid-cols-2 gap-2'>${Object.entries(THEMES).map(([k,t])=>html`<button key=${k} onClick=${()=>o({th:k})} class=${'h-11 rounded-xl text-sm font-semibold '+(opt.th===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${t[0]}</button>`)}</div></div>`}
    <${Lb} t='Betűméret'/><${Sg} v=${opt.fs} on=${x=>o({fs:+x})} o=${[[14,'Kicsi'],[16,'Normál'],[18,'Nagy']]}/>
    <${Sw} l='Animációk' s='Kikapcsolva gyorsabb, kíméli az akkut' v=${opt.an} on=${x=>o({an:x})}/>
   <//>

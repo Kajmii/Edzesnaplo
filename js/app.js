@@ -2,8 +2,8 @@ const MENU=[['plan','','cal','Terv','#a78bfa,#6366f1'],['tools','c','flame','Kar
 /* ---------- Alkalmazás ---------- */
 function App({user,out}){
  const today=dk(new Date());
- const[tab,setTab]=useState('home'),[sel,setSel]=useState(today),[hist,setHist]=useState(ld),[aw,setAw]=useState(null),[rest,setRest]=useState(null),[rd,setRd]=useState(()=>gj('opt',{}).rest||90),[fin,setFin]=useState(null),[ts,setTs]=useState(null),[plan,setPlan]=useState(()=>gj('plan',{days:{},time:'07:00',on:false})),[opt,setOpt]=useState(()=>({lang:(()=>{try{return localStorage.getItem('en_lang')||'hu'}catch(e){return'hu'}})(),wg:3,ac:'lime',th:'alap',fs:16,an:true,rest:90,auto:true,snd:true,vib:true,wake:true,step:1.25,pct:2.5,...gj('opt',{})}));
- ACC=(ACCS[opt.ac]||ACCS.lime)[3];OPT=opt;LANG=opt.lang;
+ const[tab,setTab]=useState('home'),[sel,setSel]=useState(today),[hist,setHist]=useState(ld),[aw,setAw]=useState(null),[rest,setRest]=useState(null),[rd,setRd]=useState(()=>gj('opt',{}).rest||90),[fin,setFin]=useState(null),[ts,setTs]=useState(null),[plan,setPlan]=useState(()=>gj('plan',{days:{},time:'07:00',on:false})),[opt,setOpt]=useState(()=>({lang:(()=>{try{return localStorage.getItem('en_lang')||'hu'}catch(e){return'hu'}})(),wg:3,ac:'lime',th:'alap',mode:(()=>{try{return localStorage.getItem('en_mode')==='light'?'light':'dark'}catch(e){return'dark'}})(),fs:16,an:true,rest:90,auto:true,snd:true,vib:true,wake:true,step:1.25,pct:2.5,...gj('opt',{})}));
+ ACC=(ACCS[opt.ac]||ACCS.lime)[opt.mode==='light'?5:3];OPT=opt;LANG=opt.lang;
  const[sy,setSy]=useState({s:'idle',t:''}),[ct,setCt]=useState(()=>gj('ct',[])),[menu,setMenu]=useState(false),[sub,setSub]=useState('');CTG=ct;sjt('ct',ct);
  useEffect(()=>sv(hist),[hist]);
  const setHistT=v=>{const nv=typeof v==='function'?v(hist):v,gone=hist.filter(w=>!nv.some(x=>x.id===w.id)).map(w=>w.id);if(gone.length)sjt('del',[...new Set([...gj('del',[]),...gone])]);setHist(nv)};
@@ -22,7 +22,7 @@ function App({user,out}){
  useEffect(()=>{const i=setInterval(syncNow,60000),f=()=>document.visibilityState==='visible'&&syncNow();window.addEventListener('online',syncNow);document.addEventListener('visibilitychange',f);return()=>{clearInterval(i);window.removeEventListener('online',syncNow);document.removeEventListener('visibilitychange',f)}},[]);
  sjt('plan',plan);
  sjt('opt',opt);
- useEffect(()=>{const a=ACCS[opt.ac]||ACCS.lime,t=THEMES[opt.th]||THEMES.alap,r=document.documentElement,st=r.style;st.setProperty('--a3',a[1]);st.setProperty('--a4',a[2]);st.setProperty('--z7',t[1]);st.setProperty('--z8',t[2]);st.setProperty('--z9',t[3]);st.setProperty('--bg',t[4]);st.fontSize=opt.fs+'px';r.classList.toggle('noanim',!opt.an)},[opt]);
+ useEffect(()=>{const a=ACCS[opt.ac]||ACCS.lime,lt=opt.mode==='light',t=lt?LIGHT:(THEMES[opt.th]||THEMES.alap),r=document.documentElement,st=r.style;st.setProperty('--a3',a[1]);st.setProperty('--a4',a[2]);st.setProperty('--at',a[4]);st.setProperty('--z7',t[1]);st.setProperty('--z8',t[2]);st.setProperty('--z9',t[3]);st.setProperty('--bg',t[4]);st.fontSize=opt.fs+'px';r.classList.toggle('noanim',!opt.an);r.classList.toggle('lt',lt);try{localStorage.setItem('en_mode',lt?'light':'dark')}catch(e){}const mt=document.querySelector('meta[name=theme-color]');mt&&mt.setAttribute('content',lt?'#f4f5f8':'#090b0e')},[opt]);
  useEffect(()=>setRd(opt.rest),[opt.rest]);
  useEffect(()=>{const LN=getLN();LN&&LN.requestPermissions().catch(()=>{})},[]);
  useEffect(()=>{if(!rest){const LN=getLN();LN&&LN.cancel({notifications:[{id:7001}]}).catch(()=>{})}},[rest]);
