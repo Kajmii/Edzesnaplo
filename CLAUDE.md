@@ -24,6 +24,15 @@ Supabase. Az URL és az anon kulcs a `js/auth.js`-ben van (ez publikus, nem tito
 - Android APK: Capacitor, a `server.url` a Pages-re mutat, ezért a Pages-re feltöltött fájlok frissítése elég.
 - Windows: Electron (`build-exe.yml`).
 
+## Munkafolyamat
+
+- Minden új funkciót külön ágon készíts (`feature/...`). A fő ágat (`main`) ne módosítsd, amíg a felhasználó nem hagyja jóvá.
+- A felhasználó telefonon teszteli. Az előnézeti linket vagy a helyi szervert a felhasználó kéri, te ne próbálj publikálni.
+- Push és merge csak a felhasználó kérésére történhet, mert a GitHub Pages és az APK azonnal frissül.
+- Supabase-változtatás csak SQL-fájlban legyen (`supabase/*.sql`). A felhasználó előbb futtatja le, és csak utána kerülhet élesbe a kód.
+- Minden működő funkció után javasolj commitot. A commit üzenete legyen rövid, magyarul.
+- Ha egy funkció nem működik, ne próbálj több változtatást egyszerre javítani. Írd le a hibát, és kérdezd meg, mit csináljunk.
+
 ## Szabályok
 
 - Minden új magyar szöveghez angol fordítás kell a `setDict(...)`-ben.
