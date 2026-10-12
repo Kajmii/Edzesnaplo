@@ -1,4 +1,4 @@
-const MENU=[['plan','','cal','Terv','#a78bfa,#6366f1'],['tools','c','flame','Kardió','#fb923c,#f43f5e'],['tools','k','apple','Kalória','#84cc16,#10b981'],['tools','e','dumbbell','Erő','#22d3ee,#3b82f6'],['tools','i','timer','Intervall','#f472b6,#a855f7'],['tools','b','user','Test és mérések','#34d399,#06b6d4'],['edit','','edit','Tervszerkesztő','#facc15,#f97316'],['opt','','dl','Export és adatok','#38bdf8,#6366f1'],['opt','','gear','Opciók','#94a3b8,#475569'],['cycle','','drop','Ciklus','#f472b6,#e11d48']];
+const MENU=[['plan','','cal','Terv','#a78bfa,#6366f1'],['tools','c','flame','Kardió','#fb923c,#f43f5e'],['tools','k','apple','Kalória','#84cc16,#10b981'],['tools','e','dumbbell','Erő','#22d3ee,#3b82f6'],['tools','i','timer','Intervall','#f472b6,#a855f7'],['tools','b','user','Test és mérések','#34d399,#06b6d4'],['edit','','edit','Tervszerkesztő','#facc15,#f97316'],['opt','','dl','Export és adatok','#38bdf8,#6366f1'],['opt','','gear','Opciók','#94a3b8,#475569'],['cycle','','drop','Ciklus','#f472b6,#e11d48'],['social','','user','Közösség','#60a5fa,#7c3aed']];
 /* ---------- Alkalmazás ---------- */
 function App({user,out}){
  const today=dk(new Date());
@@ -36,6 +36,7 @@ function App({user,out}){
   const ex=aw.ex.map(e=>({n:e.n,sets:e.sets.filter(s=>s.done)})).filter(e=>e.sets.length);
   if(!ex.length)return;
   setHist([{id:aw.t,date:aw.date,name:aw.name,ex,vol:ex.reduce((a,e)=>a+vol(e.sets),0)},...hist]);
+  socPublish({id:aw.t,name:aw.name,ex,vol:ex.reduce((a,e)=>a+vol(e.sets),0)},ex.reduce((a,e)=>a+e.sets.filter(s=>s.pr).length,0));
   setFin({name:aw.name,n:ex.length,vol:ex.reduce((a,e)=>a+vol(e.sets),0),sets:ex.reduce((a,e)=>a+e.sets.length,0),pr:ex.reduce((a,e)=>a+e.sets.filter(s=>s.pr).length,0)});setAw(null);setRest(null);setTab('home');
  };
  const quit=()=>{setAw(null);setRest(null)};
@@ -49,7 +50,7 @@ function App({user,out}){
    ${tab==='hist'&&html`<${Hist} hist=${hist} del=${id=>setHistT(hist.filter(w=>w.id!==id))}/>`}
    ${tab==='plan'&&html`<${Plan} plan=${plan} setPlan=${setPlan} hist=${hist} today=${today} begin=${(...a)=>{begin(...a);setTab('log')}}/>`}
    ${tab==='tools'&&html`<${Tools} key=${sub} init=${sub}/>`}
-   ${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='food'&&html`<${Food}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}
+   ${tab==='social'&&html`<${Social}/>`}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='food'&&html`<${Food}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}
    ${tab==='opt'&&html`<${Opts} opt=${opt} setOpt=${setOpt} hist=${hist} setHist=${setHistT} plan=${plan} setPlan=${setPlan} user=${user} out=${out} sy=${sy} syncNow=${syncNow} delAcc=${delAcc}/>`}
   </div>
   <${CycPop} go=${go2}/>
