@@ -6,7 +6,7 @@ function Tools({init}){
  const sp=(o)=>setP(x=>({...x,...o})),sc=o=>setC(x=>({...x,...o})),sk=o=>setK(x=>({...x,...o}));
  const kg=+p.kg,age=+p.age,cm=+p.cm,bf=+p.bf,m=p.sex==='m';
  const prof=html`<div class='bg-zinc-900 border border-zinc-800 rounded-2xl p-3 mb-4'><div class='text-sm font-semibold mb-2'>Profil</div>
-  <div class='mb-3'><${Sg} v=${p.sex} on=${x=>sp({sex:x})} o=${[['m','Férfi'],['f','Nő']]}/></div>
+  <div class='mb-3'><${Sg} v=${p.sex} on=${x=>{sp({sex:x,sexSel:true});if(x==='f'&&!cycGet().on)window.dispatchEvent(new Event('cycprompt'))}} o=${[['m','Férfi'],['f','Nő']]}/></div>
   <div class='grid grid-cols-2 gap-2'><${F} l='Életkor' u='év' v=${p.age} on=${x=>sp({age:x})}/><${F} l='Magasság' u='cm' v=${p.cm} on=${x=>sp({cm:x})}/><${F} l='Testsúly' u='kg' v=${p.kg} on=${x=>sp({kg:x})}/><${F} l='Testzsír (opcionális)' u='%' v=${p.bf} on=${x=>sp({bf:x})}/></div></div>`;
  let out;
  if(v==='c'){

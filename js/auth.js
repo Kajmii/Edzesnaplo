@@ -15,7 +15,7 @@ async function sbf(path,o={},auth=true,retry=true){
  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
  return{ok:r.ok,status:r.status,j};
 }
-const BUILD='12okt-10';let DBG=[],DBGF=null;
+const BUILD='12okt-11';let DBG=[],DBGF=null;
 const dbg=m=>{const d=new Date();DBG=[...DBG,String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+' '+m].slice(-6);DBGF&&DBGF()};
 const PL={};const getPl=n=>{try{return NATIVE()&&Capacitor.registerPlugin?(PL[n]=PL[n]||Capacitor.registerPlugin(n)):null}catch(e){return null}};
 const PLA=n=>{try{return NATIVE()&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable(n)?1:0}catch(e){return 0}};
