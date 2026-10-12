@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Pro – Töltés</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#16171A}a:hover{color:#C2410C}
+.pro-draw{stroke-dasharray:420;stroke-dashoffset:420;animation:proDraw 1.8s cubic-bezier(.65,0,.35,1) infinite}
+.pro-dot{opacity:0;animation:proDot 1.8s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes proDraw{0%{stroke-dashoffset:420}60%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+@keyframes proDot{0%,55%{opacity:0}65%,100%{opacity:1}}
+@media (prefers-reduced-motion: reduce){.pro-draw{animation:none;stroke-dashoffset:0}.pro-dot{animation:none;opacity:1}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ECEAE5; color: #16171A; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 28px; padding: 0 40px" role="status" aria-live="polite">
+  <svg width="300" height="140" viewBox="0 0 300 140" aria-hidden="true">
+    <line x1="0" y1="130" x2="300" y2="130" stroke="#CFCCC4" stroke-width="1"></line>
+    <line x1="0" y1="90" x2="300" y2="90" stroke="#E2DFD8" stroke-width="1"></line>
+    <line x1="0" y1="50" x2="300" y2="50" stroke="#E2DFD8" stroke-width="1"></line>
+    <line x1="0" y1="10" x2="300" y2="10" stroke="#E2DFD8" stroke-width="1"></line>
+    <polyline class="pro-draw" points="4,118 46,100 88,106 130,80 172,88 214,56 256,48 296,22" fill="none" stroke="#16171A" stroke-width="2"></polyline>
+    <circle class="pro-dot" cx="296" cy="22" r="5" fill="{{accent}}"></circle>
+  </svg>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+    <span style="font-size: 20px; font-weight: 600; letter-spacing: -0.01em">Edzésnapló</span>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: #5B5C60">ADATOK SZINKRONIZÁLÁSA</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#C2410C","options":["#C2410C","#1F5C4A","#1E3A8A"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#C2410C' };
+  }
+}
+</script>
+</body>
+</html>

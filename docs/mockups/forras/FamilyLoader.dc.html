@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Family – Töltés</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0E6B5E}a:hover{color:#0A4F45}
+.fam-breath{animation:famBreath 4s ease-in-out infinite;transform-origin:center}
+.fam-halo{animation:famHalo 4s ease-in-out infinite;transform-origin:center}
+@keyframes famBreath{0%,100%{transform:scale(.86)}50%{transform:scale(1)}}
+@keyframes famHalo{0%,100%{transform:scale(.9);opacity:.25}50%{transform:scale(1.12);opacity:.08}}
+@media (prefers-reduced-motion: reduce){.fam-breath,.fam-halo{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F2F4F0; color: #1A2420; font-family: 'Atkinson Hyperlegible', sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 40px; padding: 0 32px" role="status" aria-live="polite">
+  <div style="position: relative; width: 180px; height: 180px">
+    <div class="fam-halo" style="position: absolute; inset: 0; border-radius: 50%; background: {{accent}}"></div>
+    <div class="fam-breath" style="position: absolute; inset: 30px; border-radius: 50%; border: 10px solid {{accent}}; box-sizing: border-box"></div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+    <span style="font-size: 30px; font-weight: 700">Egy pillanat…</span>
+    <span style="font-size: 20px; color: #46524D">Betöltjük az adataidat.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#0E6B5E","options":["#0E6B5E","#A8481F","#1F4E99"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#0E6B5E' };
+  }
+}
+</script>
+</body>
+</html>

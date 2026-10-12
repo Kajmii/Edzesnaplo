@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Pro – Beállítások</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#16171A}a:hover{color:#C2410C}
+.pro-scrim{animation:proFade .2s ease-out backwards}
+.pro-sheet{animation:proSheet .28s cubic-bezier(.2,.7,.2,1) backwards}
+.pro-item{animation:proItem .22s cubic-bezier(.2,.7,.2,1) backwards}
+.pro-row{transition:transform .18s ease-out}
+.pro-row:hover{transform:translateX(4px)}
+.pro-btn,.pro-card{transition:transform .12s ease-out}
+.pro-btn:active,.pro-card:active{transform:scale(.97)}
+.pro-row:focus-visible,.pro-btn:focus-visible,.pro-card:focus-visible{outline:2px solid #C2410C;outline-offset:2px}
+@keyframes proFade{from{opacity:0}}
+@keyframes proSheet{from{opacity:0;transform:translateY(12px)}}
+@keyframes proItem{from{opacity:0;transform:translateY(8px)}}
+@media (prefers-reduced-motion: reduce){.pro-scrim,.pro-sheet,.pro-item{animation:none}.pro-row,.pro-btn,.pro-card{transition:none}.pro-row:hover,.pro-btn:active,.pro-card:active{transform:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ECEAE5; color: #16171A; font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <header style="flex-shrink: 0; height: 56px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; padding: 0 16px; border-bottom: 1px solid #CFCCC4">
+    <a href="ProMenu.dc.html" class="pro-btn" style="justify-self: start; min-height: 44px; display: flex; align-items: center; gap: 6px; text-decoration: none; font-size: 14px">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="#16171A" stroke-width="1.6"></path></svg>
+      <span>Menü</span>
+    </a>
+    <h1 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 400; letter-spacing: 0.08em; color: #5B5C60">BEÁLLÍTÁSOK</h1>
+    <span></span>
+  </header>
+
+  <main style="flex: 1; display: flex; flex-direction: column; gap: 24px; padding: 20px 24px calc(20px + env(safe-area-inset-bottom)) 24px; min-height: 0; overflow-y: auto">
+    <section style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><h2 style="margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em">Felület</h2><span style="font-size: 13px; color: #5B5C60; text-align: right">Azonnal vált</span></div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+      <button type="button" aria-pressed="true" class="pro-card" style="min-width: 0; display: flex; flex-direction: column; gap: 8px; padding: 6px; background: #F7F6F3; border: 2px solid {{accent}}; border-radius: 4px; text-align: left; font-family: 'IBM Plex Sans', sans-serif; color: #16171A; cursor: pointer">
+        <span aria-hidden="true" style="position: relative; display: block; width: 100%; aspect-ratio: 390 / 844; container-type: inline-size; overflow: hidden; border: 1px solid #16171A; box-sizing: border-box">
+          <span style="position: absolute; inset: 0; background: #ECEAE5; display: flex; flex-direction: column; gap: 4.5cqw; padding: 7cqw 6cqw 0 6cqw; box-sizing: border-box">
+            <span style="display: flex; justify-content: space-between; align-items: center"><span style="width: 46cqw; height: 2.2cqw; background: #5B5C60; opacity: .7"></span><span style="width: 8cqw; height: 8cqw; border-radius: 50%; border: 0.4cqw solid #16171A; box-sizing: border-box"></span></span>
+            <span style="width: 24cqw; height: 2.2cqw; background: #8E8C86"></span>
+            <span style="width: 66cqw; height: 9cqw; background: #16171A"></span>
+            <span style="width: 84cqw; height: 2.2cqw; background: #8E8C86"></span>
+            <span style="display: flex; gap: 3cqw"><span style="flex: 1; height: 13cqw; background: {{accent}}; border-radius: 1cqw"></span><span style="width: 17cqw; height: 13cqw; border: 0.4cqw solid #16171A; border-radius: 1cqw; box-sizing: border-box"></span></span>
+            <span style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3.5cqw; padding-top: 3cqw; border-top: 0.4cqw solid #CFCCC4"><span style="aspect-ratio: 1; background: #16171A; box-sizing: border-box"></span><span style="aspect-ratio: 1; border: 0.6cqw solid {{accent}}; box-sizing: border-box"></span><span style="aspect-ratio: 1; border: 0.4cqw solid #16171A; box-sizing: border-box"></span><span style="aspect-ratio: 1; height: 0.8cqw; margin: auto 0; background: #8E8C86; box-sizing: border-box"></span><span style="aspect-ratio: 1; border: 0.4cqw solid #16171A; box-sizing: border-box"></span><span style="aspect-ratio: 1; border: 0.4cqw solid #16171A; box-sizing: border-box"></span><span style="aspect-ratio: 1; height: 0.8cqw; margin: auto 0; background: #8E8C86; box-sizing: border-box"></span></span>
+            <span style="background: #F7F6F3; padding: 4cqw; display: flex; flex-direction: column; gap: 3cqw"><span style="width: 44cqw; height: 6cqw; background: #16171A; opacity: .85"></span><svg viewBox="0 0 100 34" style="width: 100%; height: auto; display: block; overflow: visible"><polyline points="2,30 15,25 29,27 43,20 57,22 71,13 85,11 98,4" fill="none" stroke="#16171A" stroke-width="1.6"></polyline><circle cx="98" cy="4" r="3" fill="{{accent}}"></circle></svg></span>
+            <span style="display: flex; flex-direction: column"><span style="display: flex; justify-content: space-between; padding: 2.4cqw 0; border-top: 0.4cqw solid #CFCCC4"><span style="width: 34cqw; height: 2.6cqw; background: #16171A; opacity: .75"></span><span style="width: 18cqw; height: 2.6cqw; background: #16171A; opacity: .75"></span></span><span style="display: flex; justify-content: space-between; padding: 2.4cqw 0; border-top: 0.4cqw solid #CFCCC4"><span style="width: 34cqw; height: 2.6cqw; background: #16171A; opacity: .75"></span><span style="width: 18cqw; height: 2.6cqw; background: #16171A; opacity: .75"></span></span><span style="display: flex; justify-content: space-between; padding: 2.4cqw 0; border-top: 0.4cqw solid #CFCCC4"><span style="width: 34cqw; height: 2.6cqw; background: #16171A; opacity: .75"></span><span style="width: 18cqw; height: 2.6cqw; background: #16171A; opacity: .75"></span></span></span>
+            <span style="position: absolute; left: 0; right: 0; bottom: 0; height: 15cqw; border-top: 0.4cqw solid #CFCCC4; display: flex; align-items: center; justify-content: space-between; padding: 0 6cqw"><span style="width: 18cqw; height: 3cqw; background: #16171A"></span><span style="width: 5cqw; height: 5cqw; border-left: 0.6cqw solid #16171A; border-top: 0.6cqw solid #16171A; transform: rotate(45deg) translate(1cqw, 1cqw)"></span></span>
+          </span>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; padding: 0 2px 2px 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: {{accent}}">AKTÍV</span><span style="font-size: 15px; font-weight: 600; overflow-wrap: break-word">Pro</span><span style="font-size: 12px; color: #5B5C60; overflow-wrap: break-word">Letisztult</span></span>
+      </button>
+      <button type="button" aria-pressed="false" class="pro-card" style="min-width: 0; display: flex; flex-direction: column; gap: 8px; padding: 6px; background: transparent; border: 1px solid #CFCCC4; border-radius: 4px; text-align: left; font-family: 'IBM Plex Sans', sans-serif; color: #16171A; cursor: pointer">
+        <span aria-hidden="true" style="position: relative; display: block; width: 100%; aspect-ratio: 390 / 844; container-type: inline-size; overflow: hidden; border: 1px solid #16171A; box-sizing: border-box">
+          <span style="position: absolute; inset: 0; background: #0F0F0D; display: flex; flex-direction: column; box-sizing: border-box">
+            <span style="height: 2.4cqw; background: repeating-linear-gradient(-45deg, #FFC93C 0 2cqw, #0F0F0D 2cqw 4cqw)"></span>
+            <span style="display: flex; flex-direction: column; gap: 4cqw; padding: 6cqw 6cqw 0 6cqw">
+              <span style="display: flex; justify-content: space-between; align-items: center"><span style="width: 40cqw; height: 2.6cqw; background: #FFC93C"></span><span style="width: 10cqw; height: 10cqw; background: #2B2B27"></span></span>
+              <span style="font-family: 'Anton', sans-serif; font-size: 27cqw; line-height: 0.9; color: #F3F0E8; letter-spacing: 0.01em">PUSH</span>
+              <span style="width: 70cqw; height: 2.2cqw; background: #A8A49A"></span>
+              <span style="height: 15cqw; background: #FFC93C"></span>
+              <span style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2cqw"><svg viewBox="0 0 40 40" style="width: 100%; height: auto; display: block"><circle cx="20" cy="20" r="19" fill="#2B2B27"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#3A3A35" stroke-width="5"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#FFC93C" stroke-width="5" stroke-dasharray="66 88" transform="rotate(-90 20 20)"></circle></svg><svg viewBox="0 0 40 40" style="width: 100%; height: auto; display: block"><circle cx="20" cy="20" r="19" fill="#2B2B27"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#3A3A35" stroke-width="5"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#FFC93C" stroke-width="5" stroke-dasharray="50 88" transform="rotate(-90 20 20)"></circle></svg><svg viewBox="0 0 40 40" style="width: 100%; height: auto; display: block"><circle cx="20" cy="20" r="19" fill="#2B2B27"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#3A3A35" stroke-width="5"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#FFC93C" stroke-width="5" stroke-dasharray="38 88" transform="rotate(-90 20 20)"></circle></svg><svg viewBox="0 0 40 40" style="width: 100%; height: auto; display: block"><circle cx="20" cy="20" r="19" fill="#2B2B27"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#3A3A35" stroke-width="5"></circle><circle cx="20" cy="20" r="14" fill="none" stroke="#FFC93C" stroke-width="5" stroke-dasharray="73 88" transform="rotate(-90 20 20)"></circle></svg></span>
+              <span style="display: flex; height: 17cqw; background: #1C1C19"><span style="width: 2.4cqw; background: repeating-linear-gradient(-45deg, #FFC93C 0 2cqw, #0F0F0D 2cqw 4cqw)"></span><span style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 0 4cqw"><span style="width: 26cqw; height: 2.4cqw; background: #F3F0E8"></span><span style="width: 22cqw; height: 8cqw; background: #F3F0E8"></span></span></span>
+            </span>
+            <span style="margin-top: auto; height: 16cqw; display: flex; align-items: center; justify-content: space-between; padding-left: 6cqw; background: #1C1C19"><span style="width: 22cqw; height: 4.5cqw; background: #F3F0E8"></span><span style="width: 16cqw; height: 16cqw; background: #FFC93C"></span></span>
+          </span>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; padding: 0 2px 2px 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px">&nbsp;</span><span style="font-size: 15px; font-weight: 600; overflow-wrap: break-word">Gym</span><span style="font-size: 12px; color: #5B5C60; overflow-wrap: break-word">Ipari</span></span>
+      </button>
+      <button type="button" aria-pressed="false" class="pro-card" style="min-width: 0; display: flex; flex-direction: column; gap: 8px; padding: 6px; background: transparent; border: 1px solid #CFCCC4; border-radius: 4px; text-align: left; font-family: 'IBM Plex Sans', sans-serif; color: #16171A; cursor: pointer">
+        <span aria-hidden="true" style="position: relative; display: block; width: 100%; aspect-ratio: 390 / 844; container-type: inline-size; overflow: hidden; border: 1px solid #16171A; box-sizing: border-box">
+          <span style="position: absolute; inset: 0; background: #F2F4F0; display: flex; flex-direction: column; box-sizing: border-box">
+            <span style="display: flex; flex-direction: column; gap: 5cqw; padding: 7cqw 6cqw 0 6cqw">
+              <span style="display: flex; justify-content: space-between; align-items: flex-start"><span style="display: flex; flex-direction: column; gap: 2.5cqw"><span style="width: 34cqw; height: 2.6cqw; background: #46524D; border-radius: 1cqw"></span><span style="width: 62cqw; height: 7cqw; background: #1A2420; border-radius: 1.5cqw"></span></span><span style="width: 13cqw; height: 13cqw; border-radius: 3cqw; border: 0.6cqw solid #1A2420; background: #FFFFFF; box-sizing: border-box"></span></span>
+              <span style="background: #FFFFFF; border: 0.6cqw solid #CDD5D0; border-radius: 4.5cqw; padding: 5cqw; display: flex; flex-direction: column; gap: 4cqw">
+                <span style="width: 44cqw; height: 4cqw; background: #1A2420; border-radius: 1cqw"></span>
+                <span style="display: flex; align-items: center; gap: 3cqw"><span style="width: 6.5cqw; height: 6.5cqw; border-radius: 50%; background: #0E6B5E; box-sizing: border-box; flex-shrink: 0"></span><span style="width: 30cqw; height: 2.8cqw; border-radius: 1.4cqw; background: #1A2420; opacity: .7"></span></span><span style="display: flex; align-items: center; gap: 3cqw"><span style="width: 6.5cqw; height: 6.5cqw; border-radius: 50%; border: 0.8cqw solid #0E6B5E; box-sizing: border-box; flex-shrink: 0"></span><span style="width: 44cqw; height: 2.8cqw; border-radius: 1.4cqw; background: #1A2420; opacity: .7"></span></span><span style="display: flex; align-items: center; gap: 3cqw"><span style="width: 6.5cqw; height: 6.5cqw; border-radius: 50%; border: 0.8cqw solid #9AA6A0; box-sizing: border-box; flex-shrink: 0"></span><span style="width: 48cqw; height: 2.8cqw; border-radius: 1.4cqw; background: #1A2420; opacity: .7"></span></span><span style="display: flex; align-items: center; gap: 3cqw"><span style="width: 6.5cqw; height: 6.5cqw; border-radius: 50%; border: 0.8cqw solid #9AA6A0; box-sizing: border-box; flex-shrink: 0"></span><span style="width: 30cqw; height: 2.8cqw; border-radius: 1.4cqw; background: #1A2420; opacity: .7"></span></span>
+                <span style="height: 15cqw; border-radius: 3.5cqw; background: #0E6B5E"></span>
+              </span>
+              <span style="width: 36cqw; height: 4cqw; background: #1A2420; border-radius: 1cqw"></span>
+              <span style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1.5cqw"><span style="aspect-ratio: 1; border-radius: 50%; background: #0E6B5E; box-sizing: border-box"></span><span style="aspect-ratio: 1; border-radius: 50%; border: 1cqw solid #1A2420; box-sizing: border-box"></span><span style="aspect-ratio: 1; border-radius: 50%; border: 0.5cqw solid #9AA6A0; box-sizing: border-box"></span><span style="aspect-ratio: 1; border-radius: 50%; border: 0.5cqw solid #9AA6A0; box-sizing: border-box"></span><span style="aspect-ratio: 1; border-radius: 50%; border: 0.5cqw solid #9AA6A0; box-sizing: border-box"></span><span style="aspect-ratio: 1; border-radius: 50%; border: 0.5cqw solid #9AA6A0; box-sizing: border-box"></span><span style="aspect-ratio: 1; border-radius: 50%; border: 0.5cqw solid #9AA6A0; box-sizing: border-box"></span></span>
+            </span>
+            <span style="margin-top: auto; height: 18cqw; background: #FFFFFF; border-top: 0.6cqw solid #CDD5D0; display: flex; align-items: center; justify-content: space-between; padding: 0 6cqw"><span style="width: 22cqw; height: 4cqw; background: #1A2420; border-radius: 1cqw"></span><span style="width: 9cqw; height: 9cqw; border-radius: 50%; background: #E6EEEA"></span></span>
+          </span>
+        </span>
+        <span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; padding: 0 2px 2px 2px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px">&nbsp;</span><span style="font-size: 15px; font-weight: 600; overflow-wrap: break-word">Family</span><span style="font-size: 12px; color: #5B5C60; overflow-wrap: break-word">Nyugodt</span></span>
+      </button>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+      <h2 style="margin: 0 0 4px 0; font-size: 20px; font-weight: 600; letter-spacing: -0.01em">Színséma</h2>
+      <div role="radiogroup" aria-label="Színséma" style="display: flex; flex-direction: column; border-top: 1px solid #CFCCC4">
+        <button type="button" role="radio" aria-checked="true" class="pro-card" style="min-height: 60px; display: grid; grid-template-columns: 70px minmax(0, 1fr) 18px; align-items: center; gap: 12px; padding: 10px 0; background: transparent; border: none; border-bottom: 1px solid #CFCCC4; text-align: left; font-family: 'IBM Plex Sans', sans-serif; color: #16171A; cursor: pointer">
+          <span aria-hidden="true" style="display: flex; gap: 3px"><span style="width: 20px; height: 20px; background: #ECEAE5; border: 1px solid #16171A; box-sizing: border-box"></span><span style="width: 20px; height: 20px; background: #16171A; border: 1px solid #16171A; box-sizing: border-box"></span><span style="width: 20px; height: 20px; background: {{accent}}"></span></span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; font-weight: 500; overflow-wrap: break-word">Papír</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Meleg, világos alap</span></span>
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8" fill="none" stroke="#16171A" stroke-width="1.8"></path></svg>
+        </button>
+        <button type="button" role="radio" aria-checked="false" class="pro-card" style="min-height: 60px; display: grid; grid-template-columns: 70px minmax(0, 1fr) 18px; align-items: center; gap: 12px; padding: 10px 0; background: transparent; border: none; border-bottom: 1px solid #CFCCC4; text-align: left; font-family: 'IBM Plex Sans', sans-serif; color: #16171A; cursor: pointer">
+          <span aria-hidden="true" style="display: flex; gap: 3px"><span style="width: 20px; height: 20px; background: #E6E0D4; border: 1px solid #16171A; box-sizing: border-box"></span><span style="width: 20px; height: 20px; background: #221E18; border: 1px solid #16171A; box-sizing: border-box"></span><span style="width: 20px; height: 20px; background: {{accent}}"></span></span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; font-weight: 500; overflow-wrap: break-word">Kő</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Barnás, nyomtatott hatás</span></span>
+          <span aria-hidden="true"></span>
+        </button>
+        <button type="button" role="radio" aria-checked="false" class="pro-card" style="min-height: 60px; display: grid; grid-template-columns: 70px minmax(0, 1fr) 18px; align-items: center; gap: 12px; padding: 10px 0; background: transparent; border: none; border-bottom: 1px solid #CFCCC4; text-align: left; font-family: 'IBM Plex Sans', sans-serif; color: #16171A; cursor: pointer">
+          <span aria-hidden="true" style="display: flex; gap: 3px"><span style="width: 20px; height: 20px; background: #1B1C1F; border: 1px solid #16171A; box-sizing: border-box"></span><span style="width: 20px; height: 20px; background: #ECEAE5; border: 1px solid #16171A; box-sizing: border-box"></span><span style="width: 20px; height: 20px; background: {{accent}}"></span></span>
+          <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; font-weight: 500; overflow-wrap: break-word">Grafit</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Sötét, esti edzéshez</span></span>
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+      <p style="margin: 0; font-size: 13px; line-height: 1.45; color: #5B5C60; overflow-wrap: break-word">A választást a profilodba mentjük, ha be vagy jelentkezve. Különben ezen az eszközön marad.</p>
+      <button type="button" class="pro-btn" style="align-self: flex-start; min-height: 44px; padding: 0; border: none; background: transparent; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; color: #16171A; text-decoration: underline; text-underline-offset: 3px; text-align: left; cursor: pointer">Vissza az eredeti sötét kinézetre</button>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#C2410C","options":["#C2410C","#1F5C4A","#1E3A8A"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#C2410C' };
+  }
+}
+</script>
+</body>
+</html>

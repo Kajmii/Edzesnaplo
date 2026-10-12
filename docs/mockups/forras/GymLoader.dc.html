@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Gym – Töltés</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Archivo:wght@400;600;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F3F0E8}a:hover{color:#FFC93C}
+.gym-stripe{background:repeating-linear-gradient(-45deg,#FFC93C 0 9px,#0F0F0D 9px 18px)}
+.gl-l1,.gl-l2,.gl-l3{animation:glL 2.4s cubic-bezier(.2,.9,.2,1) infinite}
+.gl-r1,.gl-r2,.gl-r3{animation:glR 2.4s cubic-bezier(.2,.9,.2,1) infinite}
+.gl-l2,.gl-r2{animation-delay:.15s}
+.gl-l3,.gl-r3{animation-delay:.3s}
+@keyframes glL{0%{transform:translateX(-160px);opacity:0}30%,80%{transform:translateX(0);opacity:1}100%{transform:translateX(0);opacity:0}}
+@keyframes glR{0%{transform:translateX(160px);opacity:0}30%,80%{transform:translateX(0);opacity:1}100%{transform:translateX(0);opacity:0}}
+@media (prefers-reduced-motion: reduce){.gl-l1,.gl-l2,.gl-l3,.gl-r1,.gl-r2,.gl-r3{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0F0F0D; color: #F3F0E8; font-family: 'Archivo', sans-serif; display: flex; flex-direction: column; overflow: hidden" role="status" aria-live="polite">
+  <div class="gym-stripe" style="height: 12px"></div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 36px">
+    <svg width="350" height="120" viewBox="0 0 350 120" aria-hidden="true">
+      <rect x="0" y="57" width="350" height="6" fill="#8A8780"></rect>
+      <rect x="120" y="55" width="110" height="10" fill="#6E6B65"></rect>
+      <rect x="104" y="48" width="8" height="24" fill="#B9B5AC"></rect>
+      <rect x="238" y="48" width="8" height="24" fill="#B9B5AC"></rect>
+      <rect class="gl-l1" x="84" y="8" width="18" height="104" fill="#D7372B"></rect>
+      <rect class="gl-l2" x="66" y="12" width="16" height="96" fill="#2F62D0"></rect>
+      <rect class="gl-l3" x="52" y="30" width="12" height="60" fill="#2E9E5B"></rect>
+      <rect class="gl-r1" x="248" y="8" width="18" height="104" fill="#D7372B"></rect>
+      <rect class="gl-r2" x="268" y="12" width="16" height="96" fill="#2F62D0"></rect>
+      <rect class="gl-r3" x="286" y="30" width="12" height="60" fill="#2E9E5B"></rect>
+    </svg>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+      <span style="font-family: 'Anton', sans-serif; font-size: 56px; line-height: 1; letter-spacing: 0.02em; color: {{accent}}">BETÖLTÉS</span>
+      <span style="font-weight: 800; font-size: 12px; letter-spacing: 0.2em; color: #A8A49A">TÁRCSÁK FELRAKÁSA</span>
+    </div>
+  </div>
+  <div class="gym-stripe" style="height: 12px"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FFC93C","options":["#FFC93C","#FF5A1F","#7CFF4F"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#FFC93C' };
+  }
+}
+</script>
+</body>
+</html>
