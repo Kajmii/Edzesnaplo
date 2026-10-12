@@ -98,6 +98,48 @@ as $$ select coalesce((select is_public from public.profile_settings where user_
 revoke all on function public.social_is_public(uuid) from public, anon;
 grant execute on function public.social_is_public(uuid) to authenticated;
 
+-- 4b) Trágár, sértő vagy diszkriminatív név kiszűrése (felhasználónév és megjelenített név).
+--     Normalizálás: kisbetű, ékezetek le, számok/jelek betűnek olvasva (0=o 1=i 3=e 4=a 5=s 7=t 8=b @=a $=s !=i),
+--     nem betű karakterek kihagyva, ismétlődő betűk egyre vonva. A szavak listája nem teljes, a kliens (js/social.js)
+--     ugyanezt a listát használja, az eltérést a tests/social.check.js jelzi.
+create or replace function public.social_name_ok(p text)
+returns boolean
+language plpgsql
+immutable
+set search_path = public
+as $fn$
+declare
+  strong text[] := array['kurva','picsa','fasz','geci','buzeran','szopd','baszd','baszki','baszod','baszott','kibasz','bazdmeg','bazmeg','anyadat','rohadek','ribanc','szarhazi','neger','nyomorek','fuck','bitch','whore','nigger','nigga','faggot','retard','pedophile','paedophile','pedofil','asshole','dickhead','cocksucker','bullshit','shithead','dipshit','wanker','bastard','pussy','dildo','blowjob','handjob','rapist','porn','tranny','wetback','killyourself','hitler','neonazi','heilhitler','siegheil','swastika','auschwitz'];
+  exact text[] := array['szar','basz','pina','anyad','kocsog','csicska','buzi','mongol','debil','homo','shit','dick','cock','cunt','cunts','slut','sluts','pedo','rape','raped','ass','arse','twat','tits','cum','penis','vagina','jizz','boner','milf','xxx','anal','nazi','kkk','kys','chink','paki','spic','kike','dyke','coon','gook','beaner','negro','fag','fags'];
+  n text; cs text; toks text[]; w text; c text; t text;
+begin
+  n := translate(lower(coalesce(p, '')), 'áàâäãåéèêëíìîïóòôöőõúùûüűñç0134578@$!', 'aaaaaaeeeeiiiioooooouuuuuncoieastbasi');
+  cs := regexp_replace(regexp_replace(n, '[^a-z]', '', 'g'), '(.)\1+', '\1', 'g');
+  toks := regexp_split_to_array(n, '[^a-z]+');
+  if regexp_replace(coalesce(p, ''), '\D', '', 'g') like '%1488%' then
+    return false;
+  end if;
+  foreach w in array strong loop
+    if position(regexp_replace(w, '(.)\1+', '\1', 'g') in cs) > 0 then
+      return false;
+    end if;
+  end loop;
+  foreach w in array exact loop
+    c := regexp_replace(w, '(.)\1+', '\1', 'g');
+    if cs = c then
+      return false;
+    end if;
+    foreach t in array toks loop
+      if regexp_replace(t, '(.)\1+', '\1', 'g') = c then
+        return false;
+      end if;
+    end loop;
+  end loop;
+  return true;
+end $fn$;
+revoke all on function public.social_name_ok(text) from public, anon;
+grant execute on function public.social_name_ok(text) to authenticated;
+
 -- 5) Profilok: mindenki számára kereshető azonosító-adatok
 create table if not exists public.profiles (
   user_id             uuid primary key references auth.users (id) on delete cascade,
@@ -149,6 +191,11 @@ security definer
 set search_path = public
 as $$
 begin
+  if tg_op = 'INSERT' or new.username is distinct from old.username or new.display_name is distinct from old.display_name then
+    if not public.social_name_ok(new.username) or not public.social_name_ok(new.display_name) then
+      raise exception 'name_blocked' using errcode = 'P0001';
+    end if;
+  end if;
   if tg_op = 'INSERT' then
     perform public.social_check_rate('profile_write', 10, interval '1 hour');
     new.username_changed_at := null;

@@ -3,12 +3,22 @@
    A kliens csak az anon kulcsot és a felhasználó saját tokenjét használja (sbf), és azt jeleníti meg, amit az RLS enged. */
 const SOC_RESERVED=['admin','administrator','support','help','moderator','mod','root','system','edzesnaplo','official','staff','null','undefined','anonymous','deleted'];
 const SOC_COLORS=['lime','cyan','violet','orange','pink','red'],SOC_ICONS=['initial','dumbbell','flame','timer','apple','chart','user'];
+// Trágár / sértő nevek kiszűrése. Ugyanaz a lista és normalizálás van az SQL-ben (social_name_ok), a tests/social.check.js veti össze.
+const SOC_BAD_STRONG=['kurva','picsa','fasz','geci','buzeran','szopd','baszd','baszki','baszod','baszott','kibasz','bazdmeg','bazmeg','anyadat','rohadek','ribanc','szarhazi','neger','nyomorek','fuck','bitch','whore','nigger','nigga','faggot','retard','pedophile','paedophile','pedofil','asshole','dickhead','cocksucker','bullshit','shithead','dipshit','wanker','bastard','pussy','dildo','blowjob','handjob','rapist','porn','tranny','wetback','killyourself','hitler','neonazi','heilhitler','siegheil','swastika','auschwitz'],SOC_BAD_EXACT=['szar','basz','pina','anyad','kocsog','csicska','buzi','mongol','debil','homo','shit','dick','cock','cunt','cunts','slut','sluts','pedo','rape','raped','ass','arse','twat','tits','cum','penis','vagina','jizz','boner','milf','xxx','anal','nazi','kkk','kys','chink','paki','spic','kike','dyke','coon','gook','beaner','negro','fag','fags'];
+const SOC_ACC='áàâäãåéèêëíìîïóòôöőõúùûüűñç'+'0134578@$!',SOC_ACC2='aaaaaaeeeeiiiioooooouuuuunc'+'oieastbasi';
+const socCollapse=s=>s.replace(/(.)\1+/g,'$1');
+const socNameOk=raw=>{raw=String(raw||'');let n='';for(const ch of raw.toLowerCase()){const i=SOC_ACC.indexOf(ch);n+=i>=0?SOC_ACC2[i]:ch}
+ const cs=socCollapse(n.replace(/[^a-z]/g,'')),toks=n.split(/[^a-z]+/).map(socCollapse);
+ if(raw.replace(/\D/g,'').includes('1488'))return false;
+ if(SOC_BAD_STRONG.some(w=>cs.includes(socCollapse(w))))return false;
+ return !SOC_BAD_EXACT.some(w=>{const c=socCollapse(w);return cs===c||toks.includes(c)})};
 const socUserOk=u=>/^[a-z0-9_]{3,20}$/.test(u)&&!SOC_RESERVED.includes(u);
 const socClean=v=>v.toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,20);
 // Szerverhiba -> érthető üzenet (a PostgREST hibakódjai alapján)
 const socErr=r=>{const j=r.j||{},m=String(j.message||'')+String(j.details||''),c=j.code;
  if(c==='23505')return'Ez a felhasználónév már foglalt.';
  if(m.includes('username_cooldown'))return'A felhasználónevet 30 naponta egyszer módosíthatod.';
+ if(m.includes('name_blocked'))return'Ez a név nem engedélyezett, válassz másikat.';
  if(m.includes('rate_limit'))return'Túl sok módosítás, próbáld újra később.';
  if(c==='23514')return'A név vagy a felhasználónév érvénytelen.';
  if(c==='42P01'||c==='PGRST205'||r.status===404)return'A közösségi funkció még nincs bekapcsolva a szerveren.';
@@ -33,7 +43,8 @@ function Social(){
  const set=o=>{setMsg('');setF(x=>({...x,...o}))};
  const check=()=>{const u=f.username.trim(),n=f.display_name.trim();
   if(!socUserOk(u))return'A felhasználónév 3–20 karakter lehet: kisbetű, szám és aláhúzás.';
-  if(!n||n.length>40)return'Adj meg egy nevet (legfeljebb 40 karakter).';return''};
+  if(!n||n.length>40)return'Adj meg egy nevet (legfeljebb 40 karakter).';
+  if(!socNameOk(u)||!socNameOk(n))return'Ez a név nem engedélyezett, válassz másikat.';return''};
  const rep={Prefer:'return=representation'};
  const create=async()=>{const e=check()||(!terms&&'A folytatáshoz el kell fogadnod a közösségi szabályokat.');if(e)return setMsg(e);
   setBusy(true);setMsg('');
