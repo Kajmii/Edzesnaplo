@@ -13,6 +13,7 @@ window.uiCheck=function(root){
     if(r.width===0&&r.height===0)continue;
     if(el.closest('[aria-hidden="true"]')&&el.closest('.ui-sw-shot'))continue; // a kicsinyített előnézetek belseje díszítés
     if(r.right<-100||r.left>VW+100)continue; // szándékosan képernyőn kívüli (sr-only, kiúszó lap)
+    if(el.parentElement&&el.parentElement.closest('.overflow-x-auto,[data-hscroll]'))continue; // vízszintesen görgethető sor: a kilógás szándékos
     let p=el.parentElement,pf=false;while(p&&p!==root){if(flagged.has(p)){pf=true;break}p=p.parentElement}
     const label=el.tagName.toLowerCase()+(el.id?'#'+el.id:'')+' "'+(el.textContent||'').trim().replace(/\s+/g,' ').slice(0,40)+'"';
     const issues=[];

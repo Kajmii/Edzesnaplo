@@ -2,8 +2,8 @@ const FOODS='Csirkemell (nyers):120,22.5,0,2.6;Csirkemell (sült):165,31,0,3.6;T
 const FD=FOODS.split(';').map(x=>{const[n,v]=x.split(':'),[k,p,c,f]=v.split(',').map(Number);return{n,k,p,c,f}});
 const MEALS=['Reggeli','Ebéd','Vacsora','Snack'];
 const MR=({l,v,m,c})=>html`<div class='flex flex-col items-center'><${Ring} v=${v} max=${m} col=${c} s=${64} w=${7}><div class='text-xs font-semibold'>${Math.round(v)}</div><//><div class='text-[11px] text-zinc-300 mt-1'>${l}</div><div class='text-[10px] text-zinc-500'>/ ${m} g</div></div>`;
-function Food(){
- const[f,setF]=useState(()=>gj('food',{})),[d,setD]=useState(dk(new Date())),[ad,setAd]=useState(null),[q,setQ]=useState(''),[gm,setGm]=useState(100),[ch,setCh]=useState(null),[cu,setCu]=useState({n:'',k:'',p:'',c:'',f:''}),[sub,setSub]=useState('log'),[rcp,setRcp]=useState(null),[diet,setDiet0]=useState(()=>gj('rdiet',[])),[fitF,setFitF]=useState(false);
+function Food({init}){
+ const[f,setF]=useState(()=>gj('food',{})),[d,setD]=useState(dk(new Date())),[ad,setAd]=useState(null),[q,setQ]=useState(''),[gm,setGm]=useState(100),[ch,setCh]=useState(null),[cu,setCu]=useState({n:'',k:'',p:'',c:'',f:''}),[sub,setSub]=useState(init==='rec'?'rec':'log'),[rcp,setRcp]=useState(null),[diet,setDiet0]=useState(()=>gj('rdiet',[])),[fitF,setFitF]=useState(false);
  useEffect(()=>sjt('food',f),[f]);
  const setDiet=v=>{setDiet0(v);sj('rdiet',v)};
  const P2=gj('prof',{}),tg=P2.tg||{k:2200,p:150,c:250,f:70},day=f[d]||{e:[],w:0},e=day.e,sum=e.reduce((a,x)=>({k:a.k+x.k,p:a.p+x.p,c:a.c+x.c,f:a.f+x.f}),{k:0,p:0,c:0,f:0});

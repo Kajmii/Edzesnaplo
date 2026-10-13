@@ -6,21 +6,21 @@ html[data-ui="pro"]{
   --dur-scrim:200ms;--dur-sheet:280ms;--ease-sheet:cubic-bezier(.2,.7,.2,1);--sheet-dy:12px;--sheet-op:0;
   --dur-row:220ms;--row-step:25ms;--row-dx:0px;--row-dy:8px;--dur-arrow:240ms;--ease-arrow:ease-out;
   --dur-press:120ms;--ease-press:ease-out;--dur-count:750ms;--dur-draw:700ms;--ease-draw:cubic-bezier(.2,.7,.2,1);--dur-check:200ms;
-  --dur-switch:240ms;--sw-from:translateY(8px);--sw-op:0;
+  --dur-switch:240ms;--sw-from:translateY(8px);--sw-op:0;--close-ms:180;--row-base:60ms;
 }
 html[data-ui="gym"]{
   --dur-page:180ms;--ease-page:cubic-bezier(.3,1.5,.5,1);--page-dy:16px;--page-dx:0px;
   --dur-scrim:100ms;--dur-sheet:200ms;--ease-sheet:cubic-bezier(.3,1.5,.5,1);--sheet-dy:48px;--sheet-op:1;
   --dur-row:140ms;--row-step:20ms;--row-dx:-24px;--row-dy:0px;--dur-arrow:200ms;--ease-arrow:cubic-bezier(.3,1.5,.5,1);
   --dur-press:80ms;--ease-press:linear;--dur-count:600ms;--dur-draw:500ms;--ease-draw:cubic-bezier(.2,.9,.2,1);--dur-check:150ms;
-  --dur-switch:180ms;--sw-from:scale(.97);--sw-op:.6;
+  --dur-switch:180ms;--sw-from:scale(.97);--sw-op:.6;--close-ms:140;--row-base:40ms;
 }
 html[data-ui="family"]{
   --dur-page:420ms;--ease-page:cubic-bezier(.4,0,.2,1);--page-dy:24px;--page-dx:0px;
   --dur-scrim:400ms;--dur-sheet:450ms;--ease-sheet:cubic-bezier(.4,0,.2,1);--sheet-dy:40px;--sheet-op:0;
   --dur-row:320ms;--row-step:50ms;--row-dx:0px;--row-dy:6px;--dur-arrow:500ms;--ease-arrow:cubic-bezier(.4,0,.2,1);
   --dur-press:250ms;--ease-press:ease;--dur-count:900ms;--dur-draw:900ms;--ease-draw:cubic-bezier(.4,0,.2,1);--dur-check:400ms;
-  --dur-switch:450ms;--sw-from:translateX(24px);--sw-op:0;
+  --dur-switch:450ms;--sw-from:translateX(24px);--sw-op:0;--close-ms:300;--row-base:120ms;
 }
 @keyframes ui-page{from{opacity:0;transform:translate(var(--page-dx),var(--page-dy))}}
 @keyframes ui-fade{from{opacity:0}}
@@ -41,7 +41,7 @@ html[data-ui] #root.ui-switching{animation:ui-switch var(--dur-switch) var(--eas
 /* rajzolódó vonal és körgyűrű (a hossz a --len változóból, a js/ui-motion.js adja) */
 html[data-ui] .ui-draw{stroke-dasharray:var(--len,100);animation:ui-draw var(--dur-draw) var(--ease-draw) both}
 /* lépcsőzetes lista: a sorok a --i indexükkel késnek */
-html[data-ui] .ui-stagger>*{animation:ui-row var(--dur-row) var(--ease-page) backwards;animation-delay:calc(var(--i,0) * var(--row-step))}
+html[data-ui] .ui-stagger>*{animation:ui-row var(--dur-row) var(--ease-page) backwards;animation-delay:calc(var(--row-base,0ms) + var(--i,0) * var(--row-step))}
 
 @media (prefers-reduced-motion:reduce){
   html[data-ui] .up,html[data-ui] .sheet,html[data-ui] .fade,html[data-ui] #root.ui-switching,html[data-ui] .ui-draw,html[data-ui] .ui-stagger>*{animation:none!important}

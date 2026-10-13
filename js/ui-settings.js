@@ -3,10 +3,9 @@
    A váltás azonnali, a mentés az opt-on át történik (bejelentkezve szinkron, mindig localStorage-tükör). */
 const UI_PREV={pro:UiPrevPro,gym:UiPrevGym,family:UiPrevFamily};
 const UI_TXT={
- '':{h:'Felület',hint:'Azonnal vált',sh:'Színséma',note:'A választást a profilodba mentjük, ha be vagy jelentkezve. Különben ezen az eszközön marad.',reset:'Vissza az eredeti sötét kinézetre'},
- pro:{h:'Felület',hint:'Azonnal vált',sh:'Színséma',note:'A választást a profilodba mentjük, ha be vagy jelentkezve. Különben ezen az eszközön marad.',reset:'Vissza az eredeti sötét kinézetre'},
- gym:{h:'Felület',hint:'Azonnal vált',sh:'Kiemelőszín',note:'A választást a profilodba mentjük, ha be vagy jelentkezve. Különben ezen az eszközön marad.',reset:'Vissza az eredeti sötét kinézetre'},
- family:{h:'Kinézet',hint:'',sh:'Színek',note:'Mindháromban jól olvasható a szöveg.',reset:'Vissza az eredeti kinézetre'}};
+ pro:{h:'Felület',hint:'Azonnal vált',sh:'Színséma',note:'A választást a profilodba mentjük, ha be vagy jelentkezve. Különben ezen az eszközön marad.'},
+ gym:{h:'Felület',hint:'Azonnal vált',sh:'Kiemelőszín',note:'A választást a profilodba mentjük, ha be vagy jelentkezve. Különben ezen az eszközön marad.'},
+ family:{h:'Kinézet',hint:'',sh:'Színek',note:'Mindháromban jól olvasható a szöveg.'}};
 
 const uiEn={'Kinézet':'Look','Erős':'Strong'},uiT=x=>LANG==='en'&&uiEn[x]?uiEn[x]:x;
 function UiSwitcher({opt,o}){
@@ -30,5 +29,5 @@ function UiSwitcher({opt,o}){
   <div class='ui-sw-cards'>${UI_ORDER.map(card)}</div>
   ${v&&html`<h2 class='ui-sw-h ui-sw-h2'>${T.sh}</h2>${schemes()}`}
   <p class='ui-sw-note'>${T.note}</p>
-  ${v&&html`<button type='button' class='ui-sw-reset' onClick=${()=>o({ui:''})}>${T.reset}</button>`}</section>`;
+</section>`;
 }

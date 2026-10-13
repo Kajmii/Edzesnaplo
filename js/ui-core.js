@@ -1,6 +1,6 @@
 /* ---------- UI-irányok és színsémák: Pro, Gym, Family ----------
    Terv: docs/UI-IMPLEMENTATION.md. A tokenek a css/tokens.css-ben vannak, ez a fájl az állapotot és az alkalmazást végzi.
-   Állapot: opt.ui ('' = eredeti kinézet, 'pro' | 'gym' | 'family'), opt.schemes = {pro:'paper', gym:'yellow', family:'green'}.
+   Állapot: opt.ui ('pro' | 'gym' | 'family'; az alap a Pro, az eredeti kinézet kikerült az appból), opt.schemes = {pro:'paper', gym:'yellow', family:'green'}.
    Az opt a user_data része, ezért bejelentkezve a Supabase-be szinkronizálódik. Minden felhasználás előtt localStorage-ba is tükrözzük
    (en_ui, en_scheme), hogy az index.html korai scriptje az első festés előtt alkalmazhassa. */
 // bg/ink/acc: a váltó színmintái és a theme-color (a css/tokens.css-sel egyezik, a tests/ui.check.js ellenőrzi)
@@ -20,14 +20,13 @@ const UI_DEF={
 const UI_ORDER=['pro','gym','family'];
 // A felület-kártyák feliratai a nézőpont (a most aktív felület) mockupja szerint
 const UI_CARD_LBL={
- '':{pro:['Pro','Letisztult'],gym:['Gym','Ipari'],family:['Family','Nyugodt']},
  pro:{pro:['Pro','Letisztult'],gym:['Gym','Ipari'],family:['Family','Nyugodt']},
  gym:{pro:['PRO','LETISZTULT'],gym:['GYM','IPARI'],family:['FAMILY','NYUGODT']},
  family:{pro:['Pro','Letisztult'],gym:['Gym','Erős'],family:['Family','Nyugodt']}};
 
-// Az aktuális irány és séma az opt-ból (érvénytelen érték = eredeti, ill. az irány első sémája)
+// Az aktuális irány és séma az opt-ból (érvénytelen irány = Pro, érvénytelen séma = az irány első sémája)
 const uiState=opt=>{
- const ui=opt&&UI_DEF[opt.ui]?opt.ui:'';if(!ui)return{ui:'',sc:'',def:null};
+ const ui=opt&&UI_DEF[opt.ui]?opt.ui:'pro';
  const want=opt.schemes&&opt.schemes[ui],d=UI_DEF[ui].schemes.find(s=>s[0]===want)||UI_DEF[ui].schemes[0];
  return{ui,sc:d[0],def:d[3]};
 };
@@ -38,7 +37,7 @@ const uiLoadFonts=ui=>{try{if(!ui||document.querySelector('link[data-ui-font="'+
 // Alkalmazás az html elemre: attribútumok, betűk, betűméret, theme-color, localStorage-tükör
 const uiApply=opt=>{
  const{ui,sc,def}=uiState(opt),r=document.documentElement;
- try{if(ui){r.setAttribute('data-ui',ui);r.setAttribute('data-scheme',sc)}else{r.removeAttribute('data-ui');r.removeAttribute('data-scheme')}}catch(e){}
+ try{r.setAttribute('data-ui',ui);r.setAttribute('data-scheme',sc)}catch(e){}
  try{localStorage.setItem('en_ui',ui);localStorage.setItem('en_scheme',sc)}catch(e){}
  uiLoadFonts(ui);
  return{ui,sc,def};

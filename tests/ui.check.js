@@ -55,3 +55,26 @@ assert.ok(/prefers-reduced-motion:reduce/.test(motion),'reduced-motion szabály 
 const prev=rd('js/ui-previews.js');
 for(const n of ['UiPrevPro','UiPrevGym','UiPrevFamily'])assert.ok(prev.includes('const '+n+'='),'hiányzik: '+n);
 console.log('rendben: UI-tokenek, '+rows+' színséma, kontraszt és JS-tábla egyezik');
+
+// --- menü: minden pont megvan, minden szövegnek van angol fordítása, a céljaikat az App kezeli
+const menuSrc=rd('js/ui-menu.js'),app=rd('js/app.js'),dictSrc=rd('js/i18n-en.js');
+let dict;new Function('setDict',dictSrc)(d=>{dict=d});
+const MENU=new Function(menuSrc.slice(menuSrc.indexOf('const UI_MENU='),menuSrc.indexOf('const uiMenuItems'))+';return UI_MENU')();
+assert.strictEqual(MENU.length,13,'a menünek 13 pontja van');
+assert.deepStrictEqual(MENU.slice(0,10).map(m=>m.k),['log','plan','hist','food','recipes','body','social','cycle','profile','opt'],'az első tíz pont sorrendje a mockup szerinti');
+assert.strictEqual(new Set(MENU.map(m=>m.k)).size,13,'a menüpont-azonosítók egyediek');
+const icons=new Function(menuSrc.slice(menuSrc.indexOf('const UI_ICO='),menuSrc.indexOf('const UiIco'))+';return UI_ICO')();
+for(const m of MENU){
+ assert.ok(icons[m.ic],m.k+': hiányzó ikon');
+ assert.ok(dict[m.t]!==undefined,m.k+': nincs angol név: '+m.t);
+ for(const ui of Object.keys(UI)){
+  assert.ok(m.d[ui],m.k+'/'+ui+': hiányzó leírás');
+  assert.ok(dict[m.d[ui]]!==undefined,m.k+'/'+ui+': nincs angol leírás: '+m.d[ui]);
+  // az egysoros leírás 360 px-en sem törhet el: az irányonkénti szélesség szerinti karakterkorlát (mindkét nyelven)
+  const lim={pro:40,gym:38,family:28}[ui];
+  for(const t of [m.d[ui],dict[m.d[ui]]])assert.ok(t.length<=lim,m.k+'/'+ui+': a leírás túl hosszú ('+t.length+'>'+lim+'): '+t);
+ }
+ assert.ok(app.includes("tab==='"+m.tab+"'"),m.k+': az App nem kezeli a tab-ot: '+m.tab);
+}
+for(const k of ['Menü bezárása','Bezár','Napló, étel és a többi','Menü'])assert.ok(dict[k]!==undefined,'nincs angol: '+k);
+console.log('rendben: menü, 13 pont, minden szöveg lefordítva');

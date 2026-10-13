@@ -22,7 +22,7 @@ function App({user,out}){
  useEffect(()=>{const i=setInterval(syncNow,60000),f=()=>document.visibilityState==='visible'&&syncNow();window.addEventListener('online',syncNow);document.addEventListener('visibilitychange',f);return()=>{clearInterval(i);window.removeEventListener('online',syncNow);document.removeEventListener('visibilitychange',f)}},[]);
  sjt('plan',plan);
  sjt('opt',opt);
- useEffect(()=>{const U=uiApply(opt),a=ACCS[opt.ac]||ACCS.lime,lt=opt.mode==='light',t=lt?LIGHT:(THEMES[opt.th]||THEMES.alap),r=document.documentElement,st=r.style;if(U.ui){['--a3','--a4','--at','--z7','--z8','--z9','--bg'].forEach(k=>st.removeProperty(k));st.fontSize=UI_DEF[U.ui].fs*opt.fs/16+'px'}else{st.setProperty('--a3',a[1]);st.setProperty('--a4',a[2]);st.setProperty('--at',a[4]);st.setProperty('--z7',t[1]);st.setProperty('--z8',t[2]);st.setProperty('--z9',t[3]);st.setProperty('--bg',t[4]);st.fontSize=opt.fs+'px'}r.classList.toggle('noanim',!opt.an);r.classList.toggle('lt',lt&&!U.ui);try{localStorage.setItem('en_mode',lt?'light':'dark')}catch(e){}const mt=document.querySelector('meta[name=theme-color]');mt&&mt.setAttribute('content',U.ui?U.def.bg:(lt?'#f4f5f8':'#090b0e'));uiSwitchFx(U.ui)},[opt]);
+ useEffect(()=>{const U=uiApply(opt),r=document.documentElement,st=r.style;['--a3','--a4','--at','--z7','--z8','--z9','--bg'].forEach(k=>st.removeProperty(k));st.fontSize=UI_DEF[U.ui].fs*opt.fs/16+'px';r.classList.toggle('noanim',!opt.an);r.classList.remove('lt');const mt=document.querySelector('meta[name=theme-color]');mt&&mt.setAttribute('content',U.def.bg);uiSwitchFx(U.ui)},[opt]);
  useEffect(()=>setRd(opt.rest),[opt.rest]);
  useEffect(()=>{const LN=getLN();LN&&LN.requestPermissions().catch(()=>{})},[]);
  useEffect(()=>{if(!rest){const LN=getLN();LN&&LN.cancel({notifications:[{id:7001}]}).catch(()=>{})}},[rest]);
@@ -40,31 +40,24 @@ function App({user,out}){
   setFin({name:aw.name,n:ex.length,vol:ex.reduce((a,e)=>a+vol(e.sets),0),sets:ex.reduce((a,e)=>a+e.sets.length,0),pr:ex.reduce((a,e)=>a+e.sets.filter(s=>s.pr).length,0)});setAw(null);setRest(null);setTab('home');
  };
  const quit=()=>{setAw(null);setRest(null)};
- const dock=[['home','home','Kezdőlap'],['log','dumbbell','Edzés'],['food','apple','Étel'],['hist','chart','Napló'],['menu','grid','Menü']],act=['home','log','food','hist'].includes(tab)?tab:'menu',di=dock.findIndex(x=>x[0]===act);
  const go2=(t,u)=>{setTab(t);setSub(u||'');setMenu(false);try{window.scrollTo(0,0)}catch(e){}};
  const startToday=()=>{const v=plan.days[new Date().getDay()],x=v&&dayOf(v);if(!x)return go2('log');const g=goalsFor(hist,x);begin(x.n,x.e,Object.fromEntries(g.map(y=>[y.n,y])),today);setTab('log')};
  return html`<${React.Fragment}>
-  <div key=${tab} class="up max-w-md mx-auto px-4 pt-5 pb-52">
+  ${tab!=='home'&&html`<${UiHeader} title=${uiTitle(tab,sub)} onBack=${()=>{setTab('home');setSub('');setMenu(true);try{window.scrollTo(0,0)}catch(e){}}}/>`}
+  <div id='ui-main' key=${tab} class="ui-main up max-w-md mx-auto" data-home=${tab==='home'?'':undefined} data-inner=${tab!=='home'?'':undefined}>
    ${tab==='home'&&html`<${Home} hist=${hist} sel=${sel} setSel=${setSel} today=${today} aw=${aw} go=${()=>setTab('log')} nav=${go2} startToday=${startToday} plan=${plan} user=${user} out=${out}/>`}
    ${tab==='log'&&html`<${Log} aw=${aw} setAw=${setAw} hist=${hist} sel=${sel} rd=${rd} setRd=${setRd} startRest=${startRest} begin=${begin} finish=${finish} quit=${quit}/>`}
    ${tab==='hist'&&html`<${Hist} hist=${hist} del=${id=>setHistT(hist.filter(w=>w.id!==id))}/>`}
    ${tab==='plan'&&html`<${Plan} plan=${plan} setPlan=${setPlan} hist=${hist} today=${today} begin=${(...a)=>{begin(...a);setTab('log')}}/>`}
    ${tab==='tools'&&html`<${Tools} key=${sub} init=${sub}/>`}
-   ${tab==='social'&&html`<${Social}/>`}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='food'&&html`<${Food}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}
-   ${tab==='opt'&&html`<${Opts} opt=${opt} setOpt=${setOpt} hist=${hist} setHist=${setHistT} plan=${plan} setPlan=${setPlan} user=${user} out=${out} sy=${sy} syncNow=${syncNow} delAcc=${delAcc}/>`}
+   ${tab==='social'&&html`<${Social}/>`}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='profile'&&html`<${Profile} user=${user} go=${go2}/>`}${tab==='food'&&html`<${Food} init=${sub}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}
+   ${tab==='opt'&&html`<${Opts} anchor=${sub} opt=${opt} setOpt=${setOpt} hist=${hist} setHist=${setHistT} plan=${plan} setPlan=${setPlan} user=${user} out=${out} sy=${sy} syncNow=${syncNow} delAcc=${delAcc}/>`}
   </div>
   <${CycPop} go=${go2}/>
-  ${menu&&html`<div class='fade fixed inset-0 z-40 bg-black/70 flex items-end' style=${{WebkitBackdropFilter:'blur(6px)',backdropFilter:'blur(6px)'}} onClick=${()=>setMenu(false)}><div class='sheet w-full max-w-md mx-auto bg-zinc-900 rounded-t-3xl p-4 pb-8' onClick=${e=>e.stopPropagation()}>
-   <div class='flex items-center justify-between mb-3'><div class='fd text-3xl font-bold'>Menü</div><button onClick=${()=>setMenu(false)} class='h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n='x'/></button></div>
-   <div class='grid grid-cols-3 gap-2.5'>${MENU.filter(m=>m[0]!=='cycle'||cycAvail()).map((m,i)=>html`<button key=${m[3]} onClick=${()=>go2(m[0],m[1])} class='up rounded-2xl p-3 text-left min-h-[92px] flex flex-col justify-between' style=${{background:'linear-gradient(135deg,'+m[4]+')',animationDelay:i*35+'ms'}}><${Ic} n=${m[2]} s=${24} c='text-white'/><div class='text-white text-[13px] font-semibold leading-tight'>${m[3]}</div></button>`)}</div></div></div>`}
+  <${UiMenu} open=${menu} setOpen=${setMenu} home=${tab==='home'} go=${go2}/>
   <${Rest} rest=${rest} setRest=${setRest}/>
   ${ts&&html`<div class='fixed top-0 inset-x-0 z-50 flex justify-center px-4 pointer-events-none' style=${{paddingTop:'calc(env(safe-area-inset-top,0px) + 12px)'}}><div class='up relative bg-lime-400 text-black font-bold rounded-2xl px-5 py-3 shadow-xl'>${ts.m}${ts.pr&&html`<${Conf}/>`}</div></div>`}
   ${fin&&html`<div class='fade fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-6' onClick=${()=>setFin(null)}><div class='up relative w-full max-w-sm bg-zinc-900 border border-lime-400/40 rounded-3xl p-6 text-center'><svg viewBox='0 0 52 52' class='w-20 h-20 mx-auto mb-3'><circle cx='26' cy='26' r='23' fill='none' stroke=${ACC} strokeWidth='3' pathLength='600' class='draw'/><path d='M15 27l8 8 14-16' fill='none' stroke=${ACC} strokeWidth='4' strokeLinecap='round' strokeLinejoin='round' pathLength='600' class='draw' style=${{animationDelay:'.5s'}}/></svg><h2 class='fd text-4xl font-bold'>Edzés kész!</h2><p class='text-zinc-400 text-sm mb-4'>${fin.name}</p><div class='grid grid-cols-3 gap-2 mb-4'>${[['Gyakorlat',fin.n,''],['Sorozat',fin.sets,''],['Térfogat',fin.vol,'kg']].map(([l,v,u])=>html`<div key=${l} class='bg-zinc-800 rounded-2xl p-3'><div class='fd text-2xl font-bold text-lime-400'><${Cnt} to=${v}/>${u&&html`<span class='text-xs text-zinc-500 ml-1'>${u}</span>`}</div><div class='text-xs text-zinc-400'>${l}</div></div>`)}</div>${fin.pr>0&&html`<div class='text-lime-300 font-semibold mb-3'>${fin.pr} új egyéni rekord!</div><${Conf} n=${30}/>`}<button class='w-full h-14 rounded-2xl bg-lime-400 text-black font-bold text-lg'>Rendben</button></div></div>`}
-  <nav class='fixed bottom-3 inset-x-3 z-30' style=${{paddingBottom:'env(safe-area-inset-bottom,0px)'}}>
-   <div class='max-w-md mx-auto relative grid grid-cols-5 rounded-3xl bg-zinc-900 border border-zinc-800 p-1.5'>
-    <span class='absolute top-1.5 bottom-1.5 left-1.5 rounded-2xl bg-lime-400/15 border border-lime-400/30 transition-transform duration-500' style=${{width:'calc((100% - 12px)/5)',transform:`translateX(${di*100}%)`,transitionTimingFunction:'cubic-bezier(.2,.9,.3,1.2)'}}></span>
-    ${dock.map(([k,ic,l])=>html`<button key=${k} onClick=${()=>k==='menu'?setMenu(true):go2(k)} class=${'relative h-14 flex flex-col items-center justify-center gap-0.5 text-[11px] transition-colors '+(act===k?'text-lime-400':'text-zinc-400')}><${Ic} n=${ic} s=${22}/>${l}</button>`)}
-   </div></nav>
  <//>`;
 }
 ReactDOM.createRoot(document.getElementById('root')).render(h(Root));

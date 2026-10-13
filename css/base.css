@@ -68,3 +68,8 @@ html[data-ui="family"] .fd{font-weight:700}
 
 /* a text-zinc-800 a Tailwind-konfigban a felület-változóra van képezve: fehér alapon (pl. Google-gomb) fix sötét szöveg kell */
 html[data-ui] .text-zinc-800,html[data-ui] .text-zinc-900{color:#27272a}
+
+/* gyűrűk és grafikonok: nincs neon ragyogás, a sín színe token */
+html[data-ui] svg circle{filter:none!important}
+html[data-ui] svg circle[stroke="rgba(255,255,255,.08)"],html[data-ui] svg circle[stroke="#27272a"]{stroke:rgb(var(--ui-line))}
+html[data-ui] svg text[fill="#fff"]{fill:rgb(var(--ui-text))}
