@@ -1,0 +1,71 @@
+/* ---------- UI-tokenek: Pro, Gym, Family (docs/UI-IMPLEMENTATION.md, docs/mockups/README.md) ----------
+   Az irány az html[data-ui], a színséma az html[data-scheme]. Nincs data-ui = az eredeti kinézet (css/style.css).
+   A színek "R G B" hármasok, így rgb(var(--ui-bg) / .5) alakban is használhatók.
+   A kontrasztokat a tests/ui.check.js számolja: ezt a fájlt olvassa, ezért a formátum kötött.
+   Tokenek: bg, surface, surface2, text, muted, line (díszítő), line2, control (vezérlő-keret, 3:1), field (beviteli mező háttere),
+   accent (kitöltés), on-accent (szöveg az akcenten), accent-text (kis akcent-szöveg), danger, warn. */
+
+/* --- közös: a legacy (Tailwind) változók az új tokenekre képezve --- */
+html[data-ui]{
+  --bg:var(--ui-bg);--z9:var(--ui-surface);--z8:var(--ui-surface2);--z7:var(--ui-line);
+  --a3:var(--ui-accent);--a4:var(--ui-accent);--at:var(--ui-accent-text);
+}
+
+/* --- Pro: letisztult, szerkesztőségi --- */
+html[data-ui="pro"]{
+  --ui-font-body:"IBM Plex Sans",system-ui,sans-serif;--ui-font-head:"IBM Plex Sans",system-ui,sans-serif;--ui-font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --ui-fs:16px;--ui-r-s:4px;--ui-r-m:4px;--ui-r-l:4px;--ui-tap:44px;
+  --ui-scrim:.42;color-scheme:light;
+  --ui-ico-sw:1.6;--ui-bar-h:64px;--ui-sheet-top:168px;--ui-px:24px;
+}
+html[data-ui="pro"][data-scheme="paper"]{
+  --ui-bg:236 234 229;--ui-surface:247 246 243;--ui-surface2:226 223 216;--ui-text:22 23 26;--ui-muted:91 92 96;
+  --ui-line:207 204 196;--ui-line2:226 223 216;--ui-control:22 23 26;--ui-field:255 255 255;
+  --ui-accent:194 65 12;--ui-on-accent:255 255 255;--ui-accent-text:166 54 8;--ui-danger:180 35 24;--ui-warn:117 69 0;--ui-scrim-c:22 23 26;
+}
+html[data-ui="pro"][data-scheme="stone"]{
+  --ui-bg:230 224 212;--ui-surface:240 235 224;--ui-surface2:220 213 198;--ui-text:34 30 24;--ui-muted:95 88 76;
+  --ui-line:201 193 176;--ui-line2:218 211 196;--ui-control:34 30 24;--ui-field:247 243 234;
+  --ui-accent:194 65 12;--ui-on-accent:255 255 255;--ui-accent-text:166 54 8;--ui-danger:180 35 24;--ui-warn:117 69 0;--ui-scrim-c:34 30 24;
+}
+html[data-ui="pro"][data-scheme="graphite"]{
+  --ui-bg:27 28 31;--ui-surface:35 36 39;--ui-surface2:44 45 49;--ui-text:236 234 229;--ui-muted:163 164 168;
+  --ui-line:58 59 64;--ui-line2:46 47 51;--ui-control:117 118 124;--ui-field:22 23 26;
+  --ui-accent:194 65 12;--ui-on-accent:255 255 255;--ui-accent-text:236 115 68;--ui-danger:255 138 128;--ui-warn:255 194 74;--ui-scrim-c:0 0 0;
+  color-scheme:dark;
+}
+
+/* --- Gym: ipari, tömör blokkok --- */
+html[data-ui="gym"]{
+  --ui-font-body:"Archivo",system-ui,sans-serif;--ui-font-head:"Anton","Archivo Narrow",Impact,sans-serif;--ui-font-mono:"Archivo",system-ui,sans-serif;
+  --ui-fs:15px;--ui-r-s:0px;--ui-r-m:0px;--ui-r-l:0px;--ui-tap:48px;
+  --ui-scrim:.6;color-scheme:dark;
+  --ui-ico-sw:2.2;--ui-bar-h:72px;--ui-sheet-top:112px;--ui-px:20px;--ui-scrim-c:15 15 13;
+  --ui-bg:15 15 13;--ui-surface:28 28 25;--ui-surface2:43 43 39;--ui-text:243 240 232;--ui-muted:168 164 154;
+  --ui-line:58 58 53;--ui-line2:110 107 101;--ui-control:110 107 101;--ui-field:15 15 13;--ui-on-accent:15 15 13;
+  --ui-danger:255 138 128;--ui-warn:255 194 74;
+}
+html[data-ui="gym"][data-scheme="yellow"]{--ui-accent:255 201 60;--ui-accent-text:255 201 60}
+html[data-ui="gym"][data-scheme="orange"]{--ui-accent:255 90 31;--ui-accent-text:255 90 31}
+html[data-ui="gym"][data-scheme="green"]{--ui-accent:124 255 79;--ui-accent-text:124 255 79}
+
+/* --- Family: nyugodt, nagy érintési felületek --- */
+html[data-ui="family"]{
+  --ui-font-body:"Atkinson Hyperlegible",system-ui,sans-serif;--ui-font-head:"Atkinson Hyperlegible",system-ui,sans-serif;--ui-font-mono:"Atkinson Hyperlegible",system-ui,sans-serif;
+  --ui-fs:16px;--ui-r-s:14px;--ui-r-m:16px;--ui-r-l:20px;--ui-tap:48px;
+  --ui-scrim:.45;color-scheme:light;
+  --ui-ico-sw:2.4;--ui-bar-h:68px;--ui-sheet-top:52px;--ui-px:20px;--ui-scrim-c:26 36 32;
+  --ui-text:26 36 32;--ui-on-accent:255 255 255;--ui-surface:255 255 255;--ui-field:255 255 255;--ui-danger:180 35 24;--ui-warn:117 69 0;
+}
+html[data-ui="family"][data-scheme="green"]{
+  --ui-bg:242 244 240;--ui-surface2:230 238 234;--ui-muted:70 82 77;--ui-line:205 213 208;--ui-line2:154 166 160;--ui-control:111 124 118;
+  --ui-accent:14 107 94;--ui-accent-text:14 107 94;
+}
+html[data-ui="family"][data-scheme="warm"]{
+  --ui-bg:245 238 228;--ui-surface2:240 230 216;--ui-muted:79 74 66;--ui-line:217 207 192;--ui-line2:163 154 139;--ui-control:118 110 96;
+  --ui-accent:168 72 31;--ui-accent-text:168 72 31;
+}
+html[data-ui="family"][data-scheme="cool"]{
+  --ui-bg:238 242 247;--ui-surface2:227 234 243;--ui-muted:70 82 99;--ui-line:208 216 227;--ui-line2:150 162 180;--ui-control:107 119 138;
+  --ui-accent:31 78 153;--ui-accent-text:31 78 153;
+}

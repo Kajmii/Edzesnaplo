@@ -6,17 +6,16 @@ const LIGHT=['Világos','190 190 197','228 228 231','255 255 255','244 245 248']
 const Cd=({t,children})=>html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-3'>${t}</div>${children}</div>`;
 const Lb=({t})=>html`<div class='text-xs text-zinc-400 mt-3 mb-2'>${t}</div>`;
 const Sw=({l,s,v,on})=>html`<button onClick=${()=>on(!v)} class='w-full flex items-center justify-between gap-3 py-2.5 text-left'><span><span class='block'>${l}</span>${s&&html`<span class='block text-xs text-zinc-500'>${s}</span>`}</span><span class=${'w-12 h-7 rounded-full p-1 shrink-0 '+(v?'bg-lime-400':'bg-zinc-700')}><span class=${'block w-5 h-5 rounded-full bg-white transition-transform '+(v?'translate-x-5':'')}></span></span></button>`;
-function Opts({opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc}){
+function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc}){
  const[bk,setBk]=useState(''),[cf,setCf]=useState(false),[cd,setCd]=useState(false),o=x=>setOpt(p=>({...p,...x}));
  const exp=()=>{const j=JSON.stringify({hist,plan,opt});setBk(j);try{navigator.clipboard.writeText(j).then(()=>toast('Mentés a vágólapra másolva')).catch(()=>{})}catch(e){}};
  const imp=()=>{try{const d=JSON.parse(bk);if(d.hist)setHist(d.hist);if(d.plan)setPlan(d.plan);if(d.opt)setOpt(d.opt);toast('Adatok visszatöltve')}catch(e){toast('A mentés szövege hibás')}};
  const bt='h-11 rounded-xl bg-zinc-800 text-sm font-semibold';
+ useEffect(()=>{if(anchor==='data')setTimeout(()=>{try{document.getElementById('opt-data').scrollIntoView({block:'start'})}catch(e){}},60)},[]);
  return html`<div><h1 class='fd text-4xl font-bold mb-4'>Beállítások</h1>
+  <${UiSwitcher} opt=${opt} o=${o}/>
   <${Cd} t='Megjelenés'>
    <${Lb} t='Nyelv / Language'/><${Sg} v=${opt.lang} on=${x=>{try{localStorage.setItem('en_lang',x)}catch(e){}o({lang:x})}} o=${[['hu','Magyar'],['en','English']]}/>
-   <${Lb} t='Kiemelő szín'/><div class='flex gap-3 flex-wrap'>${Object.entries(ACCS).map(([k,a])=>html`<button key=${k} title=${a[0]} onClick=${()=>o({ac:k})} style=${{background:a[3]}} class=${'w-10 h-10 rounded-full '+(opt.ac===k?'ring-4 ring-white/80':'')}></button>`)}</div>
-   <${Lb} t='Kinézet'/><${Sg} v=${opt.mode||'dark'} on=${x=>o({mode:x})} o=${[['dark','Sötét'],['light','Világos']]}/>
-   ${opt.mode!=='light'&&html`<div><${Lb} t='Téma'/><div class='grid grid-cols-2 gap-2'>${Object.entries(THEMES).map(([k,t])=>html`<button key=${k} onClick=${()=>o({th:k})} class=${'h-11 rounded-xl text-sm font-semibold '+(opt.th===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${t[0]}</button>`)}</div></div>`}
    <${Lb} t='Betűméret'/><${Sg} v=${opt.fs} on=${x=>o({fs:+x})} o=${[[14,'Kicsi'],[16,'Normál'],[18,'Nagy']]}/>
    <${Sw} l='Animációk' s='Kikapcsolva gyorsabb, kíméli az akkut' v=${opt.an} on=${x=>o({an:x})}/>
   <//>
@@ -31,6 +30,7 @@ function Opts({opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc})
    <${Sw} l='Rezgés' s='Érintéskor és a pihenő végén' v=${opt.vib} on=${x=>o({vib:x})}/>
   <//>
   ${cycAvail()&&html`<${Cd} t='Ciklus-követés'><${Sw} l='Ciklus-követés' s='Naptár és edzési javaslatok. Az adat csak ezen az eszközön van.' v=${cycGet().on} on=${x=>cycSet({...cycGet(),on:x})}/><//>`}
+  <div id='opt-data'></div>
   <${Cd} t='Adatok'>
    <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
    <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Pro – Menü</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#16171A}a:hover{color:#C2410C}
+.pro-scrim{animation:proFade .2s ease-out backwards}
+.pro-sheet{animation:proSheet .28s cubic-bezier(.2,.7,.2,1) backwards}
+.pro-item{animation:proItem .22s cubic-bezier(.2,.7,.2,1) backwards}
+.pro-row{transition:transform .18s ease-out}
+.pro-row:hover{transform:translateX(4px)}
+.pro-btn,.pro-card{transition:transform .12s ease-out}
+.pro-btn:active,.pro-card:active{transform:scale(.97)}
+.pro-row:focus-visible,.pro-btn:focus-visible,.pro-card:focus-visible{outline:2px solid #C2410C;outline-offset:2px}
+@keyframes proFade{from{opacity:0}}
+@keyframes proSheet{from{opacity:0;transform:translateY(12px)}}
+@keyframes proItem{from{opacity:0;transform:translateY(8px)}}
+@media (prefers-reduced-motion: reduce){.pro-scrim,.pro-sheet,.pro-item{animation:none}.pro-row,.pro-btn,.pro-card{transition:none}.pro-row:hover,.pro-btn:active,.pro-card:active{transform:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ECEAE5; color: #16171A; font-family: 'IBM Plex Sans', sans-serif; position: relative; overflow: hidden">
+  <div aria-hidden="true" style="padding: 26px 24px 0 24px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: #5B5C60">KEDD · OKT. 13. · 42. HÉT</span><span style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid #16171A; box-sizing: border-box"></span></div>
+    <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #5B5C60">Mai edzés</span><span style="font-size: 40px; line-height: 1.05; font-weight: 600; letter-spacing: -0.02em">Felsőtest A</span></div>
+  </div>
+  <div class="pro-scrim" aria-hidden="true" style="position: absolute; inset: 0; background: rgba(22, 23, 26, 0.42)"></div>
+
+  <section class="pro-sheet" aria-label="Menü" style="position: absolute; left: 0; right: 0; top: 168px; bottom: 0; background: #ECEAE5; border-top: 1px solid #16171A; display: flex; flex-direction: column; min-height: 0">
+    <!-- Megvalósításban valódi <button aria-expanded="true">. -->
+      <a href="Main.dc.html" role="button" aria-expanded="true" aria-controls="pro-menu-list" class="pro-btn" style="box-sizing: border-box; flex-shrink: 0; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 24px; background: transparent; border: none; border-bottom: 1px solid #16171A; font-family: 'IBM Plex Sans', sans-serif; color: #16171A; text-decoration: none; cursor: pointer">
+      <span style="font-size: 17px; font-weight: 600; min-width: 0; white-space: nowrap">Menü</span>
+      <span style="display: flex; align-items: center; gap: 10px; flex-shrink: 0"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #5B5C60">BEZÁRÁS</span><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" style="transform: rotate(180deg)"><path d="M5 12l5-5 5 5" fill="none" stroke="#16171A" stroke-width="1.6"></path></svg></span>
+    </a>
+    <ul id="pro-menu-list" role="list" style="margin: 0; padding: 0 24px calc(16px + env(safe-area-inset-bottom)) 24px; list-style: none; display: flex; flex-direction: column; overflow-y: auto; min-height: 0">
+      <li class="pro-item" style="animation-delay: 60ms"><a href="ProWorkout.dc.html" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{accent}}">01</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Edzés</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Mai edzés és a gyakorlatok</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 85ms"><a href="#terv" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">02</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Terv</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Heti és havi terv</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M4 6h16v14H4zM4 10h16M9 3v4M15 3v4" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 110ms"><a href="#naplo" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">03</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Napló</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Korábbi edzések és sorozatok</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M6 4h12v16H6zM9 9h6M9 13h6M9 17h3" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 135ms"><a href="#etel" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">04</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Étel</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Kalória és makrók</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M3 12h18a9 9 0 01-18 0zM8 7.5c0-1.5 1-2 0-3.5M12 7.5c0-1.5 1-2 0-3.5" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 160ms"><a href="#receptek" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">05</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Receptek</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Mentett ételek és ötletek</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M12 6.5C10 5 7 4.5 4 5v14c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5zM12 6.5v14" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 185ms"><a href="#test" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">06</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Test és mérések</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Súly, méretek, fotók</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M4 20h16M7 20v-8M12 20V5M17 20v-5" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 210ms"><a href="#kozosseg" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">07</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Közösség</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Csoportok és kihívások</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M9 11a3 3 0 100-6 3 3 0 000 6zM3 20a6 6 0 0112 0M16 11a3 3 0 100-6M18 14a5 5 0 013 5" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 235ms"><a href="#ciklus" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">08</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Ciklus</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Csak ha be van kapcsolva</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M20 12a8 8 0 11-2.3-5.6M20 4v4h-4" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 260ms"><a href="#profil" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">09</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Profil</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Adatok és célok</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="pro-item" style="animation-delay: 285ms"><a href="ProSettings.dc.html" class="pro-row" style="min-height: 56px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; align-items: center; gap: 12px; padding: 8px 0; box-sizing: border-box; border-bottom: 1px solid #CFCCC4; text-decoration: none">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5B5C60">10</span>
+        <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 16px; font-weight: 500; overflow-wrap: break-word">Beállítások</span><span style="font-size: 13px; color: #5B5C60; overflow-wrap: break-word">Felület, színséma, fiók</span></span>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M4 7h9M17 7h3M4 17h3M11 17h9M15 4.5v5M9 14.5v5" fill="none" stroke="#16171A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#C2410C","options":["#C2410C","#1F5C4A","#1E3A8A"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#C2410C' };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Family – Kezdőlap</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0E6B5E}a:hover{color:#0A4F45}
+.fam-btn{transition:transform .25s ease}
+.fam-btn:active{transform:scale(.97)}
+.fam-btn:focus-visible{outline:3px solid #0E6B5E;outline-offset:3px}
+@media (prefers-reduced-motion: reduce){.fam-btn{transition:none}.fam-btn:active{transform:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F2F4F0; color: #1A2420; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 20px; display: flex; flex-direction: column; overflow: hidden">
+  <main style="flex: 1; display: flex; flex-direction: column; gap: 20px; padding: 24px 20px 0 20px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 18px; color: #46524D">Kedd, október 13.</span>
+        <h1 style="margin: 0; font-size: 32px; line-height: 1.15; font-weight: 700">Jó reggelt, Mária!</h1>
+      </div>
+      <button type="button" aria-label="Nagyobb betűméret" style="min-width: 56px; height: 56px; border-radius: 14px; border: 2px solid #1A2420; background: #FFFFFF; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 22px; font-weight: 700; color: #1A2420">A<span style="font-size: 28px">A</span></button>
+    </div>
+
+    <section style="background: #FFFFFF; border: 2px solid #CDD5D0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 24px; font-weight: 700">A mai mozgás</h2>
+      <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+        <li style="display: flex; align-items: center; gap: 14px">
+          <span style="width: 32px; height: 32px; border-radius: 50%; background: {{accent}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M3.5 9.5l3.5 3.5 7.5-8" fill="none" stroke="#FFFFFF" stroke-width="2.6"></path></svg></span>
+          <span style="color: #46524D; text-decoration: line-through">Séta, 20&nbsp;perc</span>
+          <span style="position: absolute; left: -9999px">kész</span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 14px">
+          <span style="width: 32px; height: 32px; border-radius: 50%; border: 3px solid {{accent}}; box-sizing: border-box; flex-shrink: 0" aria-hidden="true"></span>
+          <span>Lábemelés ülve, 2&nbsp;×&nbsp;10</span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 14px">
+          <span style="width: 32px; height: 32px; border-radius: 50%; border: 3px solid #9AA6A0; box-sizing: border-box; flex-shrink: 0" aria-hidden="true"></span>
+          <span>Fekvőtámasz a falnál, 2&nbsp;×&nbsp;8</span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 14px">
+          <span style="width: 32px; height: 32px; border-radius: 50%; border: 3px solid #9AA6A0; box-sizing: border-box; flex-shrink: 0" aria-hidden="true"></span>
+          <span>Nyújtás, 5&nbsp;perc</span>
+        </li>
+      </ul>
+      <a href="FamilyWorkout.dc.html" style="height: 64px; border-radius: 16px; background: {{accent}}; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 22px; font-weight: 700; margin-top: 4px">
+        <span>Kezdjük el</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="#FFFFFF" stroke-width="2.6"></path></svg>
+      </a>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 22px; font-weight: 700">Ezen a héten</h2>
+      <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; background: {{accent}}"></span><span style="font-size: 16px">H</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; border: 4px solid #1A2420; box-sizing: border-box"></span><span style="font-size: 16px; font-weight: 700">K</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #9AA6A0; box-sizing: border-box"></span><span style="font-size: 16px">Sze</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #9AA6A0; box-sizing: border-box"></span><span style="font-size: 16px">Cs</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #9AA6A0; box-sizing: border-box"></span><span style="font-size: 16px">P</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #9AA6A0; box-sizing: border-box"></span><span style="font-size: 16px">Szo</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #9AA6A0; box-sizing: border-box"></span><span style="font-size: 16px">V</span></div>
+      </div>
+      <p style="margin: 0; font-size: 19px; color: #46524D; text-wrap: pretty">Hétfőn mozogtál. Ma a második nap jön.</p>
+    </section>
+  </main>
+
+  <!-- Megvalósításban valódi <button aria-expanded="false" aria-controls="menu-list">. A mockupban link, hogy a vásznon kattintható legyen. -->
+  <a href="FamilyMenu.dc.html" role="button" aria-expanded="false" aria-controls="fam-menu-list" class="fam-btn" style="flex-shrink: 0; min-height: 80px; box-sizing: border-box; padding: 10px 20px calc(10px + env(safe-area-inset-bottom)) 20px; display: flex; align-items: center; gap: 14px; background: #FFFFFF; border-top: 2px solid #CDD5D0; text-decoration: none; color: #1A2420">
+    <span style="flex: 1; display: flex; flex-direction: column; min-width: 0"><span style="font-size: 22px; font-weight: 700">Menü</span><span style="font-size: 17px; color: #46524D; overflow-wrap: break-word">Napló, étel és a többi</span></span>
+    <span aria-hidden="true" style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 50%; background: {{accent}}; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 26 26"><path d="M6 16l7-7 7 7" fill="none" stroke="#FFFFFF" stroke-width="3"></path></svg></span>
+  </a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#0E6B5E","options":["#0E6B5E","#A8481F","#1F4E99"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#0E6B5E' };
+  }
+}
+</script>
+</body>
+</html>

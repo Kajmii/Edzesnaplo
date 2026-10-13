@@ -1,0 +1,137 @@
+/* ---------- Lenyitható menü, menüsáv és képernyő-fejléc (Pro, Gym, Family) ----------
+   A mockupok mérete és szerkezete: docs/mockups/forras/ProMenu, GymMenu, FamilyMenu, *Home (a menüsáv), *Settings (a fejléc).
+   Az animációkat a css/motion.css tokenjei vezérlik. Minden szín token. */
+.ui-ico{display:block;overflow:visible;stroke-width:var(--ui-ico-sw)}
+.ui-chev{display:flex;transition:transform var(--dur-arrow) var(--ease-arrow)}
+.ui-chev-open{transform:rotate(180deg);animation:ui-chev var(--dur-arrow) var(--ease-arrow) backwards}
+@keyframes ui-chev{from{transform:rotate(0)}}
+@keyframes ui-fade-out{to{opacity:0}}
+@keyframes ui-sheet-out{to{opacity:var(--sheet-op);transform:translateY(var(--sheet-dy))}}
+
+/* --- fő tartalom: oldalsó margó irányonként, alul a menüsáv helye --- */
+html[data-ui] .ui-main{padding-left:var(--ui-px)!important;padding-right:var(--ui-px)!important;padding-top:20px!important;padding-bottom:calc(32px + env(safe-area-inset-bottom))!important}
+html[data-ui] .ui-main[data-home]{padding-bottom:calc(var(--ui-bar-h) + 24px + env(safe-area-inset-bottom))!important}
+html[data-ui] .ui-main[data-inner] h1.fd{display:none}
+
+/* --- összecsukott menüsáv (Kezdőlap) --- */
+.ui-bar-wrap{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgb(var(--ui-bg))}
+.ui-bar{display:flex;align-items:center;width:100%;max-width:28rem;margin:0 auto;min-height:var(--ui-bar-h);box-sizing:border-box;padding:0 var(--ui-px) env(safe-area-inset-bottom);border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;font-family:inherit}
+.ui-bar-stripe,.ui-bar-sub{display:none}
+.ui-bar-tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.ui-bar-t{font-size:17px;font-weight:600;white-space:nowrap}
+.ui-bar-hint{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-muted));margin-right:10px;flex-shrink:0}
+.ui-bar-chip{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ui-bar-chip .ui-ico{width:18px;height:18px}
+html[data-ui="pro"] .ui-bar-wrap{border-top:1px solid rgb(var(--ui-text))}
+html[data-ui="pro"] .ui-bar-hint{font-family:var(--ui-font-mono)}
+html[data-ui="gym"] .ui-bar-wrap{background:rgb(var(--ui-surface))}
+html[data-ui="gym"] .ui-bar{padding:0;align-items:stretch}
+html[data-ui="gym"] .ui-bar-stripe{display:block;width:10px;flex-shrink:0;background:repeating-linear-gradient(-45deg,rgb(var(--ui-accent)) 0 9px,rgb(var(--ui-bg)) 9px 18px)}
+html[data-ui="gym"] .ui-bar-tx{justify-content:center;padding:8px 12px 8px 16px}
+html[data-ui="gym"] .ui-bar-t{font-family:var(--ui-font-head);font-weight:400;font-size:26px;line-height:1;letter-spacing:.04em;text-transform:uppercase}
+html[data-ui="gym"] .ui-bar-sub{display:block;font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+html[data-ui="gym"] .ui-bar-hint{display:none}
+html[data-ui="gym"] .ui-bar-chip{width:72px;background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent))}
+html[data-ui="gym"] .ui-bar-chip .ui-ico{width:24px;height:24px;stroke-width:3}
+html[data-ui="family"] .ui-bar-wrap{background:rgb(var(--ui-surface));border-top:2px solid rgb(var(--ui-line))}
+html[data-ui="family"] .ui-bar{padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));gap:14px}
+html[data-ui="family"] .ui-bar-t{font-size:18px;font-weight:700}
+html[data-ui="family"] .ui-bar-sub{display:block;font-size:14px;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+html[data-ui="family"] .ui-bar-hint{display:none}
+html[data-ui="family"] .ui-bar-chip{width:44px;height:44px;border-radius:50%;background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent))}
+html[data-ui="family"] .ui-bar-chip .ui-ico{width:20px;height:20px;stroke-width:3}
+
+/* --- felnyíló lap --- */
+.ui-mlayer{position:fixed;inset:0;z-index:40}
+.ui-scrim{position:absolute;inset:0;background:rgb(var(--ui-scrim-c,22 23 26) / var(--ui-scrim));animation:ui-fade var(--dur-scrim) linear backwards}
+.ui-msheet{position:absolute;left:0;right:0;top:var(--ui-sheet-top);bottom:0;display:flex;flex-direction:column;min-height:0;background:rgb(var(--ui-bg));animation:ui-sheet var(--dur-sheet) var(--ease-sheet) backwards}
+.ui-minner{flex:1;width:100%;max-width:28rem;margin:0 auto;display:flex;flex-direction:column;min-height:0}
+.ui-mstripe{display:none}
+.ui-closing{pointer-events:none}
+.ui-closing .ui-scrim{animation:ui-fade-out calc(var(--close-ms) * 1ms) linear forwards}
+.ui-closing .ui-msheet{animation:ui-sheet-out calc(var(--close-ms) * 1ms) ease-in forwards}
+.ui-mhead{flex-shrink:0;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;font-family:inherit}
+.ui-mhead-t{min-width:0;white-space:nowrap}
+.ui-mhead-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ui-mhead-hint{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+.ui-mhead .ui-ico{width:18px;height:18px}
+.ui-mlist{margin:0;list-style:none;display:flex;flex-direction:column;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.ui-mlist>li{display:block}
+.ui-mrow{box-sizing:border-box;width:100%;text-align:left;border:0;background:transparent;color:inherit;font-family:inherit;display:grid;align-items:center;cursor:pointer;min-width:0}
+.ui-mt,.ui-md{overflow-wrap:break-word;min-width:0}
+.ui-mtx{display:flex;flex-direction:column;min-width:0;grid-area:tx}
+.ui-mnum{grid-area:num;display:none}.ui-mbar{grid-area:bar;display:none}.ui-mico{grid-area:ico;display:flex;align-items:center;justify-content:center}
+
+/* Pro: szerkesztőségi lista, számozás monospace-ben */
+html[data-ui="pro"] .ui-msheet{border-top:1px solid rgb(var(--ui-text))}
+html[data-ui="pro"] .ui-mhead{height:60px;padding:0 var(--ui-px);border-bottom:1px solid rgb(var(--ui-text))}
+html[data-ui="pro"] .ui-mhead-t{font-size:17px;font-weight:600}
+html[data-ui="pro"] .ui-mhead-hint{font-family:var(--ui-font-mono)}
+html[data-ui="pro"] .ui-mlist{padding:0 var(--ui-px) calc(16px + env(safe-area-inset-bottom))}
+html[data-ui="pro"] .ui-mrow{min-height:56px;grid-template-columns:26px minmax(0,1fr) 22px;grid-template-areas:"num tx ico";gap:12px;padding:8px 0;border-bottom:1px solid rgb(var(--ui-line));transition:transform .18s ease-out,background-color .2s}
+html[data-ui="pro"] .ui-mnum{display:block;font-family:var(--ui-font-mono);font-size:12px;color:rgb(var(--ui-muted))}
+html[data-ui="pro"] .ui-mrow.on .ui-mnum{color:rgb(var(--ui-accent-text))}
+html[data-ui="pro"] .ui-mt{font-size:16px;font-weight:500}
+html[data-ui="pro"] .ui-md{font-size:13px;color:rgb(var(--ui-muted));margin-top:2px}
+html[data-ui="pro"] .ui-mico .ui-ico{width:22px;height:22px}
+@media (hover:hover){html[data-ui="pro"] .ui-mrow:hover{transform:translateX(4px)}}
+
+/* Gym: tömör blokkok, bal oldali színes sáv */
+html[data-ui="gym"] .ui-mstripe{display:block;flex-shrink:0;height:8px;background:repeating-linear-gradient(-45deg,rgb(var(--ui-accent)) 0 9px,rgb(var(--ui-bg)) 9px 18px)}
+html[data-ui="gym"] .ui-mhead{margin:12px var(--ui-px) 0;width:calc(100% - 40px);height:60px;padding:0 18px;background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent))}
+html[data-ui="gym"] .ui-mhead-t{font-family:var(--ui-font-head);font-size:24px;letter-spacing:.04em;text-transform:uppercase}
+html[data-ui="gym"] .ui-mhead-hint{font-weight:800;letter-spacing:.16em;color:inherit}
+html[data-ui="gym"] .ui-mhead .ui-ico{width:22px;height:22px;stroke-width:3}
+html[data-ui="gym"] .ui-mlist{padding:12px var(--ui-px) calc(16px + env(safe-area-inset-bottom));gap:4px}
+html[data-ui="gym"] .ui-mrow{min-height:56px;grid-template-columns:6px minmax(0,1fr) 24px;grid-template-areas:"bar tx ico";gap:12px;padding:0 14px 0 0;background:rgb(var(--ui-surface2))}
+html[data-ui="gym"] .ui-mrow.on{background:rgb(var(--ui-surface))}
+html[data-ui="gym"] .ui-mbar{display:block;align-self:stretch;background:rgb(var(--ui-line))}
+html[data-ui="gym"] .ui-mrow.on .ui-mbar{background:rgb(var(--ui-accent))}
+html[data-ui="gym"] .ui-mrow.on .ui-mico{color:rgb(var(--ui-accent))}
+html[data-ui="gym"] .ui-mtx{padding:8px 0}
+html[data-ui="gym"] .ui-mt{font-family:var(--ui-font-head);font-size:20px;letter-spacing:.03em;line-height:1.1;text-transform:uppercase}
+html[data-ui="gym"] .ui-md{font-size:12px;color:rgb(var(--ui-muted))}
+html[data-ui="gym"] .ui-mico .ui-ico{width:24px;height:24px}
+
+/* Family: nagy érintési sorok, kör alakú ikonháttér */
+html[data-ui="family"] .ui-msheet{border-radius:24px 24px 0 0}
+html[data-ui="family"] .ui-mhead{margin:12px var(--ui-px) 0;width:calc(100% - 40px);min-height:52px;padding:0 16px;border:2px solid rgb(var(--ui-text));border-radius:16px;background:rgb(var(--ui-surface))}
+html[data-ui="family"] .ui-mhead-t{font-size:18px;font-weight:700;white-space:normal;overflow-wrap:break-word}
+html[data-ui="family"] .ui-mhead-hint{display:none}
+html[data-ui="family"] .ui-mhead .ui-ico{width:22px;height:22px;stroke-width:3}
+html[data-ui="family"] .ui-mlist{padding:10px var(--ui-px) calc(16px + env(safe-area-inset-bottom));gap:6px}
+html[data-ui="family"] .ui-mrow{min-height:52px;grid-template-columns:40px minmax(0,1fr);grid-template-areas:"ico tx";gap:14px;padding:7px 12px 7px 8px;border-radius:16px;background:rgb(var(--ui-surface));border:2px solid rgb(var(--ui-line))}
+html[data-ui="family"] .ui-mrow.on{border-color:rgb(var(--ui-accent))}
+html[data-ui="family"] .ui-mico{width:40px;height:40px;border-radius:50%;background:rgb(var(--ui-surface2));color:rgb(var(--ui-accent-text))}
+html[data-ui="family"] .ui-mrow.on .ui-mico{background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent))}
+html[data-ui="family"] .ui-mt{font-size:17px;font-weight:700;line-height:1.2}
+html[data-ui="family"] .ui-md{font-size:13px;line-height:1.25;color:rgb(var(--ui-muted))}
+html[data-ui="family"] .ui-mico .ui-ico{width:22px;height:22px}
+
+/* --- képernyő-fejléc (nem a Kezdőlapon): vissza a menübe + cím --- */
+.ui-hdr{position:sticky;top:0;z-index:20;background:rgb(var(--ui-bg))}
+.ui-hdr-in{box-sizing:border-box;width:100%;max-width:28rem;margin:0 auto}
+.ui-back{display:flex;align-items:center;gap:6px;border:0;background:transparent;color:inherit;font-family:inherit;cursor:pointer;min-height:var(--ui-tap);justify-self:start}
+.ui-hdr-t{margin:0;min-width:0;overflow-wrap:break-word}
+.ui-hdr-stripe{display:none}
+html[data-ui="pro"] .ui-hdr{border-bottom:1px solid rgb(var(--ui-line))}
+html[data-ui="pro"] .ui-hdr-in{height:56px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;padding:0 16px}
+html[data-ui="pro"] .ui-back{font-size:14px}
+html[data-ui="pro"] .ui-back .ui-ico{width:16px;height:16px}
+html[data-ui="pro"] .ui-hdr-t{font-family:var(--ui-font-mono);font-size:12px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+html[data-ui="gym"] .ui-hdr{background:rgb(var(--ui-surface))}
+html[data-ui="gym"] .ui-hdr-in{height:60px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;padding:0 12px}
+html[data-ui="gym"] .ui-back{font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+html[data-ui="gym"] .ui-back .ui-ico{width:20px;height:20px;stroke-width:3}
+html[data-ui="gym"] .ui-hdr-t{font-family:var(--ui-font-head);font-weight:400;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
+html[data-ui="gym"] .ui-hdr-stripe{display:block;height:8px;background:repeating-linear-gradient(-45deg,rgb(var(--ui-accent)) 0 9px,rgb(var(--ui-bg)) 9px 18px)}
+html[data-ui="family"] .ui-hdr-in{display:flex;flex-direction:column;gap:2px;padding:8px 20px 0}
+html[data-ui="family"] .ui-hdr-sp{display:none}
+html[data-ui="family"] .ui-back{align-self:flex-start;font-size:16px;font-weight:700;color:rgb(var(--ui-accent-text));gap:8px}
+html[data-ui="family"] .ui-back .ui-ico{width:18px;height:18px;stroke-width:2.6}
+html[data-ui="family"] .ui-hdr-t{font-size:24px;line-height:1.15;font-weight:700}
+
+@media (prefers-reduced-motion:reduce){
+  .ui-chev,.ui-chev-open{animation:none;transition:none}
+  .ui-scrim,.ui-msheet,.ui-closing .ui-scrim,.ui-closing .ui-msheet{animation:none!important}
+}

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Gym – Menü</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Archivo:wght@400;600;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F3F0E8}a:hover{color:#FFC93C}
+.gym-stripe{background:repeating-linear-gradient(-45deg,#FFC93C 0 9px,#0F0F0D 9px 18px)}
+.gym-scrim{animation:gymFade .1s linear backwards}
+.gym-sheet{animation:gymSheet .2s cubic-bezier(.3,1.5,.5,1) backwards}
+.gym-item{animation:gymItem .14s cubic-bezier(.2,.9,.2,1) backwards}
+.gym-row,.gym-btn,.gym-card{transition:transform .08s linear}
+.gym-row:active,.gym-btn:active,.gym-card:active{transform:scale(.97)}
+.gym-row:focus-visible,.gym-btn:focus-visible,.gym-card:focus-visible{outline:3px solid #FFC93C;outline-offset:2px}
+@keyframes gymFade{from{opacity:0}}
+@keyframes gymSheet{from{transform:translateY(48px)}}
+@keyframes gymItem{from{opacity:0;transform:translateX(-24px)}}
+@media (prefers-reduced-motion: reduce){.gym-scrim,.gym-sheet,.gym-item{animation:none}.gym-row,.gym-btn,.gym-card{transition:none}.gym-row:active,.gym-btn:active,.gym-card:active{transform:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #0F0F0D; color: #F3F0E8; font-family: 'Archivo', sans-serif; position: relative; overflow: hidden">
+  <div aria-hidden="true">
+    <div class="gym-stripe" style="height: 8px"></div>
+    <div style="padding: 20px 20px 0 20px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-weight: 800; font-size: 12px; letter-spacing: 0.16em; color: {{accent}}">42. HÉT · NAP 3/5</span><span style="width: 44px; height: 44px; background: #2B2B27"></span></div>
+    </div>
+  </div>
+  <div class="gym-scrim" aria-hidden="true" style="position: absolute; inset: 0; background: rgba(15, 15, 13, 0.6)"></div>
+
+  <section class="gym-sheet" aria-label="Menü" style="position: absolute; left: 0; right: 0; top: 112px; bottom: 0; background: #0F0F0D; display: flex; flex-direction: column; min-height: 0">
+    <div class="gym-stripe" style="height: 8px; flex-shrink: 0"></div>
+    <div style="padding: 12px 20px 0 20px; flex-shrink: 0">
+      <!-- Megvalósításban valódi <button aria-expanded="true">. -->
+      <a href="GymHome.dc.html" role="button" aria-expanded="true" aria-controls="gym-menu-list" class="gym-btn" style="box-sizing: border-box; width: 100%; height: 60px; border: none; background: {{accent}}; color: #0F0F0D; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 18px; font-family: 'Anton', sans-serif; font-size: 24px; letter-spacing: 0.04em; text-decoration: none; cursor: pointer">
+        <span style="min-width: 0; white-space: nowrap">MENÜ</span>
+        <span style="display: flex; align-items: center; gap: 10px; flex-shrink: 0"><span style="font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 0.16em">BEZÁR</span><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="transform: rotate(180deg)"><path d="M5 15l7-7 7 7" fill="none" stroke="#0F0F0D" stroke-width="3"></path></svg></span>
+      </a>
+    </div>
+    <ul id="gym-menu-list" role="list" style="margin: 0; padding: 12px 20px calc(16px + env(safe-area-inset-bottom)) 20px; list-style: none; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; min-height: 0">
+      <li class="gym-item" style="animation-delay: 40ms"><a href="GymWorkout.dc.html" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #1C1C19; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: {{accent}}"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">EDZÉS</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Mai edzés, gyakorlatok</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12" fill="none" stroke="{{accent}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 60ms"><a href="#terv" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">TERV</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Heti és havi ciklus</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M4 6h16v14H4zM4 10h16M9 3v4M15 3v4" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 80ms"><a href="#naplo" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">NAPLÓ</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Mit és mennyit emeltél</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M6 4h12v16H6zM9 9h6M9 13h6M9 17h3" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 100ms"><a href="#etel" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">ÉTEL</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Kalória és fehérje</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M3 12h18a9 9 0 01-18 0zM8 7.5c0-1.5 1-2 0-3.5M12 7.5c0-1.5 1-2 0-3.5" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 120ms"><a href="#receptek" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">RECEPTEK</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Mentett ételek</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M12 6.5C10 5 7 4.5 4 5v14c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5zM12 6.5v14" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 140ms"><a href="#test" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">TEST ÉS MÉRÉSEK</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Súly, méretek, rekordok</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M4 20h16M7 20v-8M12 20V5M17 20v-5" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 160ms"><a href="#kozosseg" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">KÖZÖSSÉG</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Csoportok, kihívások</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M9 11a3 3 0 100-6 3 3 0 000 6zM3 20a6 6 0 0112 0M16 11a3 3 0 100-6M18 14a5 5 0 013 5" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 180ms"><a href="#ciklus" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">CIKLUS</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Csak ha bekapcsoltad</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M20 12a8 8 0 11-2.3-5.6M20 4v4h-4" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 200ms"><a href="#profil" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">PROFIL</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Adatok és célok</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+      <li class="gym-item" style="animation-delay: 220ms"><a href="GymSettings.dc.html" class="gym-row" style="min-height: 56px; display: grid; grid-template-columns: 6px minmax(0, 1fr) 24px; align-items: center; gap: 12px; padding: 0 14px 0 0; background: #2B2B27; text-decoration: none">
+        <span aria-hidden="true" style="align-self: stretch; background: #3A3A35"></span>
+        <span style="display: flex; flex-direction: column; padding: 8px 0; min-width: 0"><span style="font-family: 'Anton', sans-serif; font-size: 20px; letter-spacing: 0.03em; line-height: 1.1; overflow-wrap: break-word">BEÁLLÍTÁSOK</span><span style="font-size: 12px; color: #A8A49A; overflow-wrap: break-word">Felület, színek, fiók</span></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0; overflow: visible"><path d="M4 7h9M17 7h3M4 17h3M11 17h9M15 4.5v5M9 14.5v5" fill="none" stroke="#F3F0E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a></li>
+    </ul>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FFC93C","options":["#FFC93C","#FF5A1F","#7CFF4F"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#FFC93C' };
+  }
+}
+</script>
+</body>
+</html>
