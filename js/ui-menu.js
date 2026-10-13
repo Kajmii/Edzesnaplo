@@ -17,6 +17,7 @@ const UI_ICO={
  edit:'M4 20l1-4L16 5l3 3L8 19zM14 7l3 3',
  download:'M12 4v11M7 11l5 5 5-5M5 20h14',
  up:'M5 15l7-7 7 7',
+ check:'M5 12.5l4.5 4.5L19 7',
  back:'M14 4l-7 7 7 7'};
 const UiIco=({n,s=24})=>html`<svg width=${s} height=${s} viewBox='0 0 24 24' class='ui-ico' aria-hidden='true' fill='none' stroke='currentColor' strokeLinecap='round' strokeLinejoin='round'><path d=${UI_ICO[n]}/></svg>`;
 

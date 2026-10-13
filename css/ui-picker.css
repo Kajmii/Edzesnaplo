@@ -1,0 +1,30 @@
+/* ---------- Első bejelentkezés: felület-választó ---------- */
+.ui-pick{position:fixed;inset:0;z-index:60;background:rgb(var(--ui-bg));color:rgb(var(--ui-text));overflow-y:auto;-webkit-overflow-scrolling:touch;animation:ui-fade var(--dur-scrim) linear backwards}
+.ui-pick-in{box-sizing:border-box;width:100%;max-width:28rem;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:calc(24px + env(safe-area-inset-top)) var(--ui-px) 0}
+.ui-pick-h{margin:0 0 8px;font-family:var(--ui-font-head);font-size:28px;line-height:1.1;font-weight:600;letter-spacing:-.01em;overflow-wrap:break-word}
+.ui-pick-p{margin:0 0 20px;font-size:14px;line-height:1.45;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+.ui-pick-list{display:flex;flex-direction:column;gap:12px;flex:1}
+.ui-pick-card{box-sizing:border-box;width:100%;display:grid;grid-template-columns:84px minmax(0,1fr) 24px;gap:14px;align-items:center;text-align:left;padding:10px;background:rgb(var(--ui-surface));color:inherit;font-family:inherit;border:1px solid rgb(var(--ui-line));border-radius:var(--ui-r-m);cursor:pointer;min-width:0}
+.ui-pick-card.on{border:2px solid rgb(var(--ui-accent));padding:9px}
+.ui-pick-shot{width:84px;border:1px solid rgb(var(--ui-line));border-radius:var(--ui-r-s)}
+.ui-pick-tx{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ui-pick-name{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;font-size:18px;font-weight:700;overflow-wrap:break-word}
+.ui-pick-sub{font-size:13px;font-weight:400;color:rgb(var(--ui-muted))}
+.ui-pick-who{font-size:13px;line-height:1.4;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+.ui-pick-tick{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;color:rgb(var(--ui-on-accent))}
+.ui-pick-card.on .ui-pick-tick{background:rgb(var(--ui-accent))}
+.ui-pick-bar{position:sticky;bottom:0;margin:16px calc(var(--ui-px) * -1) 0;padding:12px var(--ui-px) calc(12px + env(safe-area-inset-bottom));background:rgb(var(--ui-bg));border-top:1px solid rgb(var(--ui-line))}
+.ui-pick-go{box-sizing:border-box;width:100%;min-height:calc(var(--ui-tap) + 4px);border:0;border-radius:var(--ui-r-m);background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent));font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.ui-pick-go:disabled{background:rgb(var(--ui-surface2));color:rgb(var(--ui-muted));cursor:default}
+html[data-ui="gym"] .ui-pick-h{font-weight:400;text-transform:uppercase;letter-spacing:.02em;font-size:34px}
+html[data-ui="gym"] .ui-pick-card{border-left:6px solid rgb(var(--ui-line))}
+html[data-ui="gym"] .ui-pick-card.on{border:2px solid rgb(var(--ui-accent));border-left:6px solid rgb(var(--ui-accent))}
+html[data-ui="gym"] .ui-pick-name{font-family:var(--ui-font-head);font-weight:400;font-size:22px;letter-spacing:.03em;text-transform:uppercase}
+html[data-ui="gym"] .ui-pick-sub{font-family:var(--ui-font-body);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+html[data-ui="gym"] .ui-pick-go{font-family:var(--ui-font-head);font-weight:400;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
+html[data-ui="family"] .ui-pick-card{border-width:2px;padding:9px}
+html[data-ui="family"] .ui-pick-card.on{border-width:3px;padding:8px}
+html[data-ui="pro"] .ui-pick-card{background:transparent;border-width:0 0 1px;border-radius:0;padding:12px 0}
+html[data-ui="pro"] .ui-pick-card.on{background:rgb(var(--ui-surface));border:2px solid rgb(var(--ui-accent));padding:10px}
+html[data-ui="pro"] .ui-pick-sub{font-family:var(--ui-font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){.ui-pick{animation:none}}
