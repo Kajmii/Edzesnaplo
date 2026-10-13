@@ -3,9 +3,9 @@ const ACCS={lime:['Lime','190 242 100','163 230 53','#a3e635','77 124 15','#65a3
 const THEMES={alap:['Alap','63 63 70','39 39 42','24 24 27','9 11 14'],amoled:['AMOLED','43 43 48','26 26 29','12 12 14','0 0 0'],kek:['Éjkék','45 63 94','28 42 66','17 26 43','10 16 32'],grafit:['Grafit','68 72 80','46 49 54','32 34 38','18 19 22']};
 // Világos mód: [név, z7 (kapcsoló-sáv, elválasztó), z8, z9, háttér]
 const LIGHT=['Világos','190 190 197','228 228 231','255 255 255','244 245 248'];
-const Cd=({t,children})=>html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-3'>${t}</div>${children}</div>`;
-const Lb=({t})=>html`<div class='text-xs text-zinc-400 mt-3 mb-2'>${t}</div>`;
-const Sw=({l,s,v,on})=>html`<button onClick=${()=>on(!v)} class='w-full flex items-center justify-between gap-3 py-2.5 text-left'><span><span class='block'>${l}</span>${s&&html`<span class='block text-xs text-zinc-500'>${s}</span>`}</span><span class=${'w-12 h-7 rounded-full p-1 shrink-0 '+(v?'bg-lime-400':'bg-zinc-700')}><span class=${'block w-5 h-5 rounded-full bg-white transition-transform '+(v?'translate-x-5':'')}></span></span></button>`;
+const Cd=({t,children})=>html`<div class='up k-card'><div class='k-cd-t'>${t}</div>${children}</div>`;
+const Lb=({t})=>html`<div class='k-lb'>${t}</div>`;
+const Sw=KSw;
 function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc}){
  const[bk,setBk]=useState(''),[cf,setCf]=useState(false),[cd,setCd]=useState(false),o=x=>setOpt(p=>({...p,...x}));
  const exp=()=>{const j=JSON.stringify({hist,plan,opt});setBk(j);try{navigator.clipboard.writeText(j).then(()=>toast('Mentés a vágólapra másolva')).catch(()=>{})}catch(e){}};

@@ -1,0 +1,166 @@
+/* ---------- Közös elemkészlet (k-): kártya, szakasz, sor, gomb, mező, váltó, kapcsoló, statisztika, fül, üres állapot, töltés ----------
+   Egy szerkezet, három kinézet: az irányonkénti eltérés csak az alábbi html[data-ui] blokkokban van, a színek, méretek és mozgás tokenek
+   (css/tokens.css, css/motion.css). A betűméretek az irányok között azonosak (12 / 13 / 14 / 16 / 20 / 28 px), a Family nem nagyobb a többinél.
+   A JS-oldal: js/ui-kit.js. Új képernyő ezekből építkezzen, ne Tailwind-színosztályokból. */
+
+/* --- közös szerkezet --- */
+.k-sec{display:block;margin:0 0 24px;min-width:0}
+.k-sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 12px;min-width:0}
+.k-sec-t{margin:0;min-width:0;overflow-wrap:break-word}
+.k-card{display:block;width:100%;min-width:0;padding:16px;margin:0 0 12px;text-align:left;color:inherit;font:inherit;background:rgb(var(--ui-surface));border:1px solid rgb(var(--ui-line));border-radius:var(--ui-r-l)}
+button.k-card{cursor:pointer}
+.k-card.on{border-color:rgb(var(--ui-accent))}
+.k-card>:last-child{margin-bottom:0}
+.k-cd-t{margin:0 0 12px;font-size:16px;font-weight:600;overflow-wrap:break-word}
+.k-lb{margin:14px 0 6px;font-size:13px;color:rgb(var(--ui-muted))}
+.k-hint{margin:6px 0 0;font-size:13px;line-height:1.4;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+
+/* sor: [ikon] [cím + alcím] [jobb oldal] [nyíl] */
+.k-list{display:flex;flex-direction:column;min-width:0}
+.k-row{display:flex;align-items:center;gap:12px;width:100%;min-width:0;min-height:var(--ui-tap);padding:12px 0;text-align:left;color:inherit;font:inherit;background:none;border:0;border-top:1px solid rgb(var(--ui-line))}
+.k-list>.k-row:first-child,.k-card>.k-row:first-child{border-top:0}
+button.k-row{cursor:pointer}
+.k-row-ic{flex-shrink:0;display:flex;color:rgb(var(--ui-accent-text))}
+.k-row-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.k-row-t{font-size:16px;font-weight:500;overflow-wrap:break-word}
+.k-row-s{font-size:13px;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+.k-row-r{flex-shrink:0;max-width:45%;font-size:14px;color:rgb(var(--ui-muted));text-align:right;overflow-wrap:break-word}
+.k-chev{flex-shrink:0;display:flex;color:rgb(var(--ui-muted));transform:rotate(180deg)}
+
+/* gombok */
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 20px;min-width:0;border:1px solid transparent;border-radius:var(--ui-r-m);font:inherit;font-size:16px;font-weight:600;line-height:1.2;cursor:pointer;text-align:center;text-decoration:none}
+.k-btn.full{display:flex;width:100%}
+.k-btn.sm{height:44px;padding:0 14px;font-size:14px}
+.k-btn.pri{background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent))}
+.k-btn.sec{background:transparent;color:rgb(var(--ui-text));border-color:rgb(var(--ui-text))}
+.k-btn.gho{background:transparent;color:rgb(var(--ui-accent-text))}
+.k-btn.dan{background:transparent;color:rgb(var(--ui-danger));border-color:rgb(var(--ui-danger))}
+.k-btn:disabled{opacity:.45;cursor:default}
+.k-btns{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 12px}
+.k-btns>.k-btn{flex:1 1 140px}
+
+/* mezők */
+.k-fld{display:block;min-width:0}
+.k-fld-l{display:block;margin:0 0 6px;font-size:13px;color:rgb(var(--ui-muted))}
+.k-fld-w{position:relative}
+.k-fld-u{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:13px;color:rgb(var(--ui-muted));pointer-events:none}
+html[data-ui] .k-in,html[data-ui] select.k-in{width:100%;min-width:0;height:48px;padding:0 14px;font:inherit;font-size:16px;text-align:left;color:rgb(var(--ui-text));background:rgb(var(--ui-field))!important;border:1px solid rgb(var(--ui-control));border-radius:var(--ui-r-m);outline:none;appearance:none;-webkit-appearance:none}
+html[data-ui] .k-fld-w .k-in{padding-right:48px}
+html[data-ui] .k-in:focus{border-color:rgb(var(--ui-accent-text));box-shadow:0 0 0 1px rgb(var(--ui-accent-text))}
+html[data-ui] .k-in::placeholder{color:rgb(var(--ui-muted));opacity:.8}
+.k-fld-r{margin-bottom:12px}
+
+/* szegmentált váltó */
+.k-seg{display:flex;min-width:0;border:1px solid rgb(var(--ui-control));border-radius:var(--ui-r-m);overflow:hidden}
+.k-seg>button{flex:1 1 0;min-width:0;height:48px;padding:0 6px;border:0;border-left:1px solid rgb(var(--ui-control));background:transparent;color:rgb(var(--ui-text));font:inherit;font-size:14px;font-weight:500;cursor:pointer;overflow-wrap:break-word;transition:background-color var(--dur-press) var(--ease-press),color var(--dur-press) var(--ease-press)}
+.k-seg>button:first-child{border-left:0}
+.k-seg>button[aria-pressed=true]{background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent));font-weight:600}
+
+/* kapcsoló: a csúszka az irány mozgás-idejével megy */
+.k-sw{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;min-height:var(--ui-tap);padding:10px 0;text-align:left;color:inherit;font:inherit;background:none;border:0;cursor:pointer}
+.k-sw-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.k-sw-t{font-size:16px;overflow-wrap:break-word}
+.k-sw-s{font-size:13px;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+.k-sw-tr{position:relative;flex-shrink:0;width:52px;height:30px;border:2px solid rgb(var(--ui-control));border-radius:var(--k-pill,4px);background:transparent;transition:background-color var(--dur-press) var(--ease-press),border-color var(--dur-press) var(--ease-press)}
+.k-sw-th{position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:var(--k-pill,4px);background:rgb(var(--ui-control));transition:transform var(--dur-switch) var(--ease-page),background-color var(--dur-press) var(--ease-press)}
+.k-sw[aria-checked=true] .k-sw-tr{background:rgb(var(--ui-accent));border-color:rgb(var(--ui-accent))}
+.k-sw[aria-checked=true] .k-sw-th{transform:translateX(22px);background:rgb(var(--ui-on-accent))}
+
+/* statisztika */
+.k-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 12px}
+.k-stat{min-width:0;padding:14px;background:rgb(var(--ui-surface));border:1px solid rgb(var(--ui-line));border-radius:var(--ui-r-l)}
+.k-stat-v{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px;font-size:28px;line-height:1.1;font-weight:600;color:rgb(var(--ui-accent-text));font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.k-stat-u{font-size:14px;font-weight:400;color:rgb(var(--ui-muted))}
+.k-stat-l{margin-top:6px;font-size:13px;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+.k-stat-s{margin-top:2px;font-size:12px;color:rgb(var(--ui-muted))}
+
+/* szűrőcsipek és fülek */
+.k-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.k-chip{height:40px;padding:0 14px;border:1px solid rgb(var(--ui-control));border-radius:var(--k-chip-r,var(--ui-r-m));background:transparent;color:rgb(var(--ui-text));font:inherit;font-size:14px;cursor:pointer;overflow-wrap:break-word;transition:background-color var(--dur-press) var(--ease-press),color var(--dur-press) var(--ease-press)}
+.k-chip[aria-pressed=true]{background:rgb(var(--ui-accent));border-color:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent));font-weight:600}
+.k-tabs{display:flex;gap:4px;margin:0 0 16px;border-bottom:1px solid rgb(var(--ui-line));overflow-x:auto;scrollbar-width:none}
+.k-tabs::-webkit-scrollbar{display:none}
+.k-tabs>button{position:relative;flex:1 0 auto;height:48px;padding:0 14px;border:0;background:transparent;color:rgb(var(--ui-muted));font:inherit;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
+.k-tabs>button::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:3px;background:rgb(var(--ui-accent));transform:scaleX(0);transition:transform var(--dur-switch) var(--ease-page)}
+.k-tabs>button[aria-selected=true]{color:rgb(var(--ui-text));font-weight:600}
+.k-tabs>button[aria-selected=true]::after{transform:scaleX(1)}
+
+/* üres állapot */
+.k-empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:32px 16px;text-align:center}
+.k-empty-ic{display:flex;color:rgb(var(--ui-accent-text))}
+.k-empty-t{font-size:20px;font-weight:600;overflow-wrap:break-word}
+.k-empty-s{max-width:32ch;font-size:14px;line-height:1.45;color:rgb(var(--ui-muted));overflow-wrap:break-word}
+.k-empty .k-btn{margin-top:8px}
+
+/* töltés (a képernyőn belül): irányonként más animáció, ahogy a teljes képernyős töltők */
+.k-busy{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-height:180px;padding:24px 16px;text-align:center}
+.k-busy-t{font-size:16px;font-weight:600}
+.k-busy-s{font-size:13px;color:rgb(var(--ui-muted))}
+.k-busy-a{position:relative;display:flex;align-items:center;justify-content:center;width:120px;height:56px}
+.k-busy-a i{display:block}
+@keyframes k-line{0%{transform:scaleX(0);transform-origin:left}45%{transform:scaleX(1);transform-origin:left}55%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
+@keyframes k-slide{0%,100%{transform:translateX(-18px);opacity:0}30%,70%{transform:none;opacity:1}}
+@keyframes k-breath{0%,100%{transform:scale(.7)}50%{transform:scale(1)}}
+
+/* sorok, kártyák lépcsőzetes belépése: a .ui-stagger szülő gyermekei --i-vel késnek */
+.ui-stagger>:nth-child(1){--i:0}.ui-stagger>:nth-child(2){--i:1}.ui-stagger>:nth-child(3){--i:2}.ui-stagger>:nth-child(4){--i:3}.ui-stagger>:nth-child(5){--i:4}.ui-stagger>:nth-child(6){--i:5}.ui-stagger>:nth-child(7){--i:6}.ui-stagger>:nth-child(8){--i:7}.ui-stagger>:nth-child(n+9){--i:8}
+
+/* ===== Pro: lapos, vékony vonalak, mono feliratok ===== */
+html[data-ui="pro"] .k-sec-h{padding-bottom:8px;border-bottom:1px solid rgb(var(--ui-text))}
+html[data-ui="pro"] .k-sec-t{font-family:var(--ui-font-mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-text))}
+html[data-ui="pro"] .k-card,html[data-ui="pro"] .k-stat{border-radius:4px}
+html[data-ui="pro"] .k-lb,html[data-ui="pro"] .k-fld-l{font-family:var(--ui-font-mono);font-size:12px;letter-spacing:.04em}
+html[data-ui="pro"] .k-stat-v{font-family:var(--ui-font-mono);font-weight:500}
+html[data-ui="pro"] .k-busy-a i{width:100%;height:2px;background:rgb(var(--ui-text));animation:k-line 1.8s var(--ease-draw) infinite}
+html[data-ui="pro"] .k-busy-a i:nth-child(2){position:absolute;right:0;width:8px;height:8px;border-radius:50%;background:rgb(var(--ui-accent));animation:none}
+html[data-ui="pro"] .k-busy-a i:nth-child(3),html[data-ui="family"] .k-busy-a i:nth-child(n+2){display:none}
+
+/* ===== Gym: tömör blokkok, Anton címek, vastag keretek ===== */
+html[data-ui="gym"]{--k-pill:0px}
+html[data-ui="gym"] .k-sec-h{padding-left:12px;border-left:6px solid rgb(var(--ui-accent))}
+html[data-ui="gym"] .k-sec-t{font-family:var(--ui-font-head);font-size:20px;font-weight:400;letter-spacing:.03em;text-transform:uppercase}
+html[data-ui="gym"] .k-card,html[data-ui="gym"] .k-stat{border:0;border-left:4px solid rgb(var(--ui-line2));border-radius:0}
+html[data-ui="gym"] .k-card.on{border-left-color:rgb(var(--ui-accent))}
+html[data-ui="gym"] .k-cd-t{font-family:var(--ui-font-head);font-size:20px;font-weight:400;letter-spacing:.03em;text-transform:uppercase}
+html[data-ui="gym"] .k-lb,html[data-ui="gym"] .k-fld-l{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+html[data-ui="gym"] .k-row{border-top-width:2px}
+html[data-ui="gym"] .k-btn{border-radius:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+html[data-ui="gym"] .k-btn.sec,html[data-ui="gym"] .k-btn.dan{border-width:2px}
+html[data-ui="gym"] .k-in,html[data-ui="gym"] select.k-in{border-width:2px;border-radius:0}
+html[data-ui="gym"] .k-seg{border-width:2px;border-radius:0}
+html[data-ui="gym"] .k-seg>button{font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-left-width:2px}
+html[data-ui="gym"] .k-chip{border-width:2px;border-radius:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+html[data-ui="gym"] .k-stat-v{font-family:var(--ui-font-head);font-size:34px;font-weight:400;letter-spacing:.02em}
+html[data-ui="gym"] .k-tabs{border-bottom-width:2px}
+html[data-ui="gym"] .k-tabs>button{font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+html[data-ui="gym"] .k-tabs>button::after{height:5px}
+html[data-ui="gym"] .k-empty-t,html[data-ui="gym"] .k-busy-t{font-family:var(--ui-font-head);font-weight:400;letter-spacing:.04em;text-transform:uppercase}
+html[data-ui="gym"] .k-busy-a i{width:14px;height:44px;margin:0 3px;background:#D7372B;animation:k-slide 1.4s var(--ease-draw) infinite}
+html[data-ui="gym"] .k-busy-a i:nth-child(2){height:36px;background:#2F62D0;animation-delay:.15s}
+html[data-ui="gym"] .k-busy-a i:nth-child(3){height:26px;background:#2E9E5B;animation-delay:.3s}
+
+/* ===== Family: nagy lekerekített kártyák, vastag keret, puha mozgás ===== */
+html[data-ui="family"]{--k-pill:999px;--k-chip-r:999px}
+html[data-ui="family"] .k-sec-t{font-size:20px;font-weight:700}
+html[data-ui="family"] .k-card,html[data-ui="family"] .k-stat{border-width:2px;border-radius:20px}
+html[data-ui="family"] .k-cd-t{font-weight:700}
+html[data-ui="family"] .k-lb,html[data-ui="family"] .k-fld-l{font-weight:700;color:rgb(var(--ui-text))}
+html[data-ui="family"] .k-btn{border-radius:16px;font-weight:700}
+html[data-ui="family"] .k-btn.sec{color:rgb(var(--ui-accent-text));border:2px solid rgb(var(--ui-accent))}
+html[data-ui="family"] .k-btn.dan{border-width:2px}
+html[data-ui="family"] .k-in,html[data-ui="family"] select.k-in{border-width:2px;border-radius:14px}
+html[data-ui="family"] .k-seg{border-width:2px;border-radius:14px}
+html[data-ui="family"] .k-seg>button{font-weight:700}
+html[data-ui="family"] .k-chip{border-width:2px;font-weight:700}
+html[data-ui="family"] .k-stat-v{font-weight:700}
+html[data-ui="family"] .k-tabs>button{font-weight:700}
+html[data-ui="family"] .k-tabs>button::after{border-radius:3px 3px 0 0}
+html[data-ui="family"] .k-empty-t,html[data-ui="family"] .k-busy-t{font-weight:700}
+html[data-ui="family"] .k-busy-a{height:64px}
+html[data-ui="family"] .k-busy-a i{width:56px;height:56px;border:6px solid rgb(var(--ui-accent));border-radius:50%;box-sizing:border-box;animation:k-breath 3.2s ease-in-out infinite}
+
+@media (prefers-reduced-motion:reduce){
+  .k-sw-th,.k-sw-tr,.k-seg>button,.k-chip,.k-tabs>button::after{transition:none}
+  html[data-ui] .k-busy-a i{animation:none!important;transform:none;opacity:1}
+}
+html.noanim .k-busy-a i{animation:none!important;transform:none;opacity:1}
