@@ -30,7 +30,7 @@ Supabase. Az URL és az anon kulcs a `js/auth.js`-ben van (ez publikus, nem tito
 - Minden új funkciót külön ágon készíts (`feature/...`). A fő ágat (`main`) ne módosítsd, amíg a felhasználó nem hagyja jóvá.
 - A felhasználó telefonon teszteli. Az előnézeti linket vagy a helyi szervert a felhasználó kéri, te ne próbálj publikálni.
 - Push és merge csak a felhasználó kérésére történhet, mert a GitHub Pages és az APK azonnal frissül.
-- Supabase-változtatás csak SQL-fájlban legyen (`supabase/*.sql`). A felhasználó előbb futtatja le, és csak utána kerülhet élesbe a kód.
+- Supabase-változtatás csak SQL-fájlban legyen (`supabase/*.sql`), és csak utána kerülhet élesbe a kód. A felhasználó engedélyezte (2026-10-14), hogy az új vagy módosított SQL-t én futtassam a beépített böngészőben megnyitott Supabase SQL Editorban: új lekérdezés (+), tartalom betöltése (Monaco: `window.monaco.editor.getModels()[0].setValue(...)`), Save, Run, a "destructive operations" figyelmeztetésnél Run query (csak ha a szkript nem töröl adatot, csak a saját szabályait építi újra), végül csak-olvasó ellenőrző lekérdezés. Csak a projektben lévő, a felhasználó által látott `supabase/*.sql` fájlokat futtasd, mást ne.
 - Minden működő funkció után javasolj commitot. A commit üzenete legyen rövid, magyarul.
 - Ha egy funkció nem működik, ne próbálj több változtatást egyszerre javítani. Írd le a hibát, és kérdezd meg, mit csináljunk.
 
@@ -38,7 +38,7 @@ Supabase. Az URL és az anon kulcs a `js/auth.js`-ben van (ez publikus, nem tito
 
 - Minden új magyar szöveghez angol fordítás kell a `setDict(...)`-ben.
 - Módosítás után `node --check` minden módosított `js/*.js` fájlon.
-- Supabase-változtatás csak SQL-fájlban (`supabase/*.sql`) legyen. A felhasználó maga futtatja a Supabase SQL Editorban, te ne próbáld futtatni.
+- Supabase-változtatás csak SQL-fájlban (`supabase/*.sql`) legyen; a futtatásról lásd a Backend szakaszt (a böngészős SQL Editorban én futtatom).
 - Commit és push csak kérésre.
 - A felhasználó magyarul ír, Androidon (Galaxy S26 Ultra) teszteli. A lépések legyenek egyszerűek.
 - Valódi eszközön nem tudsz tesztelni, ezt mindig jelezd.
