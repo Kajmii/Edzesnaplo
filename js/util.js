@@ -38,5 +38,5 @@ function Ring({v,max,col,s=96,w=9,children}){
 function Bars({vals,labels,h=84}){
  const[m,setM]=useState(0);useEffect(()=>{const t=setTimeout(()=>setM(1),80);return()=>clearTimeout(t)},[]);
  const mx=Math.max(1,...vals);
- return html`<div><div class='flex items-end gap-1.5' style=${{height:h+'px'}}>${vals.map((v,i)=>html`<div key=${i} class='flex-1 flex items-end h-full'><div class='w-full rounded-t-lg bg-lime-400' style=${{height:m?Math.max(v?7:2,v/mx*100)+'%':'2%',opacity:v?1:.25,transition:'height var(--dur-draw,.9s) var(--ease-draw,cubic-bezier(.2,.8,.2,1)) '+i*40+'ms'}}></div></div>`)}</div><div class='flex gap-1.5 mt-1'>${labels.map((l,i)=>html`<span key=${i} class='flex-1 text-center text-[10px] text-zinc-500'>${l}</span>`)}</div></div>`;
+ return html`<div><div class='flex items-end gap-1.5' style=${{height:h+'px'}}>${vals.map((v,i)=>html`<div key=${i} class='flex-1 flex items-end h-full'><div class='w-full rounded-t-lg bg-lime-400' style=${{height:m?Math.max(v?7:2,v/mx*100)+'%':'2%',opacity:v?1:.25,transition:'height var(--dur-draw,.9s) var(--ease-draw,cubic-bezier(.2,.8,.2,1)) '+i*40+'ms'}}></div></div>`)}</div><div class='flex gap-1.5 mt-1'>${labels.map((l,i)=>html`<span key=${i} class='flex-1 text-center k-bl'>${l}</span>`)}</div></div>`;
 }

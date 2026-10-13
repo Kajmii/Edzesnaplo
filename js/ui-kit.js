@@ -36,3 +36,5 @@ function KSheet({t,onClose,foot,c,children}){
  return html`<div class=${kc('k-sc',cl&&'cl')} onClick=${shut}><div ref=${ref} tabIndex='-1' role='dialog' aria-modal='true' aria-label=${tr(t)} class=${kc('k-sh',c)} onClick=${e=>e.stopPropagation()}>
   <div class='k-sh-h'><h3 class='k-sh-t'>${t}</h3><button type='button' class='k-ib' onClick=${shut} aria-label=${tr('Bezárás')}><${UiIco} n='x' s=${22}/></button></div>
   <div class='k-sh-b'>${children}</div>${foot&&html`<div class='k-sh-f'>${foot}</div>`}</div></div>`}
+// léptető (− érték +): a lab felülírja a kijelzett szöveget
+function KStep({v,on,min=0,step=1,lab}){return html`<div class='k-step'><button type='button' class='k-ib sq' aria-label=${tr('Kevesebb')} onClick=${()=>on(Math.max(min,Math.round((v-step)*10)/10))}><${UiIco} n='minus' s=${18}/></button><span class='k-step-v'>${lab!=null?lab:v}</span><button type='button' class='k-ib sq' aria-label=${tr('Több')} onClick=${()=>on(Math.round((v+step)*10)/10)}><${UiIco} n='plus' s=${18}/></button></div>`}

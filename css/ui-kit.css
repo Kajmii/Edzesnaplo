@@ -144,6 +144,7 @@ html[data-ui] .k-in::placeholder{color:rgb(var(--ui-muted));opacity:.8}
 @keyframes k-grow{from{transform:scaleX(0)}}
 .k-tags{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
 .k-tag{padding:4px 10px;border:1px solid rgb(var(--ui-control));border-radius:var(--k-chip-r,var(--ui-r-s));font-size:13px}
+.k-row .k-tag{padding:2px 8px;font-size:12px;border-color:rgb(var(--ui-line2));color:rgb(var(--ui-muted))}
 .k-tips{margin:0;padding:0;list-style:none}
 .k-tips>li{display:flex;gap:12px;padding:10px 0;border-top:1px solid rgb(var(--ui-line));font-size:14px;line-height:1.45}
 .k-tips>li>b{flex-shrink:0;min-width:1.2rem;color:rgb(var(--ui-accent-text));font-variant-numeric:tabular-nums}
@@ -156,12 +157,55 @@ html[data-ui] .k-in::placeholder{color:rgb(var(--ui-muted));opacity:.8}
 .k-ch-v{fill:rgb(var(--ui-text))}.k-ch-d{fill:rgb(var(--ui-muted))}.k-ch-g{stroke:rgb(var(--ui-line));stroke-width:1}
 .k-ch-p{fill:none;stroke:rgb(var(--ui-accent-text));stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.k-ch-c{fill:rgb(var(--ui-accent-text))}
 
+/* elrendezés-segédek, táblázat, léptető, étel-összesítő */
+.k-stack{display:grid;gap:12px;min-width:0}
+.k-g2,.k-g3{display:grid;gap:12px;min-width:0}
+.k-g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.k-g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.k-span2{grid-column:1/-1}
+.k-mb{margin-bottom:12px}
+.k-center{text-align:center}
+.k-stats.c3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.k-stats.c4{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.k-stats.c3 .k-stat,.k-stats.c4 .k-stat{padding:10px}
+.k-stats.c3 .k-stat-v,.k-stats.c4 .k-stat-v{font-size:20px}
+html[data-ui="gym"] .k-stats.c3 .k-stat-v,html[data-ui="gym"] .k-stats.c4 .k-stat-v{font-size:24px}
+.k-warn{color:rgb(var(--ui-warn))}
+.k-tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:8px 0;border-top:1px solid rgb(var(--ui-line));font-size:14px;min-width:0}
+.k-tr.k-th{border-top:0;padding-top:0;font-size:12px;color:rgb(var(--ui-muted))}
+.k-tr>b{font-weight:500;color:rgb(var(--ui-accent-text))}
+.k-tr2{display:flex;justify-content:space-between;gap:12px}
+.k-tr2>.k-r,.k-tr2>b{flex-shrink:0;text-align:right}
+.k-tr:first-of-type{border-top:0}
+.k-phase{font-size:28px;font-weight:600;color:rgb(var(--ui-accent-text))}
+.k-phase.rest{color:rgb(var(--ui-muted))}
+html[data-ui="gym"] .k-phase{font-family:var(--ui-font-head);font-weight:400;letter-spacing:.03em;text-transform:uppercase}
+.k-opt-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 4px}
+.k-step{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.k-step-v{min-width:3rem;text-align:center;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.k-ib.sq{border:1px solid rgb(var(--ui-control));color:rgb(var(--ui-text))}
+.k-datenav{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 8px}
+.k-datenav-t{min-width:6rem;text-align:center;font-size:16px;font-weight:600}
+.k-flip>svg{transform:rotate(180deg)}
+.k-fsum{display:flex;flex-direction:column;align-items:center;gap:16px;min-width:0;margin-bottom:12px}
+.k-fsum-v{font-size:28px;line-height:1;font-weight:600;font-variant-numeric:tabular-nums}
+.k-fsum-l{font-size:12px;color:rgb(var(--ui-muted))}
+.k-macros{width:100%;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.k-mr{display:flex;flex-direction:column;align-items:center;min-width:0}
+.k-mr-v{font-size:12px;font-weight:600}
+.k-mr-l{margin-top:4px;font-size:12px;overflow-wrap:anywhere;text-align:center}
+.k-mr-s{font-size:12px;color:rgb(var(--ui-muted))}
+.k-water-t{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:rgb(var(--ui-text))}
+.k-water-t>svg{color:rgb(var(--ui-accent-text))}
+.k-bl{font-size:12px;color:rgb(var(--ui-muted))}
+.k-bar-f{transition:transform var(--dur-draw) var(--ease-draw)}
+
 /* ===== Pro: lapos, vékony vonalak, mono feliratok ===== */
 html[data-ui="pro"] .k-sec-h{padding-bottom:8px;border-bottom:1px solid rgb(var(--ui-text))}
 html[data-ui="pro"] .k-sec-t{font-family:var(--ui-font-mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-text))}
 html[data-ui="pro"] .k-card,html[data-ui="pro"] .k-stat{border-radius:4px}
 html[data-ui="pro"] .k-sh{border-top:2px solid rgb(var(--ui-text))}
-html[data-ui="pro"] .k-pr,html[data-ui="pro"] .k-best>b,html[data-ui="pro"] .k-goal>b,html[data-ui="pro"] .k-tips>li>b{font-family:var(--ui-font-mono)}
+html[data-ui="pro"] .k-fsum-v,html[data-ui="pro"] .k-step-v,html[data-ui="pro"] .k-phase,html[data-ui="pro"] .k-pr,html[data-ui="pro"] .k-best>b,html[data-ui="pro"] .k-goal>b,html[data-ui="pro"] .k-tips>li>b{font-family:var(--ui-font-mono)}
 html[data-ui="pro"] .k-lb,html[data-ui="pro"] .k-fld-l{font-family:var(--ui-font-mono);font-size:12px;letter-spacing:.04em}
 html[data-ui="pro"] .k-stat-v{font-family:var(--ui-font-mono);font-weight:500}
 html[data-ui="pro"] .k-busy-a i{width:100%;height:2px;background:rgb(var(--ui-text));animation:k-line 1.8s var(--ease-draw) infinite}
@@ -177,10 +221,13 @@ html[data-ui="gym"] .k-card.on{border-left-color:rgb(var(--ui-accent))}
 html[data-ui="gym"] .k-cd-t{font-family:var(--ui-font-head);font-size:20px;font-weight:400;letter-spacing:.03em;text-transform:uppercase}
 html[data-ui="gym"] .k-lb,html[data-ui="gym"] .k-fld-l{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 html[data-ui="gym"] .k-row{border-top-width:2px}
+html[data-ui="gym"] .k-tr{border-top-width:2px}
+html[data-ui="gym"] .k-step-v,html[data-ui="gym"] .k-fsum-v,html[data-ui="gym"] .k-datenav-t,html[data-ui="gym"] .k-water-t{font-family:var(--ui-font-head);font-weight:400;letter-spacing:.03em;text-transform:uppercase}
+html[data-ui="gym"] .k-ib.sq{border-width:2px;border-radius:0}
 html[data-ui="gym"] .k-sh{border-top:6px solid rgb(var(--ui-accent));border-radius:0}
 html[data-ui="gym"] .k-sh-t,html[data-ui="gym"] .k-day-n,html[data-ui="gym"] .k-wh-t{font-family:var(--ui-font-head);font-size:20px;font-weight:400;letter-spacing:.03em;text-transform:uppercase}
 html[data-ui="gym"] .k-pr,html[data-ui="gym"] .k-best>b{font-family:var(--ui-font-head);font-weight:400;letter-spacing:.02em}
-html[data-ui="gym"] .k-tag{border-width:2px;border-radius:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:12px}
+html[data-ui="gym"] .k-tag{border-width:1px;border-radius:0;font-weight:800;letter-spacing:.04em;text-transform:uppercase;font-size:12px;padding:3px 8px}
 html[data-ui="gym"] .k-bar-tr{border-radius:0}
 html[data-ui="gym"] .k-btn{border-radius:0;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 html[data-ui="gym"] .k-btn.sec,html[data-ui="gym"] .k-btn.dan{border-width:2px}
@@ -204,6 +251,8 @@ html[data-ui="family"] .k-sh{border-radius:24px 24px 0 0}
 html[data-ui="family"] .k-sh::before{content:'';align-self:center;width:44px;height:5px;margin:-6px 0 12px;border-radius:3px;background:rgb(var(--ui-line2))}
 html[data-ui="family"] .k-sh-t,html[data-ui="family"] .k-day-n,html[data-ui="family"] .k-wh-t{font-weight:700}
 html[data-ui="family"] .k-tag{border-width:2px;font-weight:700}
+html[data-ui="family"] .k-ib.sq{border-width:2px;border-radius:14px}
+html[data-ui="family"] .k-step-v,html[data-ui="family"] .k-datenav-t{font-weight:700}
 html[data-ui="family"] .k-card,html[data-ui="family"] .k-stat{border-width:2px;border-radius:20px}
 html[data-ui="family"] .k-cd-t{font-weight:700}
 html[data-ui="family"] .k-lb,html[data-ui="family"] .k-fld-l{font-weight:700;color:rgb(var(--ui-text))}
@@ -222,7 +271,7 @@ html[data-ui="family"] .k-busy-a{height:64px}
 html[data-ui="family"] .k-busy-a i{width:56px;height:56px;border:6px solid rgb(var(--ui-accent));border-radius:50%;box-sizing:border-box;animation:k-breath 3.2s ease-in-out infinite}
 
 @media (prefers-reduced-motion:reduce){
-  .k-sc,.k-sh,.k-bar-f{animation:none!important}
+  .k-sc,.k-sh,.k-bar-f{animation:none!important;transition:none!important}
   .k-sw-th,.k-sw-tr,.k-seg>button,.k-chip,.k-tabs>button::after{transition:none}
   html[data-ui] .k-busy-a i{animation:none!important;transform:none;opacity:1}
 }
