@@ -290,6 +290,16 @@ html[data-ui] textarea.k-in{display:block;height:96px;padding:12px;font-size:14p
 .k-cmp figure{margin:0;min-width:0}
 .k-cmp figcaption{margin-top:6px;font-size:13px;text-align:center;color:rgb(var(--ui-muted))}
 
+/* csoportok */
+.k-code{margin:0 0 8px;padding:12px;text-align:center;font-family:var(--ui-font-mono);font-size:28px;font-weight:600;letter-spacing:.2em;user-select:all;border:1px dashed rgb(var(--ui-control));border-radius:var(--ui-r-m)}
+.k-lb-r{gap:10px}
+.k-lb-r .k-bar-tr,.k-lb-r .k-bar-f{display:block}
+.k-lb-r.me .k-row-t{font-weight:700;color:rgb(var(--ui-accent-text))}
+.k-rk{min-width:1.5rem;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.k-unit{font-size:12px;font-weight:400;color:rgb(var(--ui-muted))}
+.k-st-live{border-color:rgb(var(--ui-accent));color:rgb(var(--ui-accent-text))}
+.k-st-done{color:rgb(var(--ui-muted))}
+
 /* ===== Pro: lapos, vékony vonalak, mono feliratok ===== */
 html[data-ui="pro"] .k-sec-h{padding-bottom:8px;border-bottom:1px solid rgb(var(--ui-text))}
 html[data-ui="pro"] .k-sec-t{font-family:var(--ui-font-mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-text))}
@@ -311,6 +321,8 @@ html[data-ui="gym"] .k-card.on{border-left-color:rgb(var(--ui-accent))}
 html[data-ui="gym"] .k-cd-t{font-family:var(--ui-font-head);font-size:20px;font-weight:400;letter-spacing:.03em;text-transform:uppercase}
 html[data-ui="gym"] .k-lb,html[data-ui="gym"] .k-fld-l{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 html[data-ui="gym"] .k-row{border-top-width:2px}
+html[data-ui="gym"] .k-code{border-radius:0;border-width:2px;font-family:var(--ui-font-head);font-weight:400}
+html[data-ui="gym"] .k-rk{font-family:var(--ui-font-head);font-weight:400}
 html[data-ui="gym"] .k-pt,html[data-ui="gym"] .k-pbig{border-radius:0}
 html[data-ui="gym"] .k-brand-t,html[data-ui="gym"] .k-rest-v{font-family:var(--ui-font-head);font-weight:400;letter-spacing:.03em;text-transform:uppercase}
 html[data-ui="gym"] .k-brand-t{font-size:44px;line-height:1}
@@ -348,6 +360,7 @@ html[data-ui="family"] .k-sh{border-radius:24px 24px 0 0}
 html[data-ui="family"] .k-sh::before{content:'';align-self:center;width:44px;height:5px;margin:-6px 0 12px;border-radius:3px;background:rgb(var(--ui-line2))}
 html[data-ui="family"] .k-sh-t,html[data-ui="family"] .k-day-n,html[data-ui="family"] .k-wh-t{font-weight:700}
 html[data-ui="family"] .k-tag{border-width:2px;font-weight:700}
+html[data-ui="family"] .k-code{border-width:2px;border-radius:14px}
 html[data-ui="family"] .k-pt,html[data-ui="family"] .k-pbig{border-radius:14px}
 html[data-ui="family"] .k-brand-t{font-weight:700}
 html[data-ui="family"] .k-logo{border-radius:50%}

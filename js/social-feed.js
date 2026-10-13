@@ -49,7 +49,7 @@ function SocProfile({u,me,back}){
   }catch(r){if(!off){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.');setP(null)}}})();
   return()=>{off=true}},[u]);
  const St=({l,v})=>html`<div class='k-stat'><div class='k-stat-v' style=${{justifyContent:'center'}}>${v}</div><div class='k-stat-l' style=${{textAlign:'center'}}>${l}</div></div>`;
- return html`<div><${KBtn} v='gho' sm=${true} ic='back' onClick=${back}>Vissza<//>
+ return html`<div><${KBtn} v='gho' sm=${true} ic='back' c='k-mb' onClick=${back}>Vissza<//>
   ${p===undefined&&html`<${KBusy} t='Betöltés'/>`}
   ${p===null&&html`<p class='k-hint'>${msg||'A felhasználó nem található.'}</p>`}
   ${p&&html`<div class='up k-card'>
