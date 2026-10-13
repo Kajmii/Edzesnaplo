@@ -7,8 +7,9 @@
    tab/sub/focus: az app útvonala (App.tab, a képernyő almenüje, a képernyőn belüli fül)
    m: ha főmenü-sor is, a menü saját címe, sorrendje (o) és irányonkénti leírása (d). A leírások rövidek (mockup 7. szabálya). */
 const FEAT_GROUPS=['today','meal','progress','social','me'];
-const FEAT_TABS=['home','log','plan','hist','food','tools','social','cycle','profile','opt','edit'];
-const F_=(id,group,level,tab,sub,focus,ic,t,kw,m)=>({id,group,level,tab,sub,focus,ic,t,kw:kw.split(' '),help:id,m:m||null});
+const FEAT_TABS=['home','log','plan','hist','stats','food','tools','social','cycle','profile','opt','edit'];
+// via: ha a funkció képernyőjét nem a főmenü, hanem egy másik képernyő nyitja (pl. a Tervszerkesztőt a Terv)
+const F_=(id,group,level,tab,sub,focus,ic,t,kw,m,via)=>({id,group,level,tab,sub,focus,ic,t,kw:kw.split(' '),help:id,m:m||null,via:via||''});
 const FEATURES=[
  // ---- Ma ----
  F_('home.hero','today',1,'home','','','home','Kezdőlap: mai edzés','kezdőlap mai edzés indítás home start'),
@@ -36,10 +37,9 @@ const FEATURES=[
  F_('workout.plates','today',3,'log','','','dumbbell','Rúd és tárcsák','tárcsa rúd súly plates barbell'),
  F_('plan.week','today',1,'plan','','','cal','Heti terv','terv heti beosztás célsúly plan weekly',{k:'plan',t:'Terv',o:2,d:{pro:'Heti és havi terv',gym:'Heti és havi ciklus',family:'Mi jön a héten'}}),
  F_('plan.notify','today',3,'plan','','','cal','Értesítések és naptár','értesítés naptár emlékeztető ics notification calendar'),
- F_('plan.editor','today',3,'edit','','','edit','Tervszerkesztő','tervszerkesztő saját terv szerkesztés plan editor custom',{k:'edit',t:'Tervszerkesztő',o:12,d:{pro:'Saját edzések szerkesztése',gym:'Saját edzések',family:'Saját edzéseid'}}),
+ F_('plan.editor','today',3,'edit','','','edit','Tervszerkesztő','tervszerkesztő saját terv szerkesztés plan editor custom',null,'plan'),
  F_('log.list','today',1,'hist','','','log','Napló','napló edzések előzmények log history',{k:'hist',t:'Napló',o:3,d:{pro:'Korábbi edzések és sorozatok',gym:'Mit és mennyit emeltél',family:'Amit már megcsináltál'}}),
- F_('log.progress','today',2,'hist','','','chart','Fejlődés-grafikon','fejlődés grafikon progress chart'),
- F_('log.records','today',2,'hist','','','star','Rekordok és izomcsoportok','rekord izomcsoport records muscle'),
+ 
  // ---- Étkezés ----
  F_('food.log','meal',2,'food','','','food','Étel-napló','étel kalória makró napló food calories macros',{k:'food',t:'Étel',o:4,d:{pro:'Kalória és makrók',gym:'Kalória és fehérje',family:'Mit ettél ma'}}),
  F_('food.water','meal',3,'food','','water','drop','Vízbevitel','víz ivás folyadék water'),
@@ -48,22 +48,26 @@ const FEATURES=[
  F_('food.suggest','meal',3,'food','','','book','Receptjavaslat','recept javaslat hátralévő suggestion'),
  F_('recipes.list','meal',3,'food','rec','','book','Receptek','recept receptek keresés recipes',{k:'recipes',t:'Receptek',o:5,d:{pro:'Mentett ételek és ötletek',gym:'Mentett ételek',family:'Mentett ételek'}}),
  // ---- Fejlődés ----
+ F_('stats.main','progress',2,'stats','','','star','Statisztikák és rekordok','statisztika rekord grafikon fejlődés stats records progress',{k:'stats',t:'Statisztikák és rekordok',o:7,d:{pro:'Rekordok, grafikonok, volumen',gym:'Rekordok és volumen',family:'Amit elértél'}}),
+ F_('log.progress','progress',2,'stats','','','chart','Fejlődés-grafikon','fejlődés grafikon progress chart'),
+ F_('log.records','progress',2,'stats','','','star','Rekordok és izomcsoportok','rekord izomcsoport records muscle'),
+ F_('stats.volume','progress',2,'stats','','','chart','Heti volumen, utolsó 8 hét','heti volumen széria grafikon volume weekly streak'),
  F_('body.measure','progress',2,'tools','b','','chart','Test és mérések','test mérés súly méret body measurements weight',{k:'body',t:'Test és mérések',o:6,d:{pro:'Súly, méretek, fotók',gym:'Súly, méretek, rekordok',family:'Súly és méretek'}}),
  F_('body.photos','progress',3,'tools','b','photos','user','Haladási fotók','fotó kép haladás összehasonlítás photos progress compare'),
- F_('tools.cardio','progress',3,'tools','c','c','calc','Kardió-számoló','kardió kalória égetés cardio',{k:'calc',t:'Számolók',o:11,d:{pro:'Kardió, kalória, erő, intervall',gym:'Kardió, kalória, erő',family:'Kalória és kardió'}}),
+ F_('tools.cardio','progress',3,'tools','c','c','calc','Kardió-számoló','kardió kalória égetés cardio',{k:'calc',t:'Számolók',o:8,d:{pro:'Kardió, kalória, erő, intervall',gym:'Kardió, kalória, erő',family:'Kalória és kardió'}}),
  F_('tools.kcal','progress',3,'tools','c','k','calc','Kalória és makró számoló','kalória makró tdee bmr calorie macro'),
  F_('tools.strength','progress',3,'tools','c','e','calc','Erő-számoló','1rm százalék tárcsa bemelegítés strength plates warmup'),
  F_('tools.interval','progress',3,'tools','c','i','calc','Intervall-időzítő','intervall tabata hiit emom interval timer'),
- F_('cycle.main','progress',3,'cycle','','','cycle','Ciklus-követés','ciklus menstruáció cycle period',{k:'cycle',t:'Ciklus',o:8,d:{pro:'Csak ha be van kapcsolva',gym:'Csak ha bekapcsoltad',family:'Ha bekapcsoltad'}}),
+ F_('cycle.main','progress',3,'cycle','','','cycle','Ciklus-követés','ciklus menstruáció cycle period',{k:'cycle',t:'Ciklus',o:9,d:{pro:'Csak ha be van kapcsolva',gym:'Csak ha bekapcsoltad',family:'Ha bekapcsoltad'}}),
  // ---- Közösség ----
- F_('social.feed','social',3,'social','','feed','people','Hírfolyam','hírfolyam közösség feed community',{k:'social',t:'Közösség',o:7,d:{pro:'Csoportok és kihívások',gym:'Csoportok, kihívások',family:'Barátok, csoportok'}}),
+ F_('social.feed','social',3,'social','','feed','people','Hírfolyam','hírfolyam közösség feed community',{k:'social',t:'Közösség',o:10,d:{pro:'Csoportok és kihívások',gym:'Csoportok, kihívások',family:'Barátok, csoportok'}}),
  F_('social.conn','social',3,'social','','conn','people','Kapcsolatok','követés barát kapcsolat follow friends'),
  F_('social.groups','social',3,'social','','grp','people','Csoportok és kihívások','csoport kihívás ranglista groups challenges'),
  F_('social.profile','social',3,'social','','prof','user','Közösségi profil','közösségi profil adatvédelem privacy'),
  F_('social.report','social',3,'social','','','info','Jelentés és tiltás','jelentés tiltás report block'),
  // ---- Fiók és beállítások ----
- F_('me.profile','me',1,'profile','','','user','Profil','profil adatok célok profile goals',{k:'profile',t:'Profil',o:9,d:{pro:'Adatok és célok',gym:'Adatok és célok',family:'Adataid'}}),
- F_('opt.ui','me',1,'opt','','','sliders','Felület és színséma','felület téma szín ui theme scheme',{k:'opt',t:'Beállítások',o:10,d:{pro:'Felület, színséma, fiók',gym:'Felület, színek, fiók',family:'Betűméret, színek'}}),
+ F_('me.profile','me',1,'profile','','','user','Profil','profil adatok célok profile goals',{k:'profile',t:'Profil',o:11,d:{pro:'Adatok és célok',gym:'Adatok és célok',family:'Adataid'}}),
+ F_('opt.ui','me',1,'opt','','','sliders','Felület és színséma','felület téma szín ui theme scheme',{k:'opt',t:'Beállítások',o:12,d:{pro:'Felület, színséma, fiók',gym:'Felület, színek, fiók',family:'Betűméret, színek'}}),
  F_('opt.lang','me',1,'opt','','','sliders','Nyelv','nyelv language magyar english'),
  F_('opt.fontsize','me',1,'opt','','','sliders','Betűméret','betűméret font size'),
  F_('opt.motion','me',1,'opt','','','sliders','Animációk','animáció mozgás animation motion'),
@@ -72,7 +76,7 @@ const FEATURES=[
  F_('opt.contrast','me',2,'opt','','','sliders','Nagy kontraszt','kontraszt contrast accessibility'),
  F_('opt.quiet','me',3,'opt','','','sliders','Csendes órák','értesítés csendes órák quiet hours notifications'),
  F_('opt.workout','me',2,'opt','','','sliders','Edzés-beállítások','heti cél pihenő célsúly lépcső workout settings'),
- F_('opt.export','me',3,'opt','data','','download','Export és adatok','export csv pdf mentés backup data',{k:'data',t:'Export és adatok',o:13,d:{pro:'CSV, PDF, mentés',gym:'Export, mentés',family:'Adataid mentése'}}),
+ F_('opt.export','me',3,'opt','data','','download','Export és adatok','export csv pdf mentés backup data'),
  F_('opt.json','me',3,'opt','data','','download','JSON-export','json export'),
  F_('opt.account','me',1,'opt','','','user','Fiók és szinkron','fiók szinkron kilépés account sync'),
  F_('opt.reset','me',2,'opt','','','sliders','Alapértékek visszaállítása','visszaállítás alapérték reset defaults'),

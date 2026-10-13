@@ -88,7 +88,7 @@ function Act({v,on}){
 }
 const MS=[['kg','Súly','kg'],['waist','Derék','cm'],['chest','Mell','cm'],['arm','Kar','cm'],['thigh','Comb','cm'],['hip','Csípő','cm'],['sh','Váll','cm']];
 function Body({setP}){
- const[bw,setBw]=useState(()=>gj('bw',[])),[v,setV]=useState({}),[mt,setMt]=useState('kg'),[bt,setBt]=useState('m');
+ const[bw,setBw]=useState(()=>gj('bw',[])),[v,setV]=useState({}),[mt,setMt]=useState('kg'),[bt,setBt]=useState(LVL_FORCE==='body.photos'?'f':'m');
  useEffect(()=>sjt('bw',bw),[bw]);
  const add=()=>{const d=dk(new Date()),n={};MS.forEach(([k])=>{if(+v[k])n[k]=+v[k]});if(!Object.keys(n).length)return;setBw(b=>{const o=b.find(e=>e.d===d)||{d};return[...b.filter(e=>e.d!==d),{...o,...n}].sort((a,c)=>a.d<c.d?-1:1)});if(n.kg)setP(p=>({...p,kg:String(n.kg)}));setV({});toast(tr('Mérés mentve'))};
  const pts=bw.filter(e=>e[mt]).slice(-12).map(e=>({d:e.d,v:e[mt]})),f=pts[0],l=pts[pts.length-1],ch=f&&l?l.v-f.v:0,u=MS.find(m=>m[0]===mt)[2];

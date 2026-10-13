@@ -131,6 +131,28 @@ html[data-ui="family"] .ui-back{align-self:flex-start;font-size:16px;font-weight
 html[data-ui="family"] .ui-back .ui-ico{width:18px;height:18px;stroke-width:2.6}
 html[data-ui="family"] .ui-hdr-t{font-size:24px;line-height:1.15;font-weight:700}
 
+/* --- kereső, csoportok, lábsor --- */
+.ui-msearch{flex-shrink:0;position:relative;padding:12px var(--ui-px) 4px}
+.ui-msearch .ui-ico{position:absolute;left:calc(var(--ui-px) + 14px);top:50%;margin-top:4px;transform:translateY(-50%);color:rgb(var(--ui-muted));pointer-events:none}
+html[data-ui] .ui-msearch input.k-in{width:100%;box-sizing:border-box;padding-left:42px}
+.ui-mg{display:block}
+.ui-mgh{margin:0;padding:14px 0 6px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+.ui-mgl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.ui-mgl>li{display:block}
+.ui-mfoot{flex-shrink:0;margin:0;list-style:none;display:flex;flex-direction:column;padding:6px var(--ui-px) calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgb(var(--ui-line))}
+.ui-mfoot>li{display:block}
+html[data-ui] .ui-mlist{padding-bottom:12px}
+html[data-ui] .ui-mlist-s{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+.ui-mnone{margin:12px 0;font-size:14px;color:rgb(var(--ui-muted))}
+.ui-mtag{display:block;margin-top:4px;font-size:11px;font-weight:700;letter-spacing:.04em;color:rgb(var(--ui-accent-text))}
+html[data-ui="pro"] .ui-mgh{font-family:var(--ui-font-mono)}
+html[data-ui="gym"] .ui-mgl,html[data-ui="gym"] .ui-mfoot{gap:4px}
+html[data-ui="gym"] .ui-mgh{font-weight:800;letter-spacing:.16em}
+html[data-ui="gym"] .ui-mfoot{border-top-width:2px}
+html[data-ui="family"] .ui-mgl,html[data-ui="family"] .ui-mfoot{gap:6px}
+html[data-ui="family"] .ui-mgh{padding:14px 4px 6px;font-size:14px;letter-spacing:0;text-transform:none;font-weight:700}
+html[data-ui="family"] .ui-mfoot{border-top-width:2px}
+
 /* "Még N funkció rejtve": a szint miatt rejtett funkciók jelzése a menü alján (a szint a Beállításokban váltható) */
 .ui-mmore{box-sizing:border-box;width:100%;min-height:var(--ui-tap);display:flex;flex-direction:column;gap:2px;text-align:left;margin-top:8px;padding:10px 14px;font-family:inherit;color:inherit;background:transparent;border:1px dashed rgb(var(--ui-line2));border-radius:var(--ui-r-m);cursor:pointer}
 .ui-mmore-t{font-size:14px;font-weight:600;color:rgb(var(--ui-accent-text))}

@@ -46,21 +46,34 @@ function Chart({pts,dec}){
 }
 
 /* ---------- Előzmények és statisztika ---------- */
-function Hist({hist,del}){
+// Fejlődés-grafikon gyakorlatonként (a Statisztikák és rekordok képernyőn)
+function Prog({hist}){
  const names=[...new Set(hist.flatMap(w=>w.ex.map(e=>e.n)))];
  const[ex,setEx]=useState(''),[m,setM]=useState('w');
  const cur=names.includes(ex)?ex:names[0];
  const pts=hist.filter(w=>w.ex.some(e=>e.n===cur)).sort((a,b)=>a.date<b.date?-1:1).slice(-10).map(w=>{const e=w.ex.find(x=>x.n===cur);return{d:w.date,v:m==='w'?Math.max(...e.sets.map(s=>+s.kg||0)):m==='r'?Math.max(...e.sets.map(s=>(+s.kg||0)*(1+(+s.reps||0)/30))):vol(e.sets)}});
- const dates=[...new Set(hist.map(w=>w.date))].sort().reverse();
- return html`<div>
-  ${!hist.length&&html`<${KEmpty} ic='log' t='Előzmények' s='Itt jelennek meg a befejezett edzéseid. Indíts egyet az Edzés menüpontból.'/>`}
-  ${hist.length>0&&lvlOn('log.records')&&html`<${Rec} hist=${hist}/>`}
-  ${hist.length>0&&lvlOn('log.progress')&&html`<${KSec} t='Fejlődés'><${KCard}>
+  return html`<${KSec} t='Fejlődés'><${KCard}>
    <${KSel} v=${cur} on=${setEx} o=${names.map(n=>[n,n])}/>
    <div style=${{height:'12px'}}></div>
    <${KSeg} v=${m} on=${setM} o=${[['w','Max súly'],['v','Térfogat'],['r','Becsült 1RM']]}/>
    ${pts.length>0&&html`<div class='k-best'>Legjobb: <b>${fmt(Math.max(...pts.map(p=>p.v)))}</b> kg</div>`}
-   <${Chart} pts=${pts}/><//><//>`}
+   <${Chart} pts=${pts}/><//><//>`;
+}
+// Statisztikák és rekordok: gyűjtő nézet a meglévő adatokból (heti volumen, rekordok, izomcsoportok, fejlődés)
+function Stats({hist,today}){
+ if(!hist.length)return html`<${KEmpty} ic='star' t='Statisztikák és rekordok' s='Itt jelennek meg a rekordjaid és a grafikonjaid, amint rögzítesz egy edzést.'/>`;
+ const vw=uiVolWeeks(hist,today,8),st=uiStreak(hist,today),w0=pd(weekOf(today)[0]),labs=vw.vals.map((_,i)=>uiIsoWeek(new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()-7*(7-i))));
+ const dl=vw.delta!=null?' · '+(vw.delta>=0?'+':'−')+uiPct(vw.delta):'',sk=st>0?(LANG==='en'?' · '+st+'-week streak':' · '+st+' hetes széria'):'';
+ return html`<div>
+  <${KSec} t='Heti volumen, utolsó 8 hét'><${KCard}><${Bars} vals=${vw.vals} labels=${labs}/>
+   <p class='k-hint k-center'>${(LANG==='en'?'This week: ':'Ezen a héten: ')+fmt(vw.cur)+' kg'+dl+sk}</p><//><//>
+  <${Rec} hist=${hist}/>
+  <${Prog} hist=${hist}/></div>`;
+}
+function Hist({hist,del}){
+ const dates=[...new Set(hist.map(w=>w.date))].sort().reverse();
+ return html`<div>
+  ${!hist.length&&html`<${KEmpty} ic='log' t='Előzmények' s='Itt jelennek meg a befejezett edzéseid. Indíts egyet az Edzés menüpontból.'/>`}
   ${dates.map(d=>html`<${KSec} key=${d} t=${fd(d)}>${hist.filter(w=>w.date===d).map(w=>html`<${KCard} key=${w.id}>
    <div class='k-wh'><div class='k-wh-tx'><div class='k-wh-t'>${w.name}</div><div class='k-row-s'>${fmt(w.vol)} kg összes térfogat</div></div><${KDel} on=${()=>del(w.id)}/></div>
    <div class='k-list'>${w.ex.map(e=>html`<${KRow} key=${e.n} t=${e.n} s=${e.sets.map(s=>`${s.kg||0}×${s.reps||0}${s.rpe?' @'+s.rpe:''}`).join(',  ')}/>`)}</div><//>`)}<//>`)}
@@ -75,7 +88,7 @@ const bestSet=(hist,n,day)=>{for(const w of hist){if(day&&w.name!==day)continue;
 const goalsFor=(hist,d)=>d.e.map(n=>{const s=bestSet(hist,n,d.n)||bestSet(hist,n),w=s&&+s.kg>0?up(+s.kg):0;return{n,kg:w,reps:s?s.reps:'',txt:tr(n)+': '+(w?w+' kg × '+(s.reps||'?'):tr('új gyakorlat, találd meg a kezdősúlyt'))}});
 const remind=(hist,v)=>{const x=dayOf(v);return{t:tr('Ma: ')+tr(x.n),b:tr(MOT[new Date().getDate()%MOT.length])+'\n'+tr('Célok:')+'\n'+goalsFor(hist,x).map(g=>g.txt).join('\n')}};
 
-function Plan({plan,setPlan,hist,begin,today}){
+function Plan({plan,setPlan,hist,begin,today,edit}){
  const W=[[1,'Hétfő'],[2,'Kedd'],[3,'Szerda'],[4,'Csütörtök'],[5,'Péntek'],[6,'Szombat'],[0,'Vasárnap']],td=new Date().getDay();
  const set=(d,v)=>setPlan(p=>({...p,days:{...p.days,[d]:v||null}}));
  const tgl=async()=>{if(!plan.on){try{await Notification.requestPermission()}catch(e){}}setPlan(p=>({...p,on:!p.on}))};
@@ -92,6 +105,7 @@ function Plan({plan,setPlan,hist,begin,today}){
  return html`<div>
   <p class='k-lead'>Válaszd ki, melyik napon mit edzel. A cél az előző hasonló edzésed legnehezebb sorozata +${String(OPT.pct).replace('.',',')}%.</p>
   <div class='k-btns'><${KBtn} v='sec' onClick=${()=>setPlan(p=>({...p,days:{1:'ppl:0',2:'ppl:1',3:'ppl:2',5:'ul:0',6:'ul:1'}}))}>Minta terv<//><${KBtn} v='gho' onClick=${()=>setPlan(p=>({...p,days:{}}))}>Törlés<//></div>
+  ${lvlOn('plan.editor')&&html`<div class='k-mb'><${KBtn} v='sec' full=${true} ic='edit' onClick=${edit}>Saját edzések szerkesztése<//></div>`}
   <div class='ui-stagger'>${W.map(([d,l])=>{const v=plan.days[d],x=v&&dayOf(v),g=x?goalsFor(hist,x):[];return html`<${KCard} key=${d} on=${d===td}>
    <div class='k-day'><span class='k-day-n'>${l}</span><${KSel} v=${v||''} on=${y=>set(d,y)} o=${[['','Pihenőnap'],...daysList().map(o=>[o.v,o.n])]}/></div>
    ${x&&html`<${CycChip} k=${wdNext(d)}/>`}

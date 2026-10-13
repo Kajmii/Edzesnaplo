@@ -44,15 +44,15 @@ function App({user,out}){
   setFin({name:aw.name,n:ex.length,vol:ex.reduce((a,e)=>a+vol(e.sets),0),sets:ex.reduce((a,e)=>a+e.sets.length,0),pr:ex.reduce((a,e)=>a+e.sets.filter(s=>s.pr).length,0)});setAw(null);setRest(null);setTab('home');
  };
  const quit=()=>{setAw(null);setRest(null)};
- const go2=(t,u)=>{setTab(t);setSub(u||'');setMenu(false);try{window.scrollTo(0,0)}catch(e){}};
+ const go2=(t,u,id)=>{lvlForce(id);setTab(t);setSub(u||'');setMenu(false);try{window.scrollTo(0,0)}catch(e){}};
  const startToday=()=>{const v=plan.days[new Date().getDay()],x=v&&dayOf(v);if(!x)return go2('log');const g=goalsFor(hist,x);begin(x.n,x.e,Object.fromEntries(g.map(y=>[y.n,y])),today);setTab('log')};
  return html`<${React.Fragment}>
-  ${tab!=='home'&&!(tab==='log'&&aw)&&html`<${UiHeader} title=${uiTitle(tab,sub)} onBack=${()=>{setTab('home');setSub('');setMenu(true);try{window.scrollTo(0,0)}catch(e){}}}/>`}
+  ${tab!=='home'&&!(tab==='log'&&aw)&&html`<${UiHeader} title=${uiTitle(tab,sub)} back=${tab==='edit'?'Terv':undefined} onBack=${()=>{if(tab==='edit')return go2('plan');setTab('home');setSub('');setMenu(true);try{window.scrollTo(0,0)}catch(e){}}}/>`}
   <div id='ui-main' key=${tab} class="ui-main up max-w-md mx-auto" data-home=${tab==='home'?'':undefined} data-inner=${tab!=='home'?'':undefined}>
    ${tab==='home'&&html`<${UiHome} hist=${hist} sel=${sel} setSel=${setSel} today=${today} aw=${aw} go=${()=>setTab('log')} nav=${go2} startToday=${startToday} plan=${plan} user=${user} out=${out} opt=${opt} setOpt=${setOpt}/>`}
    ${tab==='log'&&aw&&html`<${UiLog} aw=${aw} setAw=${setAw} hist=${hist} rest=${rest} setRest=${setRest} rd=${rd} setRd=${setRd} startRest=${startRest} finish=${finish} quit=${quit} onBack=${()=>{setTab('home');setSub('');setMenu(false)}}/>`}${tab==='log'&&!aw&&html`<${LogPick} hist=${hist} sel=${sel} begin=${begin}/>`}
-   ${tab==='hist'&&html`<${Hist} hist=${hist} del=${id=>setHistT(hist.filter(w=>w.id!==id))}/>`}
-   ${tab==='plan'&&html`<${Plan} plan=${plan} setPlan=${setPlan} hist=${hist} today=${today} begin=${(...a)=>{begin(...a);setTab('log')}}/>`}
+   ${tab==='hist'&&html`<${Hist} hist=${hist} del=${id=>setHistT(hist.filter(w=>w.id!==id))}/>`}${tab==='stats'&&html`<${Stats} hist=${hist} today=${today}/>`}
+   ${tab==='plan'&&html`<${Plan} plan=${plan} setPlan=${setPlan} hist=${hist} today=${today} begin=${(...a)=>{begin(...a);setTab('log')}} edit=${()=>go2('edit')}/>`}
    ${tab==='tools'&&html`<${Tools} key=${sub} init=${sub}/>`}
    ${tab==='social'&&html`<${Social}/>`}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='profile'&&html`<${Profile} user=${user} go=${go2} out=${out}/>`}${tab==='food'&&html`<${Food} init=${sub}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}
    ${tab==='opt'&&html`<${Opts} anchor=${sub} opt=${opt} setOpt=${setOpt} hist=${hist} setHist=${setHistT} plan=${plan} setPlan=${setPlan} user=${user} out=${out} sy=${sy} syncNow=${syncNow} delAcc=${delAcc}/>`}

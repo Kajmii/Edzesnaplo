@@ -35,8 +35,10 @@ const FEAT_IMPL=(()=>{const S=m=>[m,m,m],G=p=>({gap:p});return{
  'plan.notify':S('function Plan('),
  'plan.editor':S('function Editor('),
  'log.list':S('function Hist('),
- 'log.progress':S('function Hist('),
+ 'log.progress':S('function Prog('),
  'log.records':S('function Rec('),
+ 'stats.main':S('function Stats('),
+ 'stats.volume':S('function Stats('),
  'food.log':S('function Food('),
  'food.water':S('function Food('),
  'food.week':S('function Food('),
@@ -70,4 +72,4 @@ const FEAT_IMPL=(()=>{const S=m=>[m,m,m],G=p=>({gap:p});return{
  'opt.account':S('function Opts('),
  'opt.reset':[G('F6'),G('F6'),G('F6')],
  'help.main':[G('F4'),G('F4'),G('F4')],
- 'nav.search':[G('F3'),G('F3'),G('F3')]}})();
+ 'nav.search':S('const featSearch=')}})();
