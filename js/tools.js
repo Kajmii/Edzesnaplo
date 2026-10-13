@@ -87,16 +87,17 @@ function Act({v,on}){
 }
 const MS=[['kg','Súly','kg'],['waist','Derék','cm'],['chest','Mell','cm'],['arm','Kar','cm'],['thigh','Comb','cm'],['hip','Csípő','cm'],['sh','Váll','cm']];
 function Body({setP}){
- const[bw,setBw]=useState(()=>gj('bw',[])),[v,setV]=useState({}),[mt,setMt]=useState('kg');
+ const[bw,setBw]=useState(()=>gj('bw',[])),[v,setV]=useState({}),[mt,setMt]=useState('kg'),[bt,setBt]=useState('m');
  useEffect(()=>sjt('bw',bw),[bw]);
  const add=()=>{const d=dk(new Date()),n={};MS.forEach(([k])=>{if(+v[k])n[k]=+v[k]});if(!Object.keys(n).length)return;setBw(b=>{const o=b.find(e=>e.d===d)||{d};return[...b.filter(e=>e.d!==d),{...o,...n}].sort((a,c)=>a.d<c.d?-1:1)});if(n.kg)setP(p=>({...p,kg:String(n.kg)}));setV({});toast(tr('Mérés mentve'))};
  const pts=bw.filter(e=>e[mt]).slice(-12).map(e=>({d:e.d,v:e[mt]})),f=pts[0],l=pts[pts.length-1],ch=f&&l?l.v-f.v:0,u=MS.find(m=>m[0]===mt)[2];
- return html`<div class='k-stack'>
+ const mi=html`<div class='k-stack'>
   <${KSec} t='Mai mérés'><${KCard}><div class='k-g2'>${MS.map(([k,n,un])=>html`<${F} key=${k} l=${n} u=${un} v=${v[k]||''} on=${x=>setV(o=>({...o,[k]:x}))}/>`)}</div><${KBtn} full=${true} c='k-mt' onClick=${add}>Mentés<//><//><//>
   ${bw.length>0&&html`<div class='k-chips sc'>${MS.filter(([k])=>bw.some(e=>e[k])).map(([k,n])=>html`<${KChip} key=${k} on=${mt===k} onClick=${()=>setMt(k)}>${n}<//>`)}</div>
    ${f&&html`<div class='k-stats c3'><${R} l='Kezdő' v=${f.v.toFixed(1)} u=${u}/><${R} l='Jelenlegi' v=${l.v.toFixed(1)} u=${u}/><${R} l='Változás' v=${(ch>0?'+':'')+ch.toFixed(1)} u=${u}/></div>
    <${KCard}><${Chart} pts=${pts} dec=${1}/><//>`}
    <${KCard}><div class='k-list'>${bw.slice(-5).reverse().map(e=>html`<div key=${e.d} class='k-row'><span class='k-row-tx'><span class='k-row-t'>${fd(e.d)}</span><span class='k-row-s'>${MS.filter(([k])=>e[k]).map(([k,n,un])=>e[k]+' '+un).join(' · ')}</span></span><${KDel} on=${()=>setBw(b=>b.filter(x=>x.d!==e.d))}/></div>`)}</div><//>`}
   ${!bw.length&&html`<p class='k-hint'>Mérd meg magad és mentsd el: a grafikon a változást mutatja.</p>`}</div>`;
+ return html`<div><${KTabs} v=${bt} on=${setBt} o=${[['m','Mérések'],['f','Fotók']]}/>${bt==='f'?html`<${Photos}/>`:mi}</div>`;
 }
 
