@@ -33,7 +33,7 @@ function Avatar({p,s=64}){
 function Social(){
  const id=SESS&&SESS.user&&SESS.user.id,[st,setSt]=useState('load'),[pr,setPr]=useState(null),[se,setSe]=useState(null),[f,setF]=useState({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'}),[terms,setTerms]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[cf,setCf]=useState(false),[tb,setTb]=useState('feed'),[pv,setPv]=useState(null);
  const fill=p=>setF({username:p.username,display_name:p.display_name,avatar_color:p.avatar_color,avatar_icon:p.avatar_icon});
- const load=async()=>{setSt('load');setMsg('');
+ const load=async()=>{setSt('load');setMsg('');socLoadHidden();
   try{const[a,b]=await Promise.all([sbf('/rest/v1/profiles?select=*&user_id=eq.'+id),sbf('/rest/v1/profile_settings?select=*&user_id=eq.'+id)]);
    if(!a.ok||!b.ok){setMsg(socErr(a.ok?b:a));return setSt('err')}
    const p=a.j&&a.j[0];setSe(b.j&&b.j[0]||null);sj('socshare',!!(b.j&&b.j[0]&&b.j[0].share_activity));
@@ -100,6 +100,7 @@ function Social(){
    <${Sw} l='Nyilvános profil' s=${se&&se.is_public?'Bárki látja a profilod és a megosztott aktivitásaid.':'Privát: idegenek csak a felhasználóneved, a neved és az avatarod látják.'} v=${!!(se&&se.is_public)} on=${v=>pub(v,'is_public')}/>
    <${Sw} l='Edzéseim megosztása' s=${se&&se.share_activity?'A befejezett edzéseid összefoglalója megjelenik a követőidnél és a barátaidnál, a profilod láthatósága szerint.':'Kikapcsolva: az edzéseid nem jelennek meg a közösségben.'} v=${!!(se&&se.share_activity)} on=${v=>pub(v,'share_activity')}/></div>
   <${SocMine} me=${id}/>
+  <${SocBlocks}/>
   <div class='up k-card'><div class='k-cd-t'>Profil törlése</div><p class='k-hint'>A profil és a közösségi beállításaid törlődnek. Az edzéseid és a többi adatod nem érintett.</p>
    <button onClick=${del} disabled=${busy} class=${'k-btn dan sm full'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Profil törlése'}</button></div></div>`}</div>`;
 }
