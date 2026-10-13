@@ -54,7 +54,7 @@ const phGap=n=>LANG==='en'?n+(n===1?' day apart':' days apart'):n+' nap különb
 
 // Egy fotó nagyban (saját: szerkeszthető; másé: csak nézet)
 function PhView({p,mine,hasProf,onClose,onChange,onDelete}){
- const[note,setNote]=useState(p.note||''),[msg,setMsg]=useState(''),[bz,setBz]=useState(false);
+ const[note,setNote]=useState(p.note||''),[msg,setMsg]=useState(''),[bz,setBz]=useState(false),[rp,setRp]=useState(false);
  const patch=async o=>{setBz(true);setMsg('');
   try{const r=await sbf('/rest/v1/progress_photos?id=eq.'+p.id,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify(o)});if(!r.ok||!r.j||!r.j[0])throw r;onChange(r.j[0])}
   catch(r){setMsg(phErr(r))}setBz(false)};
@@ -65,7 +65,7 @@ function PhView({p,mine,hasProf,onClose,onChange,onDelete}){
    ${note.trim()!==(p.note||'')&&html`<${KBtn} sm=${true} c='k-mt' disabled=${bz} onClick=${()=>patch({note:note.trim().slice(0,200)})}>Mentés<//>`}
    <${KSw} l='Megosztás a közösségben' s=${!hasProf?'Megosztáshoz előbb hozz létre közösségi profilt.':p.shared?'Privát profilnál csak a barátaid látják, nyilvános profilnál mindenki, aki a profilodat látja.':'Csak te látod ezt a fotót.'} v=${p.shared} on=${v=>{if(bz||(v&&!hasProf))return;patch({shared:v})}}/>
    ${msg&&html`<p class='k-hint k-warn'>${msg}</p>`}
-   <div class='k-btns k-mt' style=${{marginBottom:0}}><${KDel} on=${()=>onDelete(p)}/></div></div>`:html`<div class='k-mt'>${p.note&&html`<p class='k-lead'>${p.note}</p>`}</div>`}<//>`;
+   <div class='k-btns k-mt' style=${{marginBottom:0}}><${KDel} on=${()=>onDelete(p)}/></div></div>`:html`<div class='k-mt'>${p.note&&html`<p class='k-lead'>${p.note}</p>`}<${KBtn} v='gho' sm=${true} onClick=${()=>setRp(true)}>Jelentés<//>${rp&&html`<${SocReport} t='photo' uid=${p.user_id} id=${p.id} onClose=${()=>setRp(false)} onDone=${onClose}/>`}</div>`}<//>`;
 }
 
 // Saját fotók: rács, hozzáadás, összehasonlítás
@@ -120,7 +120,8 @@ function Photos(){
 function PhGrid({uid}){
  const[items,setItems]=useState(null),[sel,setSel]=useState(null);
  useEffect(()=>{let off=false;sbf('/rest/v1/progress_photos?select=*&user_id=eq.'+uid+'&order=taken_on.desc&limit=60').then(r=>{if(!off)setItems(r.ok&&r.j?r.j:[])}).catch(()=>{if(!off)setItems([])});return()=>{off=true}},[uid]);
- if(!items||!items.length)return null;
- return html`<${KSec} t='Haladási fotók'><div class='k-pg ui-stagger'>${items.map(p=>html`<button key=${p.id} type='button' class='k-pt' onClick=${()=>setSel(p)}><${PhImg} p=${p} t=${true} c='k-pimg'/><span class='k-pt-d'>${fs(p.taken_on)}</span></button>`)}</div>
+ const vis=items&&items.filter(p=>!socHid('photo',p.id));
+ if(!vis||!vis.length)return null;
+ return html`<${KSec} t='Haladási fotók'><div class='k-pg ui-stagger'>${vis.map(p=>html`<button key=${p.id} type='button' class='k-pt' onClick=${()=>setSel(p)}><${PhImg} p=${p} t=${true} c='k-pimg'/><span class='k-pt-d'>${fs(p.taken_on)}</span></button>`)}</div>
   ${sel&&html`<${PhView} p=${sel} mine=${false} onClose=${()=>setSel(null)}/>`}<//>`;
 }

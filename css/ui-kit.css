@@ -35,6 +35,7 @@ button.k-row{cursor:pointer}
 .k-btn.pri{background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent))}
 .k-btn.sec{background:transparent;color:rgb(var(--ui-text));border-color:rgb(var(--ui-text))}
 .k-btn.gho{background:transparent;color:rgb(var(--ui-accent-text))}
+.k-btn.gho:not(.full){padding-left:0;padding-right:12px}
 .k-btn.dan{background:transparent;color:rgb(var(--ui-danger));border-color:rgb(var(--ui-danger))}
 .k-btn:disabled{opacity:.45;cursor:default}
 .k-btns{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 12px}

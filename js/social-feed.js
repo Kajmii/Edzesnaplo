@@ -11,14 +11,17 @@ const socPublish=async(w,pr)=>{
   await sbf('/rest/v1/activities',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({user_id:SESS.user.id,kind:'workout',title:String(w.name).slice(0,80),summary:sm,workout_id:String(w.id),created_at:new Date().toISOString()})})}catch(e){}};
 
 function ActCard({a,p,open,del}){
- const sm=a.summary||{},nm=Array.isArray(sm.names)?sm.names:[];
+ const sm=a.summary||{},nm=Array.isArray(sm.names)?sm.names:[],[rp,setRp]=useState(false),[hd,setHd]=useState(false),other=!del&&SESS&&SESS.user&&a.user_id!==SESS.user.id;
+ if(hd||socHid('activity',a.id))return null;
  return html`<div class='k-item'>
   ${p&&html`<button type='button' onClick=${()=>open&&open(p.username)} class='k-who' style=${{marginBottom:'8px'}}><${Avatar} p=${p} s=${32}/><span class='k-row-t k-trunc'>${p.display_name}</span><span class='k-row-s k-trunc'>@${p.username}</span></button>`}
   <div class='k-row-t'>${a.title}</div>
   <div class='k-row-s'>${socDay(a.created_at)} · ${socSum(sm)}</div>
   ${+sm.prs>0&&html`<div class='k-act-pr'>${LANG==='en'?sm.prs+(+sm.prs===1?' new record':' new records'):sm.prs+' új rekord'}</div>`}
   ${nm.length>0&&html`<div class='k-row-s'>${nm.join(', ')}</div>`}
-  ${del&&html`<${KBtn} v='dan' sm=${true} c='k-mt' onClick=${()=>del(a)}>Aktivitás törlése<//>`}</div>`;
+  ${del&&html`<${KBtn} v='dan' sm=${true} c='k-mt' onClick=${()=>del(a)}>Aktivitás törlése<//>`}
+  ${other&&html`<${KBtn} v='gho' sm=${true} c='k-mt' onClick=${()=>setRp(true)}>Jelentés<//>`}
+  ${rp&&html`<${SocReport} t='activity' uid=${a.user_id} id=${a.id} onClose=${()=>setRp(false)} onDone=${()=>setHd(true)}/>`}</div>`;
 }
 
 // A követettek megosztott aktivitásai, időrendben (az RLS szűri, hogy melyik látszik)
@@ -41,7 +44,8 @@ function SocFeed({me,open}){
 
 // Más felhasználó profilja: fejléc, számok és aktivitás-lista. Privát profilnál idegennek csak az azonosító látszik.
 function SocProfile({u,me,back}){
- const R=useSocRel(me),[p,setP]=useState(undefined),[acts,setActs]=useState(null),[msg,setMsg]=useState('');
+ const R=useSocRel(me),[p,setP]=useState(undefined),[acts,setActs]=useState(null),[msg,setMsg]=useState(''),[rp,setRp]=useState(false),[cfb,setCfb]=useState(false),[bm,setBm]=useState('');
+ const doBlock=async()=>{setBm('');try{await socBlock(p.user_id);toast('Felhasználó letiltva');back()}catch(r){modFail(r,setBm)}};
  useEffect(()=>{let off=false;setP(undefined);setActs(null);
   (async()=>{try{const r=await sbf('/rest/v1/rpc/social_profile',{method:'POST',body:JSON.stringify({p_username:u})});if(!r.ok)throw r;if(off)return;
    const x=r.j&&r.j[0]||null;setP(x);
@@ -55,7 +59,9 @@ function SocProfile({u,me,back}){
   ${p&&html`<div class='up k-card'>
    <div class='k-ph' style=${{marginBottom:0}}><${Avatar} p=${p} s=${72}/><div><div class='k-wh-t k-trunc'>${p.display_name}</div><div class='k-row-s k-trunc'>@${p.username}</div></div></div>
    ${p.can_view?html`<div class='k-stats c3 k-mt'><${St} l='Követők' v=${p.followers}/><${St} l='Követett' v=${p.following}/><${St} l='Aktivitás' v=${p.activities}/></div>`:html`<p class='k-hint k-ic'><${Ic} n='lock' s=${16}/>Privát profil. A tartalmát csak a barátai látják.</p>`}
-   ${p.user_id!==me&&R.d&&R.btns(p)}${R.msg&&html`<p class='k-hint k-warn'>${R.msg}</p>`}</div>
+   ${p.user_id!==me&&R.d&&R.btns(p)}${R.msg&&html`<p class='k-hint k-warn'>${R.msg}</p>`}
+   ${p.user_id!==me&&html`<div class='k-btns' style=${{margin:'12px 0 0'}}><${KBtn} v='gho' sm=${true} onClick=${()=>setRp(true)}>Jelentés<//><${KBtn} v='dan' sm=${true} c=${cfb?'ask':''} onClick=${()=>cfb?doBlock():setCfb(true)}>${cfb?'Biztosan tiltod?':'Tiltás'}<//></div>`}${bm&&html`<p class='k-hint k-warn'>${bm}</p>`}
+   ${rp&&html`<${SocReport} t='profile' uid=${p.user_id} id=${p.user_id} onClose=${()=>setRp(false)}/>`}</div>
    ${p.can_view&&html`<div class='up k-card'><div class='k-cd-t'>Aktivitások</div>
     ${acts===null?html`<p class='k-hint'>Betöltés...</p>`:acts.length?acts.map(a=>html`<${ActCard} key=${a.id} a=${a}/>`):html`<p class='k-hint'>Még nincs megosztott aktivitás.</p>`}</div>`}${p.can_view&&html`<${PhGrid} uid=${p.user_id}/>`}`}</div>`;
 }

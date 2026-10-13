@@ -27,7 +27,7 @@ const grpFail=(r,set)=>set(r&&r.status!==undefined?grpErr(r):'Nincs kapcsolat. P
 // Egy csoport: tagok, meghívó kód (tulajdonos), kihívások ranglistával
 function GroupView({g,me,back,reload,open}){
  const own=g.owner_id===me,today=dk(new Date());
- const[mem,setMem]=useState(null),[pm,setPm]=useState({}),[chs,setChs]=useState(null),[bd,setBd]=useState({}),[code,setCode]=useState(''),[msg,setMsg]=useState(''),[bz,setBz]=useState(false),[nw,setNw]=useState(null),[sh,setSh]=useState(()=>!!gj('socshare',false)),[cf,setCf]=useState('');
+ const[mem,setMem]=useState(null),[pm,setPm]=useState({}),[chs,setChs]=useState(null),[bd,setBd]=useState({}),[code,setCode]=useState(''),[msg,setMsg]=useState(''),[bz,setBz]=useState(false),[nw,setNw]=useState(null),[rg,setRg]=useState(false),[sh,setSh]=useState(()=>!!gj('socshare',false)),[cf,setCf]=useState('');
  const load=async()=>{setMsg('');
   try{const[a,b]=await Promise.all([sbf('/rest/v1/social_group_members?select=user_id,joined_at&group_id=eq.'+g.id+'&order=joined_at'),sbf('/rest/v1/social_challenges?select=*&group_id=eq.'+g.id+'&order=ends_on.desc,created_at.desc&limit=12')]);
    if(!a.ok)throw a;if(!b.ok)throw b;
@@ -65,7 +65,9 @@ function GroupView({g,me,back,reload,open}){
      <div class='k-list k-mt'>${rows.map(r=>{const p=pm[r.user_id]||{display_name:'?',username:''};return html`<div key=${r.user_id} class=${'k-row k-lb-r'+(r.user_id===me?' me':'')}><span class='k-rk'>${r.rank}</span><${Avatar} p=${p} s=${32}/><span class='k-row-tx'><span class='k-row-t k-trunc'>${p.display_name}</span><span class='k-bar-tr'><span class='k-bar-f' style=${{'--p':r.v/top,'--i':r.rank}}></span></span></span><span class='k-pr'>${c.kind==='volume'?fmt(r.v):r.v} <span class='k-unit'>${grpUnit(c.kind)}</span></span></div>`})}</div><//>`})}</div><//>
   <${KSec} t='Tagok'><${KCard}><div class='k-list'>${mem.map(u=>{const p=pm[u]||{display_name:'?',username:''};return html`<div key=${u} class='k-row'><button type='button' class='k-who' onClick=${()=>open&&p.username&&open(p.username)}><${Avatar} p=${p} s=${36}/><span class='k-row-tx'><span class='k-row-t k-trunc'>${p.display_name}${u===g.owner_id?html` · <span class='k-row-s'>${tr('tulajdonos')}</span>`:''}</span><span class='k-row-s k-trunc'>@${p.username}</span></span></button>${own&&u!==me&&html`<${KDel} label='Eltávolítás a csoportból' on=${()=>kick(u)}/>`}</div>`})}</div><//>
    ${!own&&html`<${KBtn} v='dan' sm=${true} full=${true} c=${cf==='l'?'ask':''} disabled=${bz} onClick=${()=>cf==='l'?leave():setCf('l')}>${cf==='l'?'Biztosan kilépsz?':'Kilépés a csoportból'}<//>`}
+   ${!own&&html`<${KBtn} v='gho' sm=${true} full=${true} c='k-mb' onClick=${()=>setRg(true)}>Csoport jelentése<//>`}
    ${own&&html`<${KBtn} v='dan' sm=${true} full=${true} c=${cf==='d'?'ask':''} disabled=${bz} onClick=${()=>cf==='d'?drop():setCf('d')}>${cf==='d'?'Biztosan törlöd a csoportot?':'Csoport törlése'}<//>`}<//>
+  ${rg&&html`<${SocReport} t='group' uid=${g.owner_id} id=${g.id} onClose=${()=>setRg(false)}/>`}
   ${nw&&html`<${KSheet} t='Új kihívás' onClose=${()=>setNw(null)} foot=${html`<${KBtn} full=${true} disabled=${bz} onClick=${mkCh}>Létrehozás<//>`}>
    <div class='k-lb' style=${{marginTop:0}}>Mit versenyezzenek?</div><${KSeg} v=${nw.kind} on=${v=>setNw(x=>({...x,kind:v}))} o=${GRP_KINDS.map(k=>[k,grpName(k)])}/>
    <div class='k-lb'>Mennyi ideig?</div><${KSeg} v=${nw.days} on=${v=>setNw(x=>({...x,days:+v}))} o=${[[7,'1 hét'],[14,'2 hét'],[30,'1 hónap']]}/>
