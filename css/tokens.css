@@ -52,9 +52,9 @@ html[data-ui="gym"][data-scheme="green"]{--ui-accent:124 255 79;--ui-accent-text
 /* --- Family: nyugodt, nagy érintési felületek --- */
 html[data-ui="family"]{
   --ui-font-body:"Atkinson Hyperlegible",system-ui,sans-serif;--ui-font-head:"Atkinson Hyperlegible",system-ui,sans-serif;--ui-font-mono:"Atkinson Hyperlegible",system-ui,sans-serif;
-  --ui-fs:20px;--ui-r-s:14px;--ui-r-m:16px;--ui-r-l:20px;--ui-tap:56px;
+  --ui-fs:16px;--ui-r-s:14px;--ui-r-m:16px;--ui-r-l:20px;--ui-tap:48px;
   --ui-scrim:.45;color-scheme:light;
-  --ui-ico-sw:2.4;--ui-bar-h:80px;--ui-sheet-top:52px;--ui-px:20px;--ui-scrim-c:26 36 32;
+  --ui-ico-sw:2.4;--ui-bar-h:68px;--ui-sheet-top:52px;--ui-px:20px;--ui-scrim-c:26 36 32;
   --ui-text:26 36 32;--ui-on-accent:255 255 255;--ui-surface:255 255 255;--ui-field:255 255 255;--ui-danger:180 35 24;--ui-warn:117 69 0;
 }
 html[data-ui="family"][data-scheme="green"]{

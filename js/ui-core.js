@@ -13,7 +13,7 @@ const UI_DEF={
   ['yellow','Sárga','',{bg:'#0F0F0D',ink:'#F3F0E8',acc:'#FFC93C',txt:'#FFC93C'}],
   ['orange','Narancs','',{bg:'#0F0F0D',ink:'#F3F0E8',acc:'#FF5A1F',txt:'#FF5A1F'}],
   ['green','Zöld','',{bg:'#0F0F0D',ink:'#F3F0E8',acc:'#7CFF4F',txt:'#7CFF4F'}]]},
- family:{fs:20,fonts:'family=Atkinson+Hyperlegible:wght@400;700',schemes:[
+ family:{fs:16,fonts:'family=Atkinson+Hyperlegible:wght@400;700',schemes:[
   ['green','Zöld','Az alap',{bg:'#F2F4F0',ink:'#1A2420',acc:'#0E6B5E',txt:'#0E6B5E'}],
   ['warm','Meleg','Barnás, napos',{bg:'#F5EEE4',ink:'#1A2420',acc:'#A8481F',txt:'#A8481F'}],
   ['cool','Hűvös','Kékes, friss',{bg:'#EEF2F7',ink:'#1A2420',acc:'#1F4E99',txt:'#1F4E99'}]]}};

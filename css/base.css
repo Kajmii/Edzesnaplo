@@ -73,3 +73,6 @@ html[data-ui] .text-zinc-800,html[data-ui] .text-zinc-900{color:#27272a}
 html[data-ui] svg circle{filter:none!important}
 html[data-ui] svg circle[stroke="rgba(255,255,255,.08)"],html[data-ui] svg circle[stroke="#27272a"]{stroke:rgb(var(--ui-line))}
 html[data-ui] svg text[fill="#fff"]{fill:rgb(var(--ui-text))}
+
+/* a vízszintes túlcsordulás ne tágítsa a telefon elrendezési ablakát (a fix menüsáv és lap így mindig a képernyő szélességű) */
+html[data-ui] #root{overflow-x:clip}
