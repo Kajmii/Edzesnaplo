@@ -60,14 +60,18 @@ function Prog({hist}){
    ${pts.length>0&&html`<div class='k-best'>Legjobb: <b>${fmt(Math.max(...pts.map(p=>p.v)))}</b> kg</div>`}
    <${Chart} pts=${pts}/><//><//>`;
 }
+// Heti volumen az utolsó 8 hétre (a Statisztikák képernyőn és a Kezdőlap kártyájaként): oszlopok, változás, hetes széria
+function VolCard({hist,today}){
+ const vw=uiVolWeeks(hist,today,8),st=uiStreak(hist,today),w0=pd(weekOf(today)[0]),labs=vw.vals.map((_,i)=>uiIsoWeek(new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()-7*(7-i))));
+ const dl=vw.delta!=null?' · '+(vw.delta>=0?'+':'−')+uiPct(vw.delta):'',sk=st>0?(LANG==='en'?' · '+st+'-week streak':' · '+st+' hetes széria'):'';
+ return html`<${KSec} t='Heti volumen, utolsó 8 hét' a=${html`<${HelpI} id='stats.volume'/>`}><${KCard}><${Bars} vals=${vw.vals} labels=${labs}/>
+  <p class='k-hint k-center'>${(LANG==='en'?'This week: ':'Ezen a héten: ')+fmt(vw.cur)+' kg'+dl+sk}</p><//><//>`;
+}
 // Statisztikák és rekordok: gyűjtő nézet a meglévő adatokból (heti volumen, rekordok, izomcsoportok, fejlődés)
 function Stats({hist,today}){
  if(!hist.length)return html`<${KEmpty} ic='star' t='Statisztikák és rekordok' s='Itt jelennek meg a rekordjaid és a grafikonjaid, amint rögzítesz egy edzést.'/>`;
- const vw=uiVolWeeks(hist,today,8),st=uiStreak(hist,today),w0=pd(weekOf(today)[0]),labs=vw.vals.map((_,i)=>uiIsoWeek(new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()-7*(7-i))));
- const dl=vw.delta!=null?' · '+(vw.delta>=0?'+':'−')+uiPct(vw.delta):'',sk=st>0?(LANG==='en'?' · '+st+'-week streak':' · '+st+' hetes széria'):'';
  return html`<div>
-  <${KSec} t='Heti volumen, utolsó 8 hét' a=${html`<${HelpI} id='stats.volume'/>`}><${KCard}><${Bars} vals=${vw.vals} labels=${labs}/>
-   <p class='k-hint k-center'>${(LANG==='en'?'This week: ':'Ezen a héten: ')+fmt(vw.cur)+' kg'+dl+sk}</p><//><//>
+  <${VolCard} hist=${hist} today=${today}/>
   <${Rec} hist=${hist}/>
   <${Prog} hist=${hist}/></div>`;
 }

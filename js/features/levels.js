@@ -19,4 +19,5 @@ const lvlOn=(id,force)=>{const f=featById(id);return !f||!!force||id===LVL_FORCE
 const lvlHidden=()=>FEATURES.filter(f=>featFindable(f)&&f.level>lvlOf()).length;
 // Kezdőlap-kártyák: a szint csak az alapot adja (K4): Csak a lényeg = napsor, Ajánlott = + az irány fő kártyája, Minden = az összes
 const HOME_MAIN={pro:'home.volume',gym:'home.groups',family:'home.easy'};
-const homeOn=(id,ui)=>{const l=lvlOf();return l>=3||id==='home.week'||(l===2&&HOME_MAIN[ui]===id)};
+// opt.home (tömb) = a felhasználó saját választása a Kezdőlap tartalma lapon, felülírja a szint alapját; null/hiányzik = a szint alapja
+const homeOn=(id,ui)=>{const h=typeof OPT!=='undefined'&&OPT?OPT.home:null;if(Array.isArray(h))return h.includes(id);const l=lvlOf();return l>=3||id==='home.week'||(l===2&&HOME_MAIN[ui]===id)};

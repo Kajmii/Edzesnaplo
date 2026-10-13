@@ -23,6 +23,10 @@ function App({user,out}){
  useEffect(()=>{const f=e=>setHelp(e.detail);window.addEventListener('helpopen',f);return()=>window.removeEventListener('helpopen',f)},[]);
  const[pkShown,setPkShown]=useState(false); // a választó az első szinkron után jelenik meg, és a döntésig nem tűnik el (a későbbi szinkronok ne indítsák újra)
  useEffect(()=>{if(!opt.uiChosen&&(sy.s==='ok'||sy.s==='err'||sy.s==='off'))setPkShown(true)},[sy.s,opt.uiChosen]);
+ // szint-választó (új és meglévő felhasználó egyszer, az első szinkron után: a felhőből jövő lvlSet ne villanjon fel), bemutató, Kezdőlap tartalma
+ const[lvShown,setLvShown]=useState(false),[tour,setTour]=useState(null),[fresh]=useState(()=>!gj('opt',{}).uiChosen),[hcs,setHcs]=useState(false);
+ useEffect(()=>{if(opt.uiChosen&&!opt.lvlSet&&(sy.s==='ok'||sy.s==='err'||sy.s==='off'))setLvShown(true)},[sy.s,opt.uiChosen,opt.lvlSet]);
+ useEffect(()=>{const f=()=>setHcs(true);window.addEventListener('homecards',f);return()=>window.removeEventListener('homecards',f)},[]);
  useEffect(()=>{if(!ldr)return;if(sy.s==='ok'||sy.s==='err'||sy.s==='off'){const t=setTimeout(()=>setLdr(false),900);return()=>clearTimeout(t)}const t=setTimeout(()=>setLdr(false),6000);return()=>clearTimeout(t)},[sy.s,ldr]);
  useEffect(()=>{const t=setTimeout(syncNow,2500);return()=>clearTimeout(t)},[hist,plan,opt,ct,tab]);
  useEffect(()=>{const i=setInterval(syncNow,60000),f=()=>document.visibilityState==='visible'&&syncNow();window.addEventListener('online',syncNow);document.addEventListener('visibilitychange',f);return()=>{clearInterval(i);window.removeEventListener('online',syncNow);document.removeEventListener('visibilitychange',f)}},[]);
@@ -65,6 +69,9 @@ function App({user,out}){
   ${ldr&&html`<${UiLoader}/>`}
   <${UiMenu} open=${menu} setOpen=${setMenu} home=${tab==='home'} go=${go2}/>
   ${!opt.uiChosen&&pkShown&&html`<${UiPicker} opt=${opt} o=${x=>setOpt(p=>({...p,...x}))}/>`}
+  ${opt.uiChosen&&!opt.lvlSet&&lvShown&&html`<${LevelScreen} fresh=${fresh} o=${x=>{setOpt(p=>({...p,...x}));if(fresh)setTour(0)}}/>`}
+  ${tour!==null&&opt.lvlSet&&html`<${TourScreen} step=${tour} onNext=${()=>setTour(tour>=TOUR.length-1?null:tour+1)} onSkip=${()=>setTour(null)}/>`}
+  ${hcs&&html`<${HomeCardsSheet} opt=${opt} o=${x=>setOpt(p=>({...p,...x}))} onClose=${()=>setHcs(false)}/>`}
   <${Rest} rest=${rest} setRest=${setRest} hidden=${tab==='log'&&!!aw}/>
   ${ts&&html`<div class='k-toast-w' style=${{paddingTop:'calc(env(safe-area-inset-top,0px) + 12px)'}}><div class='up k-toast' role='status'>${ts.m}${ts.pr&&html`<${Conf}/>`}</div></div>`}
   ${fin&&html`<${KSheet} t='Edzés kész!' onClose=${()=>setFin(null)} foot=${html`<${KBtn} full=${true} onClick=${()=>setFin(null)}>Rendben<//>`}>

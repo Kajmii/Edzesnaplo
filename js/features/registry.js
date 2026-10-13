@@ -73,6 +73,7 @@ const FEATURES=[
  F_('opt.motion','me',1,'opt','','','sliders','Animációk','animáció mozgás animation motion'),
  F_('opt.vibrate','me',1,'opt','','','sliders','Rezgés','rezgés vibration haptic'),
  F_('opt.level','me',1,'opt','','','sliders','Szint','szint funkciók level simple'),
+ F_('opt.home','me',1,'opt','level','','sliders','Kezdőlap tartalma','kezdőlap tartalma kártya testreszabás home cards customize'),
  F_('opt.contrast','me',2,'opt','','','sliders','Nagy kontraszt','kontraszt contrast accessibility'),
  F_('opt.quiet','me',3,'opt','','','sliders','Csendes órák','értesítés csendes órák quiet hours notifications'),
  F_('opt.workout','me',2,'opt','','','sliders','Edzés-beállítások','heti cél pihenő célsúly lépcső workout settings'),

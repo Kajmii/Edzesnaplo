@@ -28,14 +28,14 @@ Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, 
 |---|---|---|---|---|---|---|---|
 | `home.hero` | Kezdőlap: mai edzés és indítás/folytatás | 1 | ✓ | ✓ | ✓ | 0 | |
 | `home.week` | Heti napsor (kész / ma / tervezett) | 1 | ✓ | ✓ | ✓ | 0 | |
-| `home.easy` | Könnyű mozdulatok ajánlása, ha nincs tervezett edzés | 2 | ✗ | ✗ | ✓ | 0 | minden irányba |
-| `home.profile` | Profil-gomb a Kezdőlapon | 1 | ✓ | ✓ | ✗ | 1 | Family: a menüben van, a Kezdőlapon nem |
-| `home.fontsize` | Gyors betűméret-kapcsoló a Kezdőlapon | 3 | ✗ | ✗ | ✓ | 0 | minden irányba (a Beállításokban már mind) |
-| `home.volume` | Heti volumen, 8 hét grafikon és változás | 2 | ✓ | ✗ | ✗ | 0 | |
-| `home.records` | Rekordok (becsült 1RM, top 3) | 3 | ✓ | ✗ | ✗ | 0 | |
-| `home.pr` | Legutóbbi új rekord (21 napon belül) | 3 | ✗ | ✓ | ✗ | 0 | |
-| `home.streak` | Hetes széria | 3 | ✗ | ✓ | ✗ | 0 | |
-| `home.groups` | Heti sorozatok izomcsoportonként | 2 | ✗ | ✓ | ✗ | 0 | |
+| `home.easy` | Könnyű mozdulatok ajánlása, ha nincs tervezett edzés | 2 | ✓ | ✓ | ✓ | 0 | minden irányba |
+| `home.profile` | Profil-gomb a Kezdőlapon | 1 | ✓ | ✓ | ✓ | 1 | Family: a menüben van, a Kezdőlapon nem |
+| `home.fontsize` | Gyors betűméret-kapcsoló a Kezdőlapon | 3 | ✓ | ✓ | ✓ | 0 | minden irányba (a Beállításokban már mind) |
+| `home.volume` | Heti volumen, 8 hét grafikon és változás | 2 | ✓ | ✓ | ✓ | 0 | |
+| `home.records` | Rekordok (becsült 1RM, top 3) | 3 | ✓ | ✓ | ✓ | 0 | |
+| `home.pr` | Legutóbbi új rekord (21 napon belül) | 3 | ✓ | ✓ | ✓ | 0 | |
+| `home.streak` | Hetes széria | 3 | ✓ | ✓ | ✓ | 0 | |
+| `home.groups` | Heti sorozatok izomcsoportonként | 2 | ✓ | ✓ | ✓ | 0 | |
 | `workout.pick` | Tervválasztó, ismétlés, üres edzés | 1 | ✓ | ✓ | ✓ | 2 | közös (LogPick) |
 | `workout.sets` | Súly × ismétlés, sorozat kész | 1 | ✓ | ✓ | ✓ | 2 | |
 | `workout.lastline` | „Legutóbb: 80 kg × 8, rekord …” egy sor | 1 | ✓ | ✓ | ✓ | – | |

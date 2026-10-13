@@ -18,6 +18,7 @@ function LevelPick({opt,o}){
   <p class='k-hint k-mb'>Bármikor átállíthatod. Semmi sem törlődik, csak elrejtjük.</p>
   <div role='radiogroup' aria-label=${tr('Szint')} class='k-stack'>${LEVELS.map(([v,n,d])=>html`<button key=${v} type='button' role='radio' aria-checked=${cur===v} onClick=${()=>o({lvl:v,lvlSet:true})} class=${'k-card'+(cur===v?' on':'')} style=${{marginBottom:0}}><span class='k-row-t'>${n}</span><span class='k-row-s' style=${{display:'block'}}>${d}</span></button>`)}</div>
   ${hid>0&&html`<p class='k-hint k-mt'>${LANG==='en'?hid+' features are hidden at this level. They are still available when you switch level.':hid+' funkció rejtve ezen a szinten. Szintváltással bármikor visszakapcsolhatod.'}</p>`}
+ <div class='k-mt'><${KRow} ic='sliders' t='Kezdőlap tartalma' s='Napsor, volumen, rekordok…' go=${true} onClick=${homeCardsOpen}/></div>
  <//>`;
 }
 function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc}){
