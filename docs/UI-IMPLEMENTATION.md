@@ -1,6 +1,6 @@
 # UI-egységesítés: terv (2. szakasz)
 
-Állapot: **terv, jóváhagyásra vár. Kód még nincs.** A 3 irány (Pro, Gym, Family) kinézete jóváhagyott és marad. Ez a terv a funkciókat, a szinteket, a menüt, a súgót és az onboardingot egységesíti. Az előző szakasz (az irányok és a képernyők megépítése) leírása: [UI-IMPLEMENTATION-1-fazis.md](UI-IMPLEMENTATION-1-fazis.md).
+Állapot: **a terv jóváhagyva (2026-10-14), a nyitott kérdések megválaszolva (lásd a 10. fejezet). Következő: 0. fázis, mockupok jóváhagyásra. Kód még nincs.** A 3 irány (Pro, Gym, Family) kinézete jóváhagyott és marad. Ez a terv a funkciókat, a szinteket, a menüt, a súgót és az onboardingot egységesíti. Az előző szakasz (az irányok és a képernyők megépítése) leírása: [UI-IMPLEMENTATION-1-fazis.md](UI-IMPLEMENTATION-1-fazis.md).
 
 ## 0. Eltérések a kiadott feladattól (nem csendben)
 
@@ -206,19 +206,19 @@ A szint a **látható** tartalmat szabályozza (menü, kezdőlap-kártyák, kép
 
 | Képernyő | Csak a lényeg (1) | Ajánlott (2) | Minden (3) |
 |---|---|---|---|
-| **Menü** | Edzés, Napló, Profil, Beállítások | + Terv, Étel, Test és mérések | + Receptek, Közösség, Ciklus, Számolók, Tervszerkesztő, Export |
-| **Kezdőlap** | mai edzés, indítás, heti napsor, „Terv megnyitása” ha van terv | + heti volumen / rekordok / széria (irányonként a saját kártyája, **de mindhárom irányban elérhető**), profil-gomb | + izomcsoport-sorozatok, könnyű mozdulatok, gyors betűméret |
+| **Menü** | Edzés, Terv, Napló, Profil, Beállítások | + Étel, Test és mérések | + Receptek, Közösség, Ciklus, Számolók, Tervszerkesztő, Export |
+| **Kezdőlap** | **minimális:** üdvözlés, mai edzés és indítás, heti napsor, „Kezdőlap testreszabása” | + a szint alapja szerinti 1 fő kártya (Pro volumen, Gym izomcsoportok, Family könnyű mozdulatok) | + az összes kártya. A felhasználó bármelyiket be- és kikapcsolhatja (K4) |
 | **Edzés (aktív)** | kg × ism, kész, pihenő, következő, befejezés, legutóbbi alkalom egy sor | + előző alkalmak sorozatai, pihenő ±15, eltelt idő, sorozat hozzáadása | + RPE, tárcsák, gyakorlat-leírás gyorsgomb |
-| **Terv** | – (nem látszik) | heti terv, mai célsúlyok | + értesítések, naptár, .ics, Tervszerkesztő |
+| **Terv** | heti terv, mai célsúlyok | + naptár-emlékeztetők | + értesítések, .ics, Tervszerkesztő |
 | **Napló** | edzés-lista | + fejlődés-grafikon, rekordok | + izomcsoport-sávok, részletes sorozatok |
 | **Étel** | – | kalória és makrók, étkezések, kedvencek | + víz, 7 napos grafikon, receptjavaslat |
 | **Test és mérések** | – | súly és méretek | + fotók, összehasonlítás, megosztás |
 | **Közösség** | – | – | hírfolyam, kapcsolatok, csoportok, profil |
 | **Beállítások** | Felület, nyelv, betűméret, animáció, rezgés, szint, fiók | + edzés-beállítások, alapértékek visszaállítása, nagy kontraszt | + értesítések és csendes órák, export, ciklus-kapcsoló, haladó |
 
-Megjegyzés: a feladat javaslata szerint a „Csak a lényeg” szinten a Terv nem látszik. Ez a Kezdőlapon egy „Terv” gombbal pótolható, ha tervet állítottak be (kérdés K2).
+Megjegyzés (K2): a Terv a „Csak a lényeg” szinten is látszik.
 
-**Alapértelmezés:** Ajánlott. Meglévő felhasználók (akiknél nincs `opt.level`) **Minden** szintet kapnak, hogy semmi ne tűnjön el a frissítéstől. Ezt a migrációt a fázis 2 végzi (K3).
+**Alapértelmezés:** Ajánlott (új felhasználónak). **Meglévő felhasználók (K3)** a következő indításkor egyszer megkapják a szint-választó képernyőt; addig a **Minden** szint él, hogy semmi ne tűnjön el. A **Kezdőlap** tartalma külön kapcsolható (K4), a szint csak az alapot adja.
 
 ## 6. Menü szerkezete (mindhárom irányban)
 
@@ -304,7 +304,31 @@ Minden fázisnál: (a) `node --check` minden módosított JS-en, (b) a meglévő
 
 Kézi tesztlista telefonra (minden fázis végére a `docs/CHANGES.md` mellé): a fenti „csak telefonon” elemek, plusz a Galaxy S26 Ultra-n a három irány × három szint végigpróbálása, az APK-ban a Google-belépés érintetlensége.
 
-## 10. Nyitott kérdések (egy kör)
+## 10. Döntések (a nyitott kérdésekre kapott válaszok)
+
+| # | Kérdés | Döntés | Következmény a tervre |
+|---|---|---|---|
+| K1 | Vendég mód | **Legyen „Folytatás vendégként" a bejelentkezés mellett.** Csak akkor kell felhívni a figyelmet, hogy az adat csak helyben tárolódik. | Új **vendég mód** (lásd lent). Új fázis: `feature/ui-vendeg`. |
+| K2 | Terv a „Csak a lényeg" szinten | **Jelenjen meg.** | A Terv a lényeg szinten is a menüben van (5 sor: Edzés, Terv, Napló, Profil, Beállítások). |
+| K3 | Meglévő felhasználók | **Ők is megkapják a szint-választó képernyőt.** | Nincs automatikus „Minden" szint: a következő indításkor egyszer megjelenik a szint-választó (az UI-választót nem kérjük újra). Amíg nem választanak, a **Minden** szint él, hogy semmi ne tűnjön el. |
+| K4 | Kezdőlap | **Letisztult, ne legyen tele információval. A felhasználó kérheti a többit, és legyen beállítás, hogy mit lásson a Kezdőlapon.** | A Kezdőlap **alapból minimális** (üdvözlés, mai edzés és indítás, heti napsor, egy „Kezdőlap testreszabása" sor). A többi kártya (heti volumen, rekordok, új rekord, széria, izomcsoportok, könnyű mozdulatok, gyors betűméret) **kártya-választóból** kapcsolható be, mindhárom irányban ugyanaz a lista. A szint csak az alapértelmezést adja. Új beállítás: **Kezdőlap tartalma** (`opt.home`, szinkronizál). |
+| K5 | Az edzésnézetek hiányai | **Meglévő stílusban.** | Az új elemek a pw/gw/fw nézetek formanyelvén készülnek, új mockup-irány nincs (a M6 az illesztést mutatja). |
+| K6 | Fájl-átnevezés | **Ahogy jónak látom:** az 1. fázis végén, külön commitban. | Lásd 12. fejezet. |
+
+### Vendég mód (K1) részletei
+- A bejelentkező képernyőn a belépés alatt egy másodlagos „**Folytatás vendégként**" gomb. Alatta egyetlen mondat: *„Vendégként az adataid csak ezen a készüléken tárolódnak."* Több figyelmeztetés nincs.
+- Vendégként minden helyi funkció működik (edzés, napló, terv, étel, receptek, mérések, ciklus, számolók, fotók helyben nem: a fotó a Supabase tárolóba megy, ezért vendégnek **nem elérhető**, és a menüben „Fiókkal elérhető" jelzést kap). A **szinkron és a Közösség** (hírfolyam, csoportok, megosztás) szintén fiókhoz kötött.
+- Az adat a `en:guest:*` helyi kulcsok alatt van. A Kezdőlapon és a Beállításokban egy halk „Vendég · csak helyi adat" jelzés és egy „Fiók létrehozása" gomb.
+- **Fiók létrehozásakor / belépéskor** a rendszer felajánlja, hogy a vendég-adatokat átviszi a fiókba (összefésülés a meglévő mergeD szabályával), vagy külön tartja. A döntés a vendég-fázisban (`feature/ui-vendeg`) kerül részletes jóváhagyásra.
+- Google-belépés (APK handoff) érintetlen marad.
+
+### Kezdőlap-testreszabás (K4) részletei
+- Kártya-lista (a nyilvántartás `home.*` bejegyzései): Heti napsor, Heti volumen, Rekordok, Új rekord, Hetes széria, Heti sorozatok izomcsoportonként, Könnyű mozdulatok, Gyors betűméret.
+- **Alap szintenként:** Csak a lényeg: csak a napsor. Ajánlott: napsor + (irányonként a saját fő kártya: Pro volumen, Gym izomcsoportok, Family könnyű mozdulatok). Minden: az összes. A felhasználó bármelyiket be- vagy kikapcsolhatja, ez felülírja a szint alapját.
+- Elérés: a Kezdőlap alján „Kezdőlap testreszabása" sor, és Beállítások › Kezdőlap tartalma. Mindhárom irányban ugyanaz a lap (KSheet, kapcsolók).
+- A **Statisztikák és rekordok** nézet (Fejlődés) így minden adatot tartalmaz, a Kezdőlap pedig csak azt, amit a felhasználó kér.
+
+## 10b. Eredeti nyitott kérdések (a válaszok fent)
 
 Mindegyiknél 2–3 opció, az ajánlott első helyen.
 
@@ -338,19 +362,32 @@ Mindegyiknél 2–3 opció, az ajánlott első helyen.
  2. Nem nevezzük át, a `features/` mappa új, a többi marad.
  3. Azonnal, a fázis 1 elején.
 
-## 11. Új mockupok (kódolás előtt jóváhagyás kell, mindhárom irányban)
+## 11. Új mockupok (0. fázis: elkészültek, jóváhagyásra várnak)
 
-| # | Mockup | Irányok | Mit mutat |
+A mockupok a `docs/mockups/uj/` mappában vannak, **mindhárom irányban** (`pro.html`, `gym.html`, `family.html`, belépés: `index.html`). A kinézetet az app valódi tokenjei és elemkészlete adja, ezért a színséma is váltható (`?s=graphite`). A generálás: `node docs/mockups/uj/build.js`. Telefonon a helyi tesztszerveren nyithatók meg.
+
+| # | Mockup (képernyő) | Mit mutat | Döntés, amihez kapcsolódik |
 |---|---|---|---|
-| M1 | Onboarding › szint-választó | Pro, Gym, Family | három kártya (név, mondat, 3–4 pont), a középső „Ajánlott” címkével, „Később” gomb |
-| M2 | Onboarding › UI-választó (a meglévő) és a **rövid bemutató** (3 lépés, átugorható) | Pro, Gym, Family | a bemutató lépései |
-| M3 | Menü csoportokkal és kereséssel | Pro, Gym, Family | 4 csoport, kereső, fix lábsor, „Még N funkció” sor, a keresési találatok |
-| M4 | Súgó-átfedés | Pro, Gym, Family | a „?” gomb, a súgólap, az első-látogatás tipp |
-| M5 | Statisztikák és rekordok (gyűjtő nézet) | Pro, Gym, Family | rekordok, fejlődés, izomcsoportok egy képernyőn |
-| M6 | Edzés: az új elemek (előző sorozatok, RPE, sorozat hozzáadása, ±15) a hiányzó irányokban | Gym (előző sorozatok, RPE), Family (mind) | a meglévő nézetekbe illesztve |
-| M7 | Beállítások: Szint, Nagy kontraszt, Csendes órák, Alapértékek | Pro, Gym, Family | az új sorok a Beállítások mockupban |
+| M2a | Bejelentkezés, vendég móddal | „Folytatás vendégként” gomb, alatta egy mondat a helyi tárolásról | K1 |
+| M1 | Szint-választó (új felhasználó) | 3 kártya (név, mondat, 3–4 pont), a középső „Ajánlott”, „Később” | onboarding 3. lépés |
+| M1b | Szint-választó (meglévő felhasználó) | ugyanaz, „Újdonság” fejléccel, „Később” = mindent mutat | K3 |
+| M2b–d | Rövid bemutató (3 lépés) | átugorható, pontjelző | onboarding 4. lépés |
+| M8 | Kezdőlap (alap: letisztult) | üdvözlés, mai edzés, indítás, heti napsor, „Kezdőlap testreszabása”, vendég-jelzés | K4 |
+| M8b | Kezdőlap tartalma (lap) | kártya-kapcsolók (napsor, volumen, rekordok, új rekord, széria, izomcsoportok, könnyű mozdulatok, gyors betűméret) | K4 |
+| M3a | Menü csoportokkal, Ajánlott szint | Ma / Étkezés / Fejlődés, kereső, „Még 6 funkció”, fix lábsor (Profil, Beállítások, Súgó) | 6. fejezet |
+| M3b | Menü, Minden szint | + Receptek, Statisztikák, Számolók, Ciklus, Közösség | 6. fejezet |
+| M3c | Menü-keresés | találatok, „Nem látszik a szinteden”, súgó-találat | 6. fejezet |
+| M4a | Súgó: „?” gomb és első-látogatás tipp | fejléc „?”, bezárható tipp-buborék | 7. fejezet |
+| M4b | Súgó-lap | cím, mi ez, hogyan használd, tipp | 7. fejezet |
+| M5 | Statisztikák és rekordok | rekordok, heti volumen, izomcsoportok, fülek | K4 (a Kezdőlapról kikerült kártyák helye) |
+| M6 | Edzés: az új elemek | előző alkalmak, RPE, sorozat hozzáadása, ±15, idő, szint-jelzés | K5 (meglévő stílusban) |
+| M7 | Beállítások: új sorok | Szint, Kezdőlap tartalma, Nagy kontraszt, Csendes órák, JSON, Alapértékek | 4. fejezet |
 
-A mockupokat a `docs/mockups/forras/` mappába, a meglévő `.dc.html` formátumban készítem el a terv jóváhagyása után, és külön jóváhagyást kérek, mielőtt kódolnék.
+**Megjegyzések a mockupokhoz**
+- A mockupok **magyarul** vannak. Az angol szöveg és a hosszkorlát-ellenőrzés az implementációban készül (setDict, `tests/ui.check.js`).
+- A menü-leírások irányonként a meglévő `UI_MENU` szövegei maradnak. Itt egy közös szöveget mutatnak.
+- Az M6 a **meglévő** pw/gw/fw nézetek kerete helyett egy egyszerűsített keretet mutat: az új elemek (előző alkalmak, RPE, sorozat hozzáadása, ±15) formáját és helyét. Az implementáció az adott irány meglévő nézetébe illeszti őket.
+- Ami itt jóváhagyást kap, az kerül át a `css/ui-onboarding.css`, `ui-help.css` és `ui-search.css` fájlokba. Kódolás csak a jóváhagyás után indul (1. fázis).
 
 ## 12. Fázisok (egy fázis = egy ág, a `main` érintetlen, fázis végén megállás)
 
@@ -363,7 +400,8 @@ A mockupokat a `docs/mockups/forras/` mappába, a meglévő `.dc.html` formátum
 | 4 | `feature/ui-sugo` | súgó: „?”, elemi súgó, első-látogatás tipp, tartalom hu/en | |
 | 5 | `feature/ui-paritas` | a hiányzó funkciók pótlása a Gym és Family nézetekben (K5), az `workout.prevsets` | |
 | 6 | `feature/ui-beallitasok` | nagy kontraszt, csendes órák, JSON export, alapértékek visszaállítása, Kezdőlap gyors betűméret mindenhol | |
-| 7 | `feature/ui-onboarding` | szint-választó az első bejelentkezés után, rövid bemutató, a már meglévő UI-választó előtt-után sorrend | |
+| 7 | `feature/ui-onboarding` | szint-választó az első bejelentkezés után **és a meglévő felhasználóknak is egyszer** (K3), rövid bemutató, Kezdőlap-testreszabás (K4: `opt.home`, kártya-választó) | |
+| 8 | `feature/ui-vendeg` | vendég mód (K1): „Folytatás vendégként”, helyi adat, jelzés, átvitel fiókba | |
 
 **Függőségek:** 1 → 2 → 3, 4 és 5 párhuzamos lehetne, de egyszerre egy fázist csinálok. 7 az 1 és 2 után bármikor jöhet. A fázis 5 közben a nyilvántartás „✗” sorai fogynak, a paritás-teszt a végén zöld.
 

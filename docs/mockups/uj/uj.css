@@ -1,0 +1,133 @@
+/* ---------- 0. fázis mockupok: az új elemek stílusa (a docs/UI-IMPLEMENTATION.md 11. fejezete) ----------
+   A tokeneket és az elemkészletet az app valódi fájljai adják (css/tokens.css, base.css, motion.css, ui-kit.css),
+   itt csak a mockup-keret és az ÚJ elemek vannak. Ami itt jóváhagyást kap, az kerül át a css/ui-onboarding.css, ui-help.css, ui-search.css fájlokba. */
+html{font-size:16px}
+body{margin:0;background:rgb(var(--ui-bg));color:rgb(var(--ui-text));font-family:var(--ui-font-body);-webkit-font-smoothing:antialiased}
+.pg{max-width:1200px;margin:0 auto;padding:16px}
+.pg-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin:0 0 4px}
+.pg-h h1{margin:0;font-family:var(--ui-font-head);font-size:28px}
+html[data-ui="gym"] .pg-h h1{font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:40px}
+.pg-n{margin:0 0 16px;font-size:14px;color:rgb(var(--ui-muted))}
+.pg-n a{color:rgb(var(--ui-accent-text))}
+.pg-sw{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.pg-sw a{padding:8px 14px;border:1px solid rgb(var(--ui-control));border-radius:var(--ui-r-s);color:rgb(var(--ui-text));text-decoration:none;font-size:14px}
+.pg-sw a[aria-current=page]{background:rgb(var(--ui-accent));border-color:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent))}
+.frs{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.fr{flex:0 0 390px;width:390px;max-width:100%}
+.fr-t{margin:0 0 4px;font-size:14px;font-weight:600}
+.fr-d{margin:0 0 8px;font-size:12px;line-height:1.4;color:rgb(var(--ui-muted))}
+.ph{position:relative;display:flex;flex-direction:column;min-height:760px;overflow:hidden;box-sizing:border-box;padding:20px var(--ui-px) 24px;background:rgb(var(--ui-bg));border:1px solid rgb(var(--ui-line2));border-radius:var(--ui-r-l)}
+html[data-ui="gym"] .ph{border-radius:0}
+.ph>*{min-width:0}
+.ph-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-4px 0 16px}
+.ph-hd .ic{display:flex;color:rgb(var(--ui-muted))}
+.ph-t{margin:0;font-family:var(--ui-font-head);font-size:20px;font-weight:600;overflow-wrap:break-word}
+html[data-ui="gym"] .ph-t{font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:24px}
+html[data-ui="family"] .ph-t{font-weight:700}
+.ph-k{margin:0 0 6px;font-family:var(--ui-font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+html[data-ui="family"] .ph-k{font-family:var(--ui-font-body);letter-spacing:0;text-transform:none;font-size:14px;font-weight:700}
+.ph-h1{margin:0 0 8px;font-family:var(--ui-font-head);font-size:28px;line-height:1.1;font-weight:600;letter-spacing:-.01em;overflow-wrap:break-word}
+html[data-ui="gym"] .ph-h1{font-weight:400;text-transform:uppercase;letter-spacing:.02em;font-size:40px}
+html[data-ui="family"] .ph-h1{font-weight:700;font-size:28px}
+.ph-p{margin:0 0 16px;font-size:14px;line-height:1.45;color:rgb(var(--ui-muted))}
+.dots{display:flex;gap:8px;justify-content:center;margin:16px 0}
+.dots i{width:8px;height:8px;border-radius:50%;background:rgb(var(--ui-line2))}
+.dots i.on{background:rgb(var(--ui-accent));width:24px;border-radius:var(--k-pill,4px)}
+.ph-foot{margin-top:auto;padding-top:16px;display:grid;gap:8px}
+.ph-foot .k-btn{width:100%}
+
+/* szint-választó kártyák */
+.ob-list{display:grid;gap:12px;margin:0 0 12px}
+.ob-card{position:relative;display:block;width:100%;padding:16px;text-align:left;font:inherit;color:inherit;background:rgb(var(--ui-surface));border:2px solid rgb(var(--ui-line));border-radius:var(--ui-r-l);cursor:pointer}
+html[data-ui="pro"] .ob-card{border-width:1px}
+html[data-ui="gym"] .ob-card{border-width:0;border-left:6px solid rgb(var(--ui-line2))}
+.ob-card[aria-pressed=true]{border-color:rgb(var(--ui-accent))}
+html[data-ui="gym"] .ob-card[aria-pressed=true]{border-left-color:rgb(var(--ui-accent))}
+.ob-n{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 4px;font-size:18px;font-weight:600}
+html[data-ui="gym"] .ob-n{font-family:var(--ui-font-head);font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:22px}
+html[data-ui="family"] .ob-n{font-weight:700}
+.ob-s{margin:0 0 8px;font-size:14px;color:rgb(var(--ui-muted))}
+.ob-ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:14px}
+.ob-ul li{display:flex;gap:8px;align-items:flex-start}
+.ob-ul li::before{content:'';flex-shrink:0;width:6px;height:6px;margin-top:8px;background:rgb(var(--ui-accent));border-radius:var(--k-box,2px)}
+.badge{display:inline-block;padding:2px 8px;font-size:12px;font-weight:600;background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent));border-radius:var(--k-chip-r,var(--ui-r-s))}
+html[data-ui="gym"] .badge{font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.chk{position:absolute;right:12px;bottom:12px;display:none;color:rgb(var(--ui-accent-text))}
+.ob-card[aria-pressed=true] .chk{display:flex}
+
+/* vendég */
+.guest{display:flex;align-items:flex-start;gap:8px;margin:12px 0 0;font-size:13px;line-height:1.4;color:rgb(var(--ui-muted))}
+.guest svg{flex-shrink:0;margin-top:1px;color:rgb(var(--ui-accent-text))}
+.chip-g{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;font-size:12px;border:1px solid rgb(var(--ui-control));border-radius:var(--k-chip-r,var(--ui-r-s));color:rgb(var(--ui-muted))}
+
+/* bemutató */
+.tour-i{display:flex;align-items:center;justify-content:center;height:200px;margin:8px 0 16px;background:rgb(var(--ui-surface));border:1px solid rgb(var(--ui-line));border-radius:var(--ui-r-l);color:rgb(var(--ui-accent-text))}
+html[data-ui="gym"] .tour-i{border-width:0;border-left:6px solid rgb(var(--ui-accent))}
+html[data-ui="family"] .tour-i{border-width:2px}
+
+/* menü csoportokkal és kereséssel */
+.srch{position:relative;margin:0 0 12px}
+html[data-ui] .srch .k-in{padding-left:44px}
+.srch>svg{position:absolute;left:14px;top:13px;color:rgb(var(--ui-muted))}
+.mg{margin:0 0 8px}
+.mg-h{margin:16px 0 4px;font-family:var(--ui-font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+html[data-ui="gym"] .mg-h{font-family:var(--ui-font-body);font-weight:800;letter-spacing:.16em;color:rgb(var(--ui-accent-text))}
+html[data-ui="family"] .mg-h{font-family:var(--ui-font-body);font-size:14px;font-weight:700;letter-spacing:0;text-transform:none;color:rgb(var(--ui-text))}
+.mr{display:flex;align-items:center;gap:12px;width:100%;min-height:var(--ui-tap);padding:10px 0;text-align:left;font:inherit;color:inherit;background:none;border:0;border-top:1px solid rgb(var(--ui-line))}
+.mg .mr:first-of-type{border-top:0}
+html[data-ui="gym"] .mr{border-top-width:2px}
+.mr-i{display:flex;flex-shrink:0;color:rgb(var(--ui-accent-text))}
+.mr-tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.mr-t{font-size:16px;font-weight:500}
+html[data-ui="gym"] .mr-t{font-family:var(--ui-font-head);font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:20px}
+html[data-ui="family"] .mr-t{font-weight:700}
+.mr-d{font-size:13px;color:rgb(var(--ui-muted))}
+.mr-b{flex-shrink:0;font-size:12px;color:rgb(var(--ui-muted));border:1px solid rgb(var(--ui-control));padding:2px 8px;border-radius:var(--k-chip-r,var(--ui-r-s))}
+.mr-lock{opacity:.9}
+.mfoot{margin-top:16px;padding-top:8px;border-top:2px solid rgb(var(--ui-text))}
+html[data-ui="family"] .mfoot{border-top-width:2px;border-color:rgb(var(--ui-line))}
+.more{margin:12px 0 0;padding:12px;font-size:13px;text-align:center;color:rgb(var(--ui-muted));border:1px dashed rgb(var(--ui-control));border-radius:var(--ui-r-m)}
+
+/* súgó */
+.qm{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgb(var(--ui-control));border-radius:50%;background:transparent;color:rgb(var(--ui-text));font:inherit;font-size:18px;font-weight:600}
+html[data-ui="gym"] .qm{border-radius:0;border-width:2px}
+.tip{position:relative;margin:0 0 16px;padding:12px 40px 12px 14px;background:rgb(var(--ui-accent));color:rgb(var(--ui-on-accent));border-radius:var(--ui-r-m);font-size:14px;line-height:1.4}
+.tip b{display:block;margin-bottom:2px}
+.tip::before{content:'';position:absolute;top:-6px;right:20px;width:12px;height:12px;background:rgb(var(--ui-accent));transform:rotate(45deg)}
+.tip .x{position:absolute;top:8px;right:8px;display:flex;color:inherit}
+.hs{position:absolute;left:0;right:0;bottom:0;padding:16px var(--ui-px) 24px;background:rgb(var(--ui-surface));border-top:2px solid rgb(var(--ui-text));border-radius:var(--ui-r-l) var(--ui-r-l) 0 0}
+html[data-ui="gym"] .hs{border-top:6px solid rgb(var(--ui-accent));border-radius:0}
+html[data-ui="family"] .hs{border-top:0;border-radius:24px 24px 0 0}
+.scrim{position:absolute;inset:0;background:rgb(var(--ui-scrim-c) / var(--ui-scrim))}
+.hs h3{margin:0 0 4px;font-size:20px;font-family:var(--ui-font-head)}
+html[data-ui="gym"] .hs h3{font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:24px}
+.hs .what{margin:0 0 12px;font-size:14px;line-height:1.45}
+.hs ol{margin:0 0 12px;padding:0 0 0 20px;font-size:14px;line-height:1.5}
+.hs .tp{margin:0 0 12px;padding:10px 12px;font-size:13px;background:rgb(var(--ui-surface2));border-radius:var(--ui-r-s)}
+
+/* statisztika, edzés, beállítás: kis kiegészítők */
+.sp{display:block;width:100%;height:auto}
+.sp-l{fill:none;stroke:rgb(var(--ui-accent-text));stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.sp-g{stroke:rgb(var(--ui-line));stroke-width:1}
+.sp-d{fill:rgb(var(--ui-accent-text))}
+.pv{display:grid;gap:6px;margin:0}
+.pv-r{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:10px;font-size:14px;padding:8px 0;border-top:1px solid rgb(var(--ui-line))}
+.pv-r:first-child{border-top:0}
+.pv-r b{font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:break-word}
+.pv-d{color:rgb(var(--ui-muted))}
+.st-r{display:grid;grid-template-columns:2.2rem minmax(0,1fr) 3.4rem;gap:8px;align-items:center;margin:0 0 8px;font-size:14px}
+.in{height:48px;width:100%;box-sizing:border-box;padding:0 6px;text-align:center;font:inherit;font-size:16px;color:rgb(var(--ui-text));background:rgb(var(--ui-field));border:1px solid rgb(var(--ui-control));border-radius:var(--ui-r-m)}
+html[data-ui="gym"] .st-r .in{border-width:2px}
+html[data-ui="family"] .st-r .in{border-width:2px}
+.st-g{display:grid;grid-template-columns:2.2rem repeat(3,minmax(0,1fr)) 3.4rem;gap:8px;margin:0 0 4px;font-size:12px;text-align:center;color:rgb(var(--ui-muted))}
+.st-r2{display:grid;grid-template-columns:2.2rem repeat(3,minmax(0,1fr)) 3.4rem;gap:8px;align-items:center;margin:0 0 8px}
+.st-r2 span:first-child{text-align:center;color:rgb(var(--ui-muted))}
+.ck{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border:2px solid rgb(var(--ui-control));border-radius:var(--ui-r-m);color:rgb(var(--ui-on-accent))}
+.ck.on{background:rgb(var(--ui-accent));border-color:rgb(var(--ui-accent))}
+.rst{display:flex;align-items:center;gap:12px;margin:12px 0 0;padding:12px;background:rgb(var(--ui-surface));border:1px solid rgb(var(--ui-line));border-radius:var(--ui-r-m)}
+.rst-v{flex:1;font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;font-family:var(--ui-font-mono)}
+html[data-ui="gym"] .rst-v,html[data-ui="family"] .rst-v{font-family:var(--ui-font-head)}
+.nt{display:inline-block;margin:0 0 0 6px;padding:1px 8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:rgb(var(--ui-accent-text));border:1px solid rgb(var(--ui-accent-text));border-radius:var(--k-chip-r,var(--ui-r-s))}
+
+.in{display:block}
+.ph>.hs{position:absolute}
