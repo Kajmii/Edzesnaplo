@@ -58,3 +58,15 @@ Fázisonként egy bejegyzés. Minden bejegyzés: mi változott, képernyőképek
 - Eltérés a tervtől: a menükereső a súgó-témákat nem listázza külön szekcióban (a Súgó-képernyő saját keresővel rendelkezik); az „i” gomb csak 3 helyen van (RPE, rekordok, heti volumen), a többi elemhez a képernyő „?” gombja tartozik.
 - Tesztek: `npm run check` zöld (új: help), `node --check` minden JS-en. Böngészőpanelben (Pro, Gym, Family; hu/en; 360 és 430 px): „?” és súgólap, tipp megjelenik és bezárás után nem tér vissza, Minden szinten nincs tipp, Súgó-képernyő és keresés, „i” gomb, megnyugtató sorok; nincs vízszintes túllógás. A Közösség megnyugtató sorát a tesztkeretben nem lehetett élőben megnézni (belépés kell), a kódban és a teszt használat-ellenőrzésében szerepel.
 - Kézi teszt telefonra: lásd a jelentést. Valódi telefonon nem tudtam tesztelni.
+
+## 5. fázis: paritás az edzés-nézetekben (Pro, Gym, Family)
+- Ág: `feature/ui-paritas` (a 4. fázis ágából). Build: 13okt-4.
+- Minden edzés-funkció mostantól mindhárom irányban megvan (K5: a meglévő nézetek stílusában, új mockup nélkül). Pótolt elemek:
+  - **Előző alkalmak** (`workout.prevsets`, új, Ajánlott szinttől): a gyakorlat utolsó három edzésének sorozatai dátummal (pl. „okt. 9.  80×8 · 80×8 · 80×6"), közös `PrevSets` komponens; az adat `uiPrevSets` (js/ui/data.js, tesztelt).
+  - **RPE** (Minden szint): a Gym-ben és a Family-ben 6–10 közti gyorsválasztó (`RpeRow`, ugyanarra koppintva törlődik, mellette „i" súgó); a Pro-ban az oszlop marad.
+  - **Rúd és tárcsák ábra** (Minden szint): a Gym ábráját most a Pro és a Family is mutatja rudas gyakorlatnál.
+  - **Family:** legutóbbi alkalom egy sorban, eltelt idő a fejlécben, „Sorozat hozzáadása", „−15 / +15" a pihenőnél (futó pihenő alatt), mindig elérhető „Edzés befejezése" (az első kipipált sorozat után aktív).
+- Szintek: a meglévő szint-szűrés (2. fázis) érvényes az új elemekre (Ajánlott: előző alkalmak, sorozat hozzáadása, ±15, idő; Minden: RPE, tárcsák).
+- Paritás-teszt: ismert hiány 39 → 27 (csak F6 és F7 maradt: beállítások, onboarding és Kezdőlap-testreszabás). A terv mátrixában a sorok ✓-ek.
+- Tesztek: `npm run check` zöld (új: `uiPrevSets` az ui-data teszten), `node --check` minden JS-en. Böngészőpanelben (Pro, Gym, Family × 3 szint): az elemek a szint szerint jelennek meg és tűnnek el, az RPE-választó menti az értéket, nincs vízszintes túllógás 360 és 430 px-en, hu és en.
+- Megjegyzés: a Gym nézet görgetős (a pihenő-sáv alul ragad), Minden szinten az új sorok (RPE, előző alkalmak) görgetéssel érhetők el. Valódi telefonon nem tudtam tesztelni.

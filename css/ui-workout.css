@@ -125,3 +125,21 @@ html[data-ui] .fw-ok{height:52px;border:0;border-radius:16px;background:rgb(var(
 html[data-ui] .fw-skip{height:48px;min-height:48px;border:2px solid rgb(var(--ui-text));border-radius:16px;background:transparent;color:rgb(var(--ui-text));font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
 .fw-rest{margin:0;text-align:center;font-size:15px;font-weight:700;color:rgb(var(--ui-accent-text))}
 .fw-note{margin:0;text-align:center;font-size:14px;color:rgb(var(--ui-muted))}
+
+/* --- az irányok közti paritás: előző alkalmak, RPE-sor, Family kiegészítők (docs/UI-IMPLEMENTATION.md, K5: meglévő stílusban) --- */
+.k-prev{display:flex;flex-direction:column;gap:6px;margin:12px 0 0}
+.k-prev-h{margin:0;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+.k-prev-r{display:flex;justify-content:space-between;gap:12px;padding-top:6px;font-size:14px;font-variant-numeric:tabular-nums;border-top:1px solid rgb(var(--ui-line))}
+.k-prev-d{flex-shrink:0;color:rgb(var(--ui-muted));white-space:nowrap}
+.k-prev-r b{min-width:0;font-weight:600;text-align:right;overflow-wrap:anywhere}
+.k-rpe{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 0}
+.k-rpe-l{font-size:13px;font-weight:700;letter-spacing:.08em;color:rgb(var(--ui-muted))}
+.k-rpe-c{margin:0}
+.fw-top{display:flex;align-items:center;justify-content:space-between}
+.fw-timer{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:rgb(var(--ui-muted))}
+.fw-last{font-size:14px;color:rgb(var(--ui-muted))}
+html[data-ui] .fw-add{min-height:44px;border:2px dashed rgb(var(--ui-line2));border-radius:14px;background:transparent;color:rgb(var(--ui-text));font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+html[data-ui] .fw-fin{min-height:44px;border:0;background:transparent;color:rgb(var(--ui-accent-text));font-family:inherit;font-size:16px;font-weight:700;text-decoration:underline;cursor:pointer}
+.fw-fin:disabled{opacity:.45;cursor:default}
+.fw-rb{display:flex;justify-content:center;gap:10px}
+html[data-ui] .fw-rb button{min-width:72px;min-height:44px;border:2px solid rgb(var(--ui-line2));border-radius:14px;background:transparent;color:rgb(var(--ui-text));font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}

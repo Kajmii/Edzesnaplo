@@ -38,17 +38,17 @@ Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, 
 | `home.groups` | Heti sorozatok izomcsoportonként | 2 | ✗ | ✓ | ✗ | 0 | |
 | `workout.pick` | Tervválasztó, ismétlés, üres edzés | 1 | ✓ | ✓ | ✓ | 2 | közös (LogPick) |
 | `workout.sets` | Súly × ismétlés, sorozat kész | 1 | ✓ | ✓ | ✓ | 2 | |
-| `workout.lastline` | „Legutóbb: 80 kg × 8, rekord …” egy sor | 1 | ✓ | ✓ | ✗ | – | |
-| `workout.prevsets` | **Az előző alkalmak sorozatai** a gyakorlatnál (utolsó 3 edzés, dátummal) | 2 | ✗ | ✗ | ✗ | – | **új** (a feladat példája) |
-| `workout.addset` | Sorozat hozzáadása | 2 | ✓ | ✓ | ✗ | – | |
-| `workout.rpe` | RPE oszlop | 3 | ✓ | ✗ | ✗ | – | |
+| `workout.lastline` | „Legutóbb: 80 kg × 8, rekord …” egy sor | 1 | ✓ | ✓ | ✓ | – | |
+| `workout.prevsets` | **Az előző alkalmak sorozatai** a gyakorlatnál (utolsó 3 edzés, dátummal) | 2 | ✓ | ✓ | ✓ | – | **új** (a feladat példája) |
+| `workout.addset` | Sorozat hozzáadása | 2 | ✓ | ✓ | ✓ | – | |
+| `workout.rpe` | RPE oszlop | 3 | ✓ | ✓ | ✓ | – | |
 | `workout.rest` | Pihenő-időzítő (automatikus, elnémítható) | 1 | ✓ | ✓ | ✓ | – | |
-| `workout.restadj` | Pihenő ±15 mp | 2 | ✓ | ✓ | ✗ | – | |
-| `workout.clock` | Eltelt idő az edzésben | 2 | ✓ | ✓ | ✗ | – | |
-| `workout.finish` | Edzés befejezése gomb a fejlécben | 1 | ✓ | ✓ | ~ | – | Family: csak az utolsó sorozat után |
+| `workout.restadj` | Pihenő ±15 mp | 2 | ✓ | ✓ | ✓ | – | |
+| `workout.clock` | Eltelt idő az edzésben | 2 | ✓ | ✓ | ✓ | – | |
+| `workout.finish` | Edzés befejezése gomb a fejlécben | 1 | ✓ | ✓ | ✓ | – | Family: csak az utolsó sorozat után |
 | `workout.list` | Gyakorlat-lista, váltás, törlés, hozzáadás | 1 | ✓ | ✓ | ✓ | – | |
 | `workout.info` | Gyakorlat-leírás és videókereső | 1 | ✓ | ✓ | ✓ | – | |
-| `workout.plates` | Rúd és tárcsák ábra | 3 | ✗ | ✓ | ✗ | – | rudas gyakorlatnál, minden irányba |
+| `workout.plates` | Rúd és tárcsák ábra | 3 | ✓ | ✓ | ✓ | – | rudas gyakorlatnál, minden irányba |
 | `plan.week` | Heti terv és célsúlyok | 2 | ✓ | ✓ | ✓ | 1 | közös |
 | `plan.notify` | Értesítések, naptár (Google, .ics) | 3 | ✓ | ✓ | ✓ | 2 | |
 | `plan.editor` | Tervszerkesztő (saját tervek) | 3 | ✓ | ✓ | ✓ | 2 | most a menüben, ezután a Terv képernyőről |

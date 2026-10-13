@@ -4,7 +4,7 @@ const rd=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
 // a util.js dátumsegédjei ugyanúgy, ahogy az app használja
 const util=rd('js/util.js').split('\n').filter(l=>/^const (pad|dk|pd|weekOf)=/.test(l)).join('\n');
 const GOF={'Fekvenyomás':'Mell','Ferde nyomás':'Mell','Lat húzás':'Hát','Guggolás':'Láb','Vállnyomás':'Váll'};
-const m=new Function('GOF',util+'\n'+rd('js/ui/data.js')+';return{uiIsoWeek,uiAgo,uiShort,uiWeek,uiVolWeeks,uiRecs,uiLatestPR,uiGroupSets,uiStreak,uiDayOf,uiPlates,uiFirstName,uiMins,uiE1}')(GOF);
+const m=new Function('GOF',util+'\n'+rd('js/ui/data.js')+';return{uiIsoWeek,uiAgo,uiShort,uiWeek,uiVolWeeks,uiRecs,uiLatestPR,uiGroupSets,uiStreak,uiDayOf,uiPlates,uiFirstName,uiMins,uiE1,uiPrevSets}')(GOF);
 const W=(date,name,ex,vol)=>({id:date,date,name,ex,vol:vol==null?ex.reduce((a,e)=>a+e.sets.reduce((b,s)=>b+(+s.kg||0)*(+s.reps||0),0),0):vol});
 const S=(kg,reps,pr)=>({kg,reps,done:true,pr:!!pr});
 // ISO hét: 2026-10-13 a 42. hét
@@ -51,4 +51,9 @@ assert.strictEqual(m.uiPlates(21,20).rest,0.5);        // 0,5 kg-ot a készlet n
 assert.deepStrictEqual(m.uiPlates('x'),{list:[],rest:0});
 assert.strictEqual(m.uiFirstName('drong.matyas'),'Drong');assert.strictEqual(m.uiFirstName('anna92@x.hu'),'Anna92');assert.strictEqual(m.uiFirstName(''),'');
 assert.strictEqual(m.uiMins(6),55);assert.strictEqual(m.uiMins(1),10);
+// előző alkalmak: legfrissebb elöl, legfeljebb 3, csak az adott gyakorlat, üres ha nincs
+{const h=[W('2026-10-01','A',[{n:'Fekvenyomás',sets:[S(75,8),S(75,8)]}]),W('2026-10-09','A',[{n:'Fekvenyomás',sets:[S(80,8),S(80,8),S(80,6)]},{n:'Guggolás',sets:[S(100,5)]}]),W('2026-10-05','A',[{n:'Fekvenyomás',sets:[S(77.5,8)]}]),W('2026-09-20','A',[{n:'Fekvenyomás',sets:[S(70,10)]}]),W('2026-10-12','B',[{n:'Guggolás',sets:[S(105,3)]}])];
+ const p=m.uiPrevSets(h,'Fekvenyomás');assert.deepStrictEqual(p.map(x=>x.d),['2026-10-09','2026-10-05','2026-10-01'],'legfrissebb elöl, legfeljebb 3');
+ assert.deepStrictEqual(p[0].sets,[{kg:80,reps:8},{kg:80,reps:8},{kg:80,reps:6}]);assert.strictEqual(m.uiPrevSets(h,'Fekvenyomás',1).length,1);
+ assert.deepStrictEqual(m.uiPrevSets(h,'Guggolás').map(x=>x.d),['2026-10-12','2026-10-09']);assert.deepStrictEqual(m.uiPrevSets(h,'Nincs ilyen'),[]);assert.deepStrictEqual(m.uiPrevSets([],'x'),[])}
 console.log('rendben: Kezdőlap- és Edzés-számítások');
