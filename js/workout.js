@@ -8,15 +8,15 @@ function Rest({rest,setRest,hidden}){
  },[rest]);
  if(!rest||hidden)return null;
  const left=Math.max(0,Math.ceil((rest.end-Date.now())/1000)),done=left===0;
- return html`<div class="up fixed left-0 right-0 z-30 px-3" style=${{bottom:'calc(var(--ui-bar-h,64px) + 12px + env(safe-area-inset-bottom,0px))'}}>
-  <div class=${'max-w-md mx-auto rounded-2xl p-3 shadow-xl border '+(done?'bg-lime-400 text-black border-lime-300 glow':'bg-zinc-900 border-cyan-400/50')}>
-   <div class="flex items-center gap-3">
-    <${Ic} n="timer" c=${done?'text-black':'text-cyan-400'}/>
-    <div class="flex-1"><div class="fd text-3xl font-bold leading-none">${done?'Mehet a következő sorozat':Math.floor(left/60)+':'+pad(left%60)}</div><div class=${'text-xs '+(done?'text-black/70':'text-zinc-400')}>Pihenőidő</div></div>
-    ${!done&&html`<button onClick=${()=>setRest({end:rest.end+15000,total:rest.total+15})} class="h-11 px-3 rounded-xl bg-zinc-800 text-cyan-300 font-semibold">+15 mp</button>`}
-    <button onClick=${()=>setRest(null)} class=${'h-11 w-11 flex items-center justify-center rounded-xl '+(done?'bg-black/15':'bg-zinc-800 text-zinc-300')}><${Ic} n="x" s=${20}/></button>
+ return html`<div class='up k-rest-w' style=${{bottom:'calc(var(--ui-bar-h,64px) + 12px + env(safe-area-inset-bottom,0px))'}}>
+  <div class=${'k-rest'+(done?' done':'')} role='timer'>
+   <div class='k-rest-r'>
+    <span class='k-rest-i'><${UiIco} n='timer' s=${24}/></span>
+    <div class='k-rest-tx'><div class='k-rest-v'>${done?'Mehet a következő sorozat':Math.floor(left/60)+':'+pad(left%60)}</div><div class='k-rest-s'>Pihenőidő</div></div>
+    ${!done&&html`<${KBtn} v='sec' sm=${true} onClick=${()=>setRest({end:rest.end+15000,total:rest.total+15})}>+15 mp<//>`}
+    <button type='button' class='k-ib' aria-label=${tr('Bezárás')} onClick=${()=>setRest(null)}><${UiIco} n='x' s=${20}/></button>
    </div>
-   ${!done&&html`<div class="h-1.5 rounded-full bg-zinc-800 mt-3 overflow-hidden"><div class="h-full bg-cyan-400 transition-all" style=${{width:(left/rest.total*100)+'%'}}></div></div>`}
+   ${!done&&html`<div class='k-bar-tr k-mt'><div class='k-bar-f' style=${{'--p':left/rest.total}}></div></div>`}
   </div></div>`;
 }
 

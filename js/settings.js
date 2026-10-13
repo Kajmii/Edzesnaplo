@@ -10,9 +10,9 @@ function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,d
  const[bk,setBk]=useState(''),[cf,setCf]=useState(false),[cd,setCd]=useState(false),o=x=>setOpt(p=>({...p,...x}));
  const exp=()=>{const j=JSON.stringify({hist,plan,opt});setBk(j);try{navigator.clipboard.writeText(j).then(()=>toast('Mentés a vágólapra másolva')).catch(()=>{})}catch(e){}};
  const imp=()=>{try{const d=JSON.parse(bk);if(d.hist)setHist(d.hist);if(d.plan)setPlan(d.plan);if(d.opt)setOpt(d.opt);toast('Adatok visszatöltve')}catch(e){toast('A mentés szövege hibás')}};
- const bt='h-11 rounded-xl bg-zinc-800 text-sm font-semibold';
+ const bt='k-btn sec sm';
  useEffect(()=>{if(anchor==='data')setTimeout(()=>{try{document.getElementById('opt-data').scrollIntoView({block:'start'})}catch(e){}},60)},[]);
- return html`<div><h1 class='fd text-4xl font-bold mb-4'>Beállítások</h1>
+ return html`<div>
   <${UiSwitcher} opt=${opt} o=${o}/>
   <${Cd} t='Megjelenés'>
    <${Lb} t='Nyelv / Language'/><${Sg} v=${opt.lang} on=${x=>{try{localStorage.setItem('en_lang',x)}catch(e){}o({lang:x})}} o=${[['hu','Magyar'],['en','English']]}/>
@@ -32,12 +32,12 @@ function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,d
   ${cycAvail()&&html`<${Cd} t='Ciklus-követés'><${Sw} l='Ciklus-követés' s='Naptár és edzési javaslatok. Az adat csak ezen az eszközön van.' v=${cycGet().on} on=${x=>cycSet({...cycGet(),on:x})}/><//>`}
   <div id='opt-data'></div>
   <${Cd} t='Adatok'>
-   <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
-   <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>
-   <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Másold ide a mentés szövegét a visszatöltéshez' class='w-full h-24 rounded-xl bg-zinc-800 text-xs p-3 text-white outline-none mb-2'></textarea>
-   <button onClick=${()=>{if(cf){setHist([]);setCf(false);toast('Előzmények törölve')}else setCf(true)}} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Összes edzés törlése'}</button>
+   <div class='k-g2 k-mb'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
+   <div class='k-g2 k-mb'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>
+   <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Másold ide a mentés szövegét a visszatöltéshez' class='k-in k-ta k-mb'></textarea>
+   <button onClick=${()=>{if(cf){setHist([]);setCf(false);toast('Előzmények törölve')}else setCf(true)}} class=${'k-btn dan sm full'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Összes edzés törlése'}</button>
   <//>
-  <${Cd} t='Fiók és szinkron'><div class='text-zinc-300 text-sm break-all'>${(SESS&&SESS.user&&SESS.user.email)||user}</div><div class='text-xs text-zinc-400 mt-1 mb-3'>${sy.s==='ok'?'Utoljára szinkronizálva: '+sy.t:sy.s==='busy'?'Szinkronizálás...':sy.s==='off'?'Offline, a változások később szinkronizálódnak.':sy.s==='err'?'Szinkronhiba':'Még nem szinkronizált'}</div><div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${syncNow} class=${bt}>Szinkronizálás most</button><button onClick=${out} class=${bt}>Kilépés</button></div><button onClick=${()=>{if(cd)delAcc();else setCd(true)}} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cd?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cd?'Biztosan törlöd a fiókot és minden adatot?':'Fiók törlése'}</button><//>
+  <${Cd} t='Fiók és szinkron'><div class='k-row-t' style=${{overflowWrap:'anywhere'}}>${(SESS&&SESS.user&&SESS.user.email)||user}</div><div class='k-hint k-mb'>${sy.s==='ok'?'Utoljára szinkronizálva: '+sy.t:sy.s==='busy'?'Szinkronizálás...':sy.s==='off'?'Offline, a változások később szinkronizálódnak.':sy.s==='err'?'Szinkronhiba':'Még nem szinkronizált'}</div><div class='k-g2 k-mb'><button onClick=${syncNow} class=${bt}>Szinkronizálás most</button><button onClick=${out} class=${bt}>Kilépés</button></div><button onClick=${()=>{if(cd)delAcc();else setCd(true)}} class=${'k-btn dan sm full'+(cd?' ask':'')}>${cd?'Biztosan törlöd a fiókot és minden adatot?':'Fiók törlése'}</button><//>
  </div>`;
 }
 

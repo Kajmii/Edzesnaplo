@@ -6,8 +6,8 @@ const css=rd('css/ui-kit.css'),js=rd('js/ui-kit.js'),idx=rd('index.html');
 const used=new Set([...js.matchAll(/\bk-[a-z]+(?:-[a-z]+)*/g)].map(m=>m[0]));
 const miss=[...used].filter(c=>!new RegExp('\.'+c+'(?![\w-])').test(css));
 assert.deepStrictEqual(miss,[],'hiányzó CSS osztály: '+miss);
-// 2. színek csak tokenből (kivétel: a Gym töltés három tárcsa-színe, ugyanaz mint a teljes képernyős töltőn)
-const hex=[...css.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map(m=>m[0].toUpperCase()).filter(x=>!['#D7372B','#2F62D0','#2E9E5B'].includes(x));
+// 2. színek csak tokenből (kivétel: a Gym töltés három tárcsa-színe és a Google-gomb márkaszínei)
+const hex=[...css.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map(m=>m[0].toUpperCase()).filter(x=>!['#D7372B','#2F62D0','#2E9E5B','#FFF','#27272A','#DADCE0'].includes(x));
 assert.deepStrictEqual(hex,[],'kemény szín a kitben: '+hex);
 // 3. a Family betűméretei nem nagyobbak a többi irányénál (legfeljebb 20 px, az alap 16)
 for(const m of css.matchAll(/html\[data-ui="family"\][^{]*\{([^}]*)\}/g)){for(const f of m[1].matchAll(/font-size:(\d+)px/g))assert.ok(+f[1]<=20,'a Family túl nagy betű: '+f[1])}

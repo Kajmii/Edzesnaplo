@@ -15,7 +15,7 @@ async function sbf(path,o={},auth=true,retry=true){
  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
  return{ok:r.ok,status:r.status,j};
 }
-const BUILD='12okt-22';let DBG=[],DBGF=null;
+const BUILD='12okt-23';let DBG=[],DBGF=null;
 const dbg=m=>{const d=new Date();DBG=[...DBG,String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+' '+m].slice(-6);DBGF&&DBGF()};
 const PL={};const getPl=n=>{try{return NATIVE()&&Capacitor.registerPlugin?(PL[n]=PL[n]||Capacitor.registerPlugin(n)):null}catch(e){return null}};
 const PLA=n=>{try{return NATIVE()&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable(n)?1:0}catch(e){return 0}};
@@ -45,9 +45,9 @@ const mergeD=(L,R)=>{const del=[...new Set([...(L.del||[]),...(R.del||[])])],dm=
 function Reset({done}){
  const[p,setP]=useState(''),[er,setEr]=useState('');
  const go=async()=>{if(p.length<6)return setEr('A jelszó legalább 6 karakter legyen.');try{const r=await sbf('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:p})});r.ok?done():setEr('Hálózati hiba, próbáld újra.')}catch(e){setEr('Hálózati hiba, próbáld újra.')}};
- return html`<div class='min-h-screen flex items-center justify-center px-5'><div class='up w-full max-w-sm grid gap-3'><h1 class='fd text-4xl font-bold text-center'>Új jelszó</h1><input class=${inp+' !text-left px-4 !text-base'} type='password' placeholder='Új jelszó' value=${p} onChange=${e=>setP(e.target.value)}/>${er&&html`<p class='text-red-400 text-sm'>${er}</p>`}<button onClick=${go} class='h-14 rounded-2xl bg-lime-400 text-black font-bold text-lg'>Jelszó mentése</button></div></div>`;
+ return html`<div class='k-auth'><div class='up k-auth-in k-stack'><h1 class='k-brand-t'>Új jelszó</h1><input class=${inp+' !text-left'} type='password' placeholder='Új jelszó' value=${p} onChange=${e=>setP(e.target.value)}/>${er&&html`<p class='k-hint k-err'>${er}</p>`}<${KBtn} full=${true} onClick=${go}>Jelszó mentése<//></div></div>`;
 }
-const Fld=({ic,children})=>html`<div class='relative'><span class='absolute left-3.5 top-3.5 text-zinc-500'><${Ic} n=${ic} s=${20}/></span>${children}</div>`;
+const Fld=({ic,children})=>html`<div class='k-fld-w'><span class='k-ico-i'><${Ic} n=${ic} s=${20}/></span>${children}</div>`;
 function Auth({on,note,gstart,wt,chk,dbgl}){
  const[lg,setLg]=useState(LANG),[m,setM]=useState('in'),[em,setEm]=useState(''),[p,setP]=useState(''),[p2,setP2]=useState(''),[sh,setSh]=useState(false),[er,setEr]=useState(''),[ok,setOk]=useState(''),[bz,setBz]=useState(false);
  const fail=j=>{const t=((j&&(j.error_description||j.msg||j.message))||'')+'';return /invalid login|invalid_grant/i.test(t)?'Hibás e-mail vagy jelszó.':/not confirmed/i.test(t)?'Az e-mail cím még nincs megerősítve.':/already registered|already exists/i.test(t)?'Ehhez az e-mail címhez már tartozik fiók. Lépj be, vagy használd az „Elfelejtett jelszó?” opciót.':/at least|weak/i.test(t)?'A jelszó legalább 6 karakter legyen.':/valid email|invalid format/i.test(t)?'Érvénytelen e-mail cím.':/rate limit/i.test(t)?'Túl sok próba, várj egy kicsit.':t||'Hálózati hiba, próbáld újra.'};
@@ -65,25 +65,26 @@ function Auth({on,note,gstart,wt,chk,dbgl}){
   setBz(false)};
  const rec=async()=>{setEr('');setOk('');if(bad())return setEr('Érvénytelen e-mail cím.');try{await sbf('/auth/v1/recover',{method:'POST',body:JSON.stringify({email:em2()})},false);setOk('Küldtünk egy jelszó-visszaállító e-mailt, ha létezik ilyen fiók.')}catch(x){setEr('Hálózati hiba, próbáld újra.')}};
  const goog=()=>{if(NATIVE()&&gstart){gstart();return}location.href=SBU+'/auth/v1/authorize?provider=google&redirect_to='+encodeURIComponent(location.origin+location.pathname)};
- const ky=e=>e.key==='Enter'&&go(),ip=inp+' !text-left !text-base !pl-11 !pr-4';
- const pw=(v,set,ph,cls)=>html`<${Fld} ic='lock'><input class=${ip+' !pr-12 '+(cls||'')} type=${sh?'text':'password'} placeholder=${ph} value=${v} onChange=${e=>set(e.target.value)} onKeyDown=${ky}/><button type='button' onClick=${()=>setSh(!sh)} class='absolute right-1 top-1 h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n=${sh?'eyeoff':'eye'} s=${20}/></button><//>`;
- return html`<div class='min-h-screen flex items-center justify-center px-5 py-8'><div class='up w-full max-w-sm'>
-  <div class='flex justify-end gap-1 mb-3'>${['hu','en'].map(l=>html`<button key=${l} onClick=${()=>{try{localStorage.setItem('en_lang',l)}catch(e){}LANG=l;setLg(l)}} class=${'px-3 h-9 rounded-lg text-sm '+(lg===l?'bg-lime-400 text-black font-semibold':'bg-zinc-800 text-zinc-400')}>${l.toUpperCase()}</button>`)}</div>
-  <div class='text-center mb-6'><div class='relative w-20 h-20 mx-auto mb-4'><div class='absolute inset-0 rounded-3xl bg-lime-400 blur-xl opacity-60 glow'></div><div class='relative w-20 h-20 rounded-3xl bg-lime-400 text-black flex items-center justify-center float'><${Ic} n='dumbbell' s=${38}/></div></div><h1 class='fd text-5xl font-bold grad'>Edzésnapló</h1><p class='text-zinc-400 text-sm mt-1'>Kövesd, tervezd és told a határaidat</p></div>
-  <div class='bg-zinc-900 border border-zinc-800 rounded-3xl p-4'>
-   <div class='grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-zinc-800 mb-4'>${[['in','Belépés'],['up','Regisztráció']].map(([k,l])=>html`<button key=${k} onClick=${()=>{setM(k);setEr('');setOk('')}} class=${'h-10 rounded-xl text-sm font-semibold transition-all duration-300 '+(m===k?'bg-lime-400 text-black':'text-zinc-400')}>${l}</button>`)}</div>
-   ${!/Electron/.test(navigator.userAgent)&&html`<button onClick=${goog} class='w-full h-12 rounded-xl bg-white text-zinc-800 font-semibold flex items-center justify-center gap-3 mb-3'><span class='w-6 h-6 rounded-full flex items-center justify-center font-bold text-white' style=${{background:'conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0)'}}>G</span>Folytatás Google-lel</button>${wt&&html`<button onClick=${chk} class='w-full h-11 rounded-xl bg-zinc-800 text-lime-300 text-sm font-semibold mb-3'>Már beléptem a Chrome-ban</button>`}
-   <div class='flex items-center gap-3 text-xs text-zinc-500 mb-3'><span class='flex-1 h-px bg-zinc-700'></span>vagy<span class='flex-1 h-px bg-zinc-700'></span></div>`}
-   <div class='grid gap-3'>
+ const ky=e=>e.key==='Enter'&&go(),ip=inp+' !text-left !pl-11 !pr-4';
+ const pw=(v,set,ph,cls)=>html`<${Fld} ic='lock'><input class=${ip+' !pr-12 '+(cls||'')} type=${sh?'text':'password'} placeholder=${ph} value=${v} onChange=${e=>set(e.target.value)} onKeyDown=${ky}/><button type='button' onClick=${()=>setSh(!sh)} class='k-ib k-eye' aria-label=${tr(sh?'Jelszó elrejtése':'Jelszó megjelenítése')}><${Ic} n=${sh?'eyeoff':'eye'} s=${20}/></button><//>`;
+ return html`<div class='k-auth'><div class='up k-auth-in'>
+  <div class='k-lang'>${['hu','en'].map(l=>html`<${KChip} key=${l} on=${lg===l} onClick=${()=>{try{localStorage.setItem('en_lang',l)}catch(e){}LANG=l;setLg(l)}}>${l.toUpperCase()}<//>`)}</div>
+  <div class='k-brand'><span class='k-logo'><${Ic} n='dumbbell' s=${34}/></span><h1 class='k-brand-t'>Edzésnapló</h1><p class='k-hint'>Kövesd, tervezd és told a határaidat</p></div>
+  <${KCard}>
+   <div class='k-mb'><${KSeg} v=${m} on=${k=>{setM(k);setEr('');setOk('')}} o=${[['in','Belépés'],['up','Regisztráció']]}/></div>
+   ${!/Electron/.test(navigator.userAgent)&&html`<button type='button' onClick=${goog} class='k-btn k-google full'><span class='k-gl' style=${{background:'conic-gradient(#ea4335 0 25%,#fbbc05 0 50%,#34a853 0 75%,#4285f4 0)'}}>G</span>Folytatás Google-lel</button>${wt&&html`<${KBtn} v='gho' sm=${true} full=${true} c='k-mt' onClick=${chk}>Már beléptem a Chrome-ban<//>`}
+   <div class='k-or'><span></span>vagy<span></span></div>`}
+   <div class='k-stack'>
     <${Fld} ic='mail'><input class=${ip} type='email' placeholder='E-mail' autoCapitalize='none' value=${em} onChange=${e=>setEm(e.target.value)} onKeyDown=${ky}/><//>
     ${pw(p,setP,'Jelszó')}
     ${m==='up'&&html`<div class='up'>${pw(p2,setP2,'Jelszó újra')}</div>`}
-    ${er&&html`<p class='up text-red-400 text-sm'>${er}</p>`}${ok&&html`<p class='up text-lime-300 text-sm'>${ok}</p>`}${note&&html`<p class='up text-amber-300 text-sm break-all'>${note}</p>`}
-    <button disabled=${bz} onClick=${go} class='sh h-14 rounded-2xl bg-lime-400 text-black font-bold text-lg'>${bz?'...':m==='in'?'Belépés':'Fiók létrehozása'}</button>
-    ${m==='in'&&html`<button onClick=${rec} class='text-sm text-zinc-400 py-1'>Elfelejtett jelszó?</button>`}</div></div>
-  <p class='text-xs text-zinc-500 text-center mt-4'>Az adataid a fiókodhoz kötve, titkosított kapcsolaton szinkronizálódnak.</p>
-  <p class='text-[10px] leading-snug text-zinc-600 text-center mt-3 break-all'>${dbgl}</p></div></div>`;
+    ${er&&html`<p class='up k-hint k-err'>${er}</p>`}${ok&&html`<p class='up k-hint k-ok'>${ok}</p>`}${note&&html`<p class='up k-hint k-warn' style=${{overflowWrap:'anywhere'}}>${note}</p>`}
+    <${KBtn} full=${true} disabled=${bz} onClick=${go}>${bz?'...':m==='in'?'Belépés':'Fiók létrehozása'}<//>
+    ${m==='in'&&html`<${KBtn} v='gho' sm=${true} full=${true} onClick=${rec}>Elfelejtett jelszó?<//>`}</div><//>
+  <p class='k-hint k-center'>Az adataid a fiókodhoz kötve, titkosított kapcsolaton szinkronizálódnak.</p>
+  <p class='k-hint k-center k-dbg'>${dbgl}</p></div></div>`;
 }
+
 function Handoff({hash,cont}){
  const hp=new URLSearchParams(hash.replace(/^[#?]/,'')),hc=new URLSearchParams(location.search).get('hc')||'';
  const[st,setSt]=useState(hc?'send':'nohc'),[er,setEr]=useState(''),link='edzesnaplo://auth?ok=1';
@@ -92,13 +93,13 @@ function Handoff({hash,cont}){
    .then(r=>{if(r.ok){setSt('ok');setTimeout(()=>{try{location.href=link}catch(e){}},900)}else{setSt('err');setEr(String(r.status))}})
    .catch(()=>{setSt('err');setEr('net')})},[]);
  const bad=st==='err'||st==='nohc';
- return html`<div class='min-h-screen flex items-center justify-center px-5'><div class='up w-full max-w-sm text-center grid gap-4'>
-  <div class=${'mx-auto w-20 h-20 rounded-3xl text-black flex items-center justify-center float '+(bad?'bg-amber-300':'bg-lime-400')}><${Ic} n='check' s=${40}/></div>
-  <h1 class='fd text-4xl font-bold'>${st==='err'?'Az átadás nem sikerült':'Sikeres belépés'}</h1>
-  <p class='text-zinc-400 text-sm'>${st==='send'?'Átadás az appnak...':st==='ok'?'Kész! Térj vissza az Edzésnapló appba.':st==='nohc'?'Az átadás kódja hiányzik':'('+er+')'}</p>
-  ${(st==='ok'||st==='err')&&html`<a href=${link} class='sh h-14 rounded-2xl bg-lime-400 text-black font-bold text-lg flex items-center justify-center'>Megnyitás az appban</a>`}
-  <button onClick=${cont} class='text-sm text-zinc-400 py-2'>Folytatás itt a böngészőben</button>
-  <p class='text-[10px] text-zinc-600'>v${BUILD}</p></div></div>`;
+ return html`<div class='k-auth'><div class='up k-auth-in k-stack k-center'>
+  <span class=${'k-logo k-logo-c'+(bad?' bad':'')}><${Ic} n='check' s=${36}/></span>
+  <h1 class='k-brand-t'>${st==='err'?'Az átadás nem sikerült':'Sikeres belépés'}</h1>
+  <p class='k-hint'>${st==='send'?'Átadás az appnak...':st==='ok'?'Kész! Térj vissza az Edzésnapló appba.':st==='nohc'?'Az átadás kódja hiányzik':'('+er+')'}</p>
+  ${(st==='ok'||st==='err')&&html`<a href=${link} class='k-btn pri full'>Megnyitás az appban</a>`}
+  <${KBtn} v='gho' sm=${true} full=${true} onClick=${cont}>Folytatás itt a böngészőben<//>
+  <p class='k-hint k-dbg'>v${BUILD}</p></div></div>`;
 }
 function Root(){
  const[u,setU]=useState(()=>{sload();return SESS&&SESS.user?SESS.user:null}),[rs,setRs]=useState(false),[gm,setGm]=useState(''),[ho,setHo]=useState(null),[wt,setWt]=useState(()=>NATIVE()&&!!hcGet()),[,tk]=useState(0);
