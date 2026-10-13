@@ -1,7 +1,7 @@
 // A funkció-nyilvántartás belső egyezései. Futtatás: node tests/features.check.js
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const rd=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
-const reg=rd('js/features/registry.js'),menuSrc=rd('js/ui-menu.js'),app=rd('js/app.js'),dictSrc=rd('js/i18n-en.js');
+const reg=rd('js/features/registry.js'),menuSrc=rd('js/ui/menu.js'),app=rd('js/app.js'),dictSrc=rd('js/i18n-en.js');
 const R=new Function(reg+';return{FEATURES,FEAT_GROUPS,FEAT_TABS,featById}')();
 const{FEATURES,FEAT_GROUPS,FEAT_TABS}=R;
 let dict;new Function('setDict',dictSrc)(d=>{dict=d});

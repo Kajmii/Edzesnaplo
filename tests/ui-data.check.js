@@ -4,7 +4,7 @@ const rd=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
 // a util.js dátumsegédjei ugyanúgy, ahogy az app használja
 const util=rd('js/util.js').split('\n').filter(l=>/^const (pad|dk|pd|weekOf)=/.test(l)).join('\n');
 const GOF={'Fekvenyomás':'Mell','Ferde nyomás':'Mell','Lat húzás':'Hát','Guggolás':'Láb','Vállnyomás':'Váll'};
-const m=new Function('GOF',util+'\n'+rd('js/ui-data.js')+';return{uiIsoWeek,uiAgo,uiShort,uiWeek,uiVolWeeks,uiRecs,uiLatestPR,uiGroupSets,uiStreak,uiDayOf,uiPlates,uiFirstName,uiMins,uiE1}')(GOF);
+const m=new Function('GOF',util+'\n'+rd('js/ui/data.js')+';return{uiIsoWeek,uiAgo,uiShort,uiWeek,uiVolWeeks,uiRecs,uiLatestPR,uiGroupSets,uiStreak,uiDayOf,uiPlates,uiFirstName,uiMins,uiE1}')(GOF);
 const W=(date,name,ex,vol)=>({id:date,date,name,ex,vol:vol==null?ex.reduce((a,e)=>a+e.sets.reduce((b,s)=>b+(+s.kg||0)*(+s.reps||0),0),0):vol});
 const S=(kg,reps,pr)=>({kg,reps,done:true,pr:!!pr});
 // ISO hét: 2026-10-13 a 42. hét

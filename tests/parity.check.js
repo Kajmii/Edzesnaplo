@@ -6,8 +6,8 @@ const{FEATURES}=new Function(rd('js/features/registry.js')+';return{FEATURES}')(
 const IMPL=new Function(rd('js/features/parity.js')+';return FEAT_IMPL')();
 const UIS=['pro','gym','family'];
 // a forrás: minden js/*.js, a nyilvántartási fájlok kivételével (azokban maguk a jelölők szerepelnek)
-const files=fs.readdirSync(path.join(dir,'js')).filter(f=>f.endsWith('.js')&&f!=='vendor.js'&&f!=='i18n-en.js');
-const src=Object.fromEntries(files.map(f=>[f,rd('js/'+f)]));
+const files=['js','js/ui'].flatMap(d=>fs.readdirSync(path.join(dir,d)).filter(f=>f.endsWith('.js')&&f!=='vendor.js'&&f!=='i18n-en.js').map(f=>d+'/'+f));
+const src=Object.fromEntries(files.map(f=>[f,rd(f)]));
 const all=Object.values(src).join('\n');
 const body=name=>{for(const s of Object.values(src)){const i=s.indexOf('function '+name+'(');if(i<0)continue;const j=s.indexOf('\n}',i);return s.slice(i,j<0?undefined:j+2)}return null};
 const has=m=>{

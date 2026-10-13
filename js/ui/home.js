@@ -1,5 +1,5 @@
 /* ---------- Kezdőlap: Pro, Gym, Family ----------
-   Mockupok: docs/mockups/forras/Main (Pro), GymHome, FamilyHome. Az adatok a js/ui-data.js tiszta függvényeiből jönnek.
+   Mockupok: docs/mockups/forras/Main (Pro), GymHome, FamilyHome. Az adatok a js/ui/data.js tiszta függvényeiből jönnek.
    Minden szám és mértékegység közt nem törő szóköz van (nb), hogy 360 px-en se váljanak szét. */
 const NB=' ';
 const UI_DAYS={hu:['Vasárnap','Hétfő','Kedd','Szerda','Csütörtök','Péntek','Szombat'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};

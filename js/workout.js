@@ -20,7 +20,7 @@ function Rest({rest,setRest,hidden}){
   </div></div>`;
 }
 
-/* ---------- Edzés indítása: terv-választó (aktív edzésnél az UiLog fut, js/ui-workout.js) ---------- */
+/* ---------- Edzés indítása: terv-választó (aktív edzésnél az UiLog fut, js/ui/workout.js) ---------- */
 function LogPick({hist,sel,begin}){
  return html`<div>
   <p class='k-lead'>${fd(sel)}: válassz edzéstervet</p>

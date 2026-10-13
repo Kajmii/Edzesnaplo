@@ -267,6 +267,33 @@ A „Statisztikák és rekordok” új, **gyűjtő** nézet: nem új adat, a meg
 - **Hossz:** a cím és a „mi ez” 360 px-en két sorban elférjen, az angol is.
 - **Akadálymentesség:** a súgólap fókuszt csapdáz, Esc zár, a „?” gomb `aria-haspopup='dialog'`.
 
+### 7b. Megnyugtató mikroszövegek (a felhasználó kérésére)
+
+Ahol egy képernyő elsőre bonyolultnak tűnik, egy rövid, nyugodt mondat mondja ki, hogy **nem lehet elrontani**, és **semmi nem vész el**. Ezek a súgó-bejegyzések „calm” mezői (a nyilvántartás `help` kulcsán), a képernyőn halk, egysoros szövegként jelennek meg, a súgólapon is szerepelnek. Szabály: egy mondat, nincs felkiáltójel, nem tilt, hanem megnyugtat; magyarul és angolul is.
+
+| Hol | Szöveg (hu) | Mikor |
+|---|---|---|
+| Szint-választó | „Bármikor átállíthatod. Semmi sem törlődik, csak elrejtjük.” | már a mockupban |
+| Menü, „Még N funkció” sor | „Minden elérhető, a keresés mindent megtalál.” | F3 |
+| Beállítások › Szint | „A rejtett funkciók a keresésből továbbra is elérhetők.” | F2 |
+| Kezdőlap tartalma | „Bármikor visszakapcsolhatod, az adataid nem változnak.” | F7 |
+| Tervszerkesztő (üres) | „Nem kell mindent kitöltened. Hagyj üresen, amit nem használsz.” | F5 |
+| Terv | „Ha kihagysz egy napot, semmi baj: a célsúlyok az utolsó edzésedből számolódnak.” | F4 |
+| Edzés (első indítás) | „Nem kell mindent kitöltened. Elég a súlyt és az ismétlést.” | F4 |
+| Edzés › RPE | „Nem kötelező. Ha nem tudod, hagyd üresen.” | F5 |
+| Étel / Kalória | „A számok tájékoztatók. Nem kell pontosnak lenned.” | F4 |
+| Számolók | „Ezek becslések, bármikor átírhatod az eredményt.” | F4 |
+| Közösség (első megnyitás) | „Alapból minden privát. Te döntöd el, mit lát más.” | F4 |
+| Fotók | „Csak te látod, amíg külön nem osztod meg.” | már él (Fotók) |
+| Export / adatok | „Az exportálás nem töröl semmit.” | F6 |
+| Törlés-gombok (kétlépcsős) | „Nem töröl, amíg másodszor is rá nem koppintasz.” | F4 |
+| Alapértékek visszaállítása | „Az adataid (edzések, étel, mérések) nem érintettek, csak a kinézet és a beállítások.” | F6 |
+| Nagy kontraszt | „Bármikor kikapcsolható.” | F6 |
+| Vendég mód | „Később fiókot is létrehozhatsz, az adataidat átviheted.” | F8 |
+| Fiók törlése | „Ez végleges. Előtte exportálhatod az adataidat.” | meglévő megerősítés bővítése |
+
+A paritás-teszt ezeket is ellenőrzi: minden „calm” szövegnek van angol párja, és legfeljebb 90 karakter.
+
 ## 8. Animációs táblázat
 
 Az irányok alap-animációi változatlanok (lásd a mockup README és `css/motion.css`). **Új** elemek:
