@@ -1,7 +1,7 @@
 // UI-tokenek ellenőrzése: kontraszt (WCAG), a tokenek és a JS táblák egyezése. Futtatás: node tests/ui.check.js
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const rd=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
-const css=rd('css/tokens.css'),core=rd('js/ui-core.js'),idx=rd('index.html');
+const css=rd('css/tokens.css'),core=rd('js/ui/core.js'),idx=rd('index.html');
 
 // --- tokenek beolvasása: html[data-ui="x"][data-scheme="y"]{...} blokkok az irány-alapokkal összefésülve
 const blocks=[...css.matchAll(/html\[data-ui="(\w+)"\](?:\[data-scheme="(\w+)"\])?\{([^}]*)\}/g)].map(m=>({ui:m[1],sc:m[2]||'',body:m[3]}));
@@ -52,16 +52,16 @@ for(const ui of Object.keys(UI)){
 }
 assert.ok(/prefers-reduced-motion:reduce/.test(motion),'reduced-motion szabály hiányzik');
 // --- előnézetek: a generált fájl szintaktikailag rendben van és mindhárom irányhoz van előnézet
-const prev=rd('js/ui-previews.js');
+const prev=rd('js/ui/previews.js');
 for(const n of ['UiPrevPro','UiPrevGym','UiPrevFamily'])assert.ok(prev.includes('const '+n+'='),'hiányzik: '+n);
 console.log('rendben: UI-tokenek, '+rows+' színséma, kontraszt és JS-tábla egyezik');
 
 // --- menü: minden pont megvan, minden szövegnek van angol fordítása, a céljaikat az App kezeli
-const menuSrc=rd('js/ui-menu.js'),app=rd('js/app.js'),dictSrc=rd('js/i18n-en.js');
+const menuSrc=rd('js/ui/menu.js'),app=rd('js/app.js'),dictSrc=rd('js/i18n-en.js');
 let dict;new Function('setDict',dictSrc)(d=>{dict=d});
-const MENU=new Function(menuSrc.slice(menuSrc.indexOf('const UI_MENU='),menuSrc.indexOf('const uiMenuItems'))+';return UI_MENU')();
+const MENU=new Function(rd('js/features/registry.js')+';'+menuSrc.slice(menuSrc.indexOf('const UI_MENU='),menuSrc.indexOf('const uiMenuItems'))+';return UI_MENU')();
 assert.strictEqual(MENU.length,13,'a menünek 13 pontja van');
-assert.deepStrictEqual(MENU.slice(0,10).map(m=>m.k),['log','plan','hist','food','recipes','body','social','cycle','profile','opt'],'az első tíz pont sorrendje a mockup szerinti');
+assert.deepStrictEqual(MENU.map(m=>m.k),['log','plan','hist','food','recipes','body','stats','calc','cycle','social','profile','opt','help'],'a pontok sorrendje csoportonként: Ma, Étkezés, Fejlődés, Közösség, fiók');
 assert.strictEqual(new Set(MENU.map(m=>m.k)).size,13,'a menüpont-azonosítók egyediek');
 const icons=new Function(menuSrc.slice(menuSrc.indexOf('const UI_ICO='),menuSrc.indexOf('const UiIco'))+';return UI_ICO')();
 for(const m of MENU){
@@ -80,7 +80,7 @@ for(const k of ['Menü bezárása','Bezár','Napló, étel és a többi','Menü'
 console.log('rendben: menü, 13 pont, minden szöveg lefordítva');
 
 // --- első bejelentkezés: a felület-választó szövegei lefordítva, a három irányhoz van ajánlás
-const pk=rd('js/ui-picker.js');
+const pk=rd('js/ui/picker.js');
 const who=new Function(pk.slice(pk.indexOf('const UI_WHO='),pk.indexOf('function UiPicker'))+';return UI_WHO')();
 for(const ui of Object.keys(UI)){assert.ok(who[ui]&&who[ui].w,ui+': hiányzó ajánlás');assert.ok(dict[who[ui].w]!==undefined,ui+': nincs angol ajánlás')}
 for(const k of ['Válaszd ki a kinézetet','Ezt választom','Ezt egyszer kell kiválasztanod. A Beállításokban később bármikor módosíthatod.'])assert.ok(dict[k]!==undefined,'nincs angol: '+k);
@@ -88,12 +88,12 @@ assert.ok(app.includes('<${UiPicker}')&&app.includes('opt.uiChosen'),'az App nem
 console.log('rendben: felület-választó');
 
 // --- az új képernyők tr('...') szövegei mind le vannak fordítva (a rövid, nem szöveges értékeket kivéve)
-for(const f of ['js/ui-home.js','js/ui-workout.js','js/ui-loader.js','js/ui-picker.js','js/ui-profile.js']){
+for(const f of ['js/ui/home.js','js/ui/workout.js','js/ui/loader.js','js/ui/picker.js','js/ui/profile.js']){
  const src=rd(f),miss=[];
  for(const m of src.matchAll(/tr\('([^']+)'\)/g))if(/[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]/.test(m[1])&&dict[m[1]]===undefined)miss.push(m[1]);
  assert.deepStrictEqual([...new Set(miss)],[],f+': nincs angol fordítás: '+miss.join(' | '));
 }
 for(const s of ['Séta, 20 perc','Lábemelés ülve, 2 × 10','Fekvőtámasz a falnál, 2 × 8','Nyújtás, 5 perc'])assert.ok(dict[s]!==undefined,'nincs angol: '+s);
 for(const f of ['css/ui-home.css','css/ui-workout.css','css/ui-loader.css','css/ui-picker.css','css/ui-menu.css','css/ui-switch.css','css/tokens.css','css/base.css','css/motion.css'])assert.ok(idx.includes(f),'az index.html nem tölti be: '+f);
-for(const f of ['js/ui-data.js','js/ui-home.js','js/ui-workout.js','js/ui-loader.js','js/ui-picker.js','js/ui-profile.js','js/ui-menu.js','js/ui-core.js'])assert.ok(idx.includes(f),'az index.html nem tölti be: '+f);
+for(const f of ['js/ui/data.js','js/ui/home.js','js/ui/workout.js','js/ui/loader.js','js/ui/picker.js','js/ui/profile.js','js/ui/menu.js','js/ui/core.js'])assert.ok(idx.includes(f),'az index.html nem tölti be: '+f);
 console.log('rendben: új képernyők fordításai és betöltésük');

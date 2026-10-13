@@ -17,7 +17,7 @@ const newEx=(n,hist,g)=>{const l=g&&g.kg?g:lastSet(hist,n);return{n,sets:[0,1,2]
 const inp='k-in w-full min-w-0 h-12 rounded-xl bg-zinc-800 text-center text-lg font-semibold text-white placeholder-zinc-600 outline-none focus:ring-2 focus:ring-lime-400';
 
 const buzz=()=>{try{OPT.vib&&navigator.vibrate&&navigator.vibrate(12)}catch(e){}};
-const beep=()=>{if(!OPT.snd)return;try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.setValueAtTime(.15,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.5);o.start();o.stop(a.currentTime+.5)}catch(e){}};
+const beep=()=>{if(!OPT.snd||quietAt(OPT.qh,new Date()))return;try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.setValueAtTime(.15,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.5);o.start();o.stop(a.currentTime+.5)}catch(e){}};
 const toast=(m,pr)=>window.dispatchEvent(new CustomEvent('toast',{detail:{m,pr}}));
 const maxKg=(hist,n)=>Math.max(0,...hist.flatMap(w=>w.ex.filter(e=>e.n===n).flatMap(e=>e.sets.map(s=>+s.kg||0))));
 const uiReduced=()=>{try{return window.matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('noanim')}catch(e){return false}};

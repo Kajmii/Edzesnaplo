@@ -1,0 +1,12 @@
+/* Szint-választó, bemutató (js/ui/onboarding.js): a teljes képernyős réteg a felület-választó osztályait (ui-pick-*) használja. Minden szín token. */
+.ob-k{margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-accent-text))}
+.ob-card{margin:0;text-align:left}
+.ob-n{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ob-badge{padding:2px 8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgb(var(--ui-on-accent));background:rgb(var(--ui-accent));border-radius:var(--ui-r-s)}
+.ob-ul{margin:8px 0 0;padding-left:18px;list-style:disc outside;font-size:14px;line-height:1.4;color:rgb(var(--ui-muted))}
+.ob-bar{display:flex;flex-direction:column;gap:8px}
+.ob-tour{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:8px;text-align:center}
+.ob-ico{display:flex;color:rgb(var(--ui-accent-text));margin-bottom:12px}
+.ob-dots{display:flex;gap:8px;justify-content:center;margin:16px 0 0}
+.ob-dots i{width:8px;height:8px;border-radius:50%;background:rgb(var(--ui-line2))}
+.ob-dots i.on{background:rgb(var(--ui-accent))}

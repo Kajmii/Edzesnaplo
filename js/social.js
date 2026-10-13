@@ -31,7 +31,7 @@ function Avatar({p,s=64}){
 }
 
 function Social(){
- const id=SESS&&SESS.user&&SESS.user.id,[st,setSt]=useState('load'),[pr,setPr]=useState(null),[se,setSe]=useState(null),[f,setF]=useState({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'}),[terms,setTerms]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[cf,setCf]=useState(false),[tb,setTb]=useState('feed'),[pv,setPv]=useState(null);
+ const id=SESS&&SESS.user&&SESS.user.id,[st,setSt]=useState('load'),[pr,setPr]=useState(null),[se,setSe]=useState(null),[f,setF]=useState({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'}),[terms,setTerms]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[cf,setCf]=useState(false),[tb,setTb]=useState(navFocus('social')||'feed'),[pv,setPv]=useState(null);
  const fill=p=>setF({username:p.username,display_name:p.display_name,avatar_color:p.avatar_color,avatar_icon:p.avatar_icon});
  const load=async()=>{setSt('load');setMsg('');socLoadHidden();
   try{const[a,b]=await Promise.all([sbf('/rest/v1/profiles?select=*&user_id=eq.'+id),sbf('/rest/v1/profile_settings?select=*&user_id=eq.'+id)]);
@@ -94,6 +94,7 @@ function Social(){
  if(pv)return html`<div><${SocProfile} u=${pv} me=${id} back=${()=>setPv(null)}/></div>`;
  return html`<div>
   <${KTabs} v=${tb} on=${setTb} o=${[['feed','Hírfolyam'],['conn','Kapcsolatok'],['grp','Csoportok'],['prof','Profil']]}/>
+  <${HelpCalm} id='social.feed'/>
   ${tb==='feed'?html`<${SocFeed} me=${id} open=${setPv}/>`:tb==='conn'?html`<${SocConn} me=${id} open=${setPv}/>`:tb==='grp'?html`<${SocGroups} me=${id} open=${setPv}/>`:html`<div>
   <div class='up k-card'>${Form()}<button onClick=${save} disabled=${busy} class=${bt+' mt-4'}>Mentés</button>${Msg()}</div>
   <div class='up k-card'><div class='k-cd-t'>Adatvédelem</div>

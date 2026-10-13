@@ -1,336 +1,444 @@
-# UI-implementáció terv: Pro, Gym, Family
+# UI-egységesítés: terv (2. szakasz)
 
-Állapot: **jóváhagyásra vár**. Ez csak terv, kódot a jóváhagyás után írok. Minden lépés végén megállok, és megvárom a jóváhagyásodat.
+Állapot: **a terv jóváhagyva (2026-10-14), a nyitott kérdések megválaszolva (lásd a 10. fejezet). Következő: 0. fázis, mockupok jóváhagyásra. Kód még nincs.** A 3 irány (Pro, Gym, Family) kinézete jóváhagyott és marad. Ez a terv a funkciókat, a szinteket, a menüt, a súgót és az onboardingot egységesíti. Az előző szakasz (az irányok és a képernyők megépítése) leírása: [UI-IMPLEMENTATION-1-fazis.md](UI-IMPLEMENTATION-1-fazis.md).
 
-Forrás: `docs/mockups/` (README, `forras/*.dc.html`, `kepek/*.png`, `eszkoz/check_overflow.py`). A stílus kötött: a mockupok maradnak az irányadók.
+## 0. Eltérések a kiadott feladattól (nem csendben)
 
-## 0. Mit találtam (eltérések a feladat leírásától)
-
-1. **A `docs/ROADMAP.md` nincs a repóban**, egyik ágon sincs. A feladat erre hivatkozik (pl. „ROADMAP fázis 2"), de el nem tudtam olvasni. Ha van, add meg vagy másold be, és ellenőrzöm a tervet vele.
-2. **Az `index.html` szétbontása már megtörtént** (commit `db93902`): az `index.html` csak a héj (2,4 KB), a stílus a `css/style.css`-ben, a kód 18 klasszikus `js/*.js` fájlban van. A 2. lépés ezért a **meglévő szétbontás ellenőrzése és a témarendszerhez szükséges további bontás** (lásd 3. fejezet), nem újrabontás.
-3. **A viewport-meta már tartalmazza a `viewport-fit=cover`-t**, a `css/style.css` pedig már használ `env(safe-area-inset-*)`-t.
-4. **A mockupok nem csak megjelenést, hanem tartalmat és működést is mutatnak**, ami most nincs az appban. Ezeket a 9. fejezetben, a nyitott kérdéseknél jelöltem.
-5. **A géped nem rendelkezik Pythonnal és Playwrighttal**, ezért a `check_overflow.py` itt nem futtatható. A tervezett ellenőrző böngészőben futó JS (lásd 11. fejezet).
-6. **Kontraszt-eltérések a README-hez képest** (általam mérve, WCAG-képlettel):
-   - Pro: az akcent `#C2410C` **szövegként** Papíron 4,31:1, Kőn 3,94:1, tehát a 4,5:1 alatt van. A mockupban a menü sorszámai (12 px, akcent színű) emiatt nem felelnek meg. Javaslat: kis akcent-szövegnek külön token, `#A63608` (Papír 5,54:1, Kő 5,07:1, felület 6,16:1). A gombkitöltés (fehér szöveg `#C2410C`-n, 5,18:1) marad.
-   - Family: az üres jelölőkör kerete (`#9AA6A0`) a háttéren csak 2,28:1, az UI-elemekre kért 3:1 alatt. Javaslat: `#6F7C76` (3,94:1 a háttéren, 4,36:1 fehéren).
-   - A díszítő elválasztók (Pro `#CFCCC4` 1,33:1, Family kártyakeret `#CDD5D0` 1,35:1, Gym `#3A3A35` 1,68:1) nem vezérlők, ezeket nem érinti a 3:1 szabály. A bevitelek, pipák, kapcsolók és gombkeretek igen.
-
-## 1. Kiinduló állapot
-
-- **Megjelenés:** a sötét kinézet az alap. A beállításokban van Kinézet (sötét/világos, `opt.mode`), Téma (4 sötét háttér, `opt.th`) és Kiemelő szín (6 szín, `opt.ac`). Ezek az `html` CSS-változóit (`--a3 --a4 --z7 --z8 --z9 --bg`) és a `.lt` osztályt állítják.
-- **Tailwind CDN (3.4.17):** a `zinc-700/800/900/950` és `lime-300/400` színeket a változók adják, a többi Tailwind-szín fix. A képernyők zömmel ezekkel az osztályokkal készültek (`bg-zinc-900`, `border-zinc-800`, `text-lime-400`, `rounded-2xl` stb.).
-- **Navigáció:** alsó 5 fülű dock, plusz a „Menü" fül egy 3 oszlopos csempés lap (`MENU` tömb, `go2`). Az `App` komponens egyetlen `tab` állapottal vált képernyőt.
-- **Betűk:** Barlow Condensed (címek, `.fd`) és Outfit (szöveg) a Google Fontsról. A service worker (`sw.js`) a hálózat-első stratégiával a fontokat is gyorsítótárazza.
-- **Mentés:** az `opt` objektum a `user_data` dokumentum része, ezért **már most szinkronban van a Supabase-szel és a localStorage-ban**. Új adatbázis-változás a megjelenés mentéséhez **nem kell** (lásd 7. fejezet).
-
-## 2. Hatókör
-
-**15 jóváhagyott mockup-képernyő:** minden irányból (Pro, Gym, Family) Kezdőlap, Nyitott menü, Edzés, Beállítások, Töltés. Ezekhez irányonként saját komponens készül.
-
-**Az összes többi képernyő** (Terv, Napló, Étel, Receptek, Test és mérések, Közösség, Ciklus, Profil, Tervszerkesztő, bejelentkezés) nem kap külön mockupot. Ezek a **tokenekből** öröklik a színt, betűt, sarkot, térközt és mozgást, a szerkezetük nem változik. Ezt a hatókört jelöltem nyitott kérdésként is (9. fejezet), mert a végeredményük nem a jóváhagyott mockupok.
-
-| Képernyő | Pro | Gym | Family |
+| # | Mit írt a feladat | Mi a valóság / mit javaslok | Miért |
 |---|---|---|---|
-| Kezdőlap | mockup | mockup | mockup |
-| Menü | mockup | mockup | mockup |
-| Edzés (`Log`) | mockup | mockup | mockup |
-| Beállítások | mockup (felület + színséma), a többi kártya tokenekből | ugyanez | ugyanez |
-| Töltés | mockup | mockup | mockup |
-| Napló, Terv, Étel, Receptek, Test, Közösség, Ciklus, Profil, Szerkesztő, Bejelentkezés | tokenekből | tokenekből | tokenekből |
+| 1 | „Olvasd el a docs/ROADMAP.md-t” | Nincs ilyen fájl. A közösségi terv a `docs/ROADMAP-social.md`, a UI-terv az előző szakasz doksija. | A hivatkozott fájl nem létezik, a többit elolvastam. |
+| 2 | „Bontsd szét az index.html-t (ROADMAP 2. fázis)” | **Ez már megtörtént.** Az `index.html` csak a héj (stílus- és script-hivatkozások), a kód 40+ külön `js/*.js` és `css/*.css` fájlban van, build nélkül. Ami hiányzik, az a **funkció-nyilvántartás** (feature registry) és a kinézet–funkció szétválasztás. | Felesleges újra szétbontani. A fázis 1 a nyilvántartást építi. |
+| 3 | „Az alapérték a jelenlegi sötét kinézet” | Az alap **Pro / Papír** (világos). Az eredeti sötét-üveg kinézetet a korábbi döntésed szerint kivettük az appból. | Korábbi jóváhagyott döntés. |
+| 4 | „Vissza az eredeti kinézetre” gomb | **„Alapértékek visszaállítása”**: Pro / Papír, Ajánlott szint, normál betűméret, animáció be, nagy kontraszt ki. Az eredeti kinézethez nincs út vissza. | Ugyanaz a döntés. |
+| 5 | Grafit akcent szövegként `#E2622B` | **`#EC7344` marad.** Mért kontraszt Grafit alapon: `#E2622B` 4,88:1 a háttéren, de **4,45:1 a felületen** és 3,94:1 a felület2-n (4,5 alatt). `#EC7344`: 5,76 / 5,25 / 4,65. | A kontrasztteszt (`tests/ui.check.js`) ezt kényszeríti. |
+| 6 | Family alap betűméret 20 px | **16 px**, a többi irányhoz igazítva. A Family nagyobb gombokat és kártyákat kap, de nem nagyobb betűt. | Korábbi jóváhagyott döntésed. |
+| 7 | „Bejelentkezés (vagy vendég)” | **Vendég mód nincs**, az app fiókhoz kötött (szinkron, közösség, Google). Lásd a 10. pontot (K1). | Új funkció, külön döntés kell. |
+| 8 | Tesztelés „DevTools eszközemulációval, 4× CPU-lassítással” | A beépített böngészőpanelben tudok **viewport-emulációt** (360 / 390 / 430) és `prefers-reduced-motion`-t használni. **CPU-lassítást nem tudok állítani**, és a panel a mozgáscsökkentést emulálja, így az animációkat futás közben nem látom. A tesztlistában „csak telefonon ellenőrizhető” jelölést kapnak. | Eszközkorlát, nem becslek értéket. |
+| 9 | A feladat szövege a **6. pont (menü) közepén ér véget** | A 7. (súgó) és az utána következő pontok hiányoznak, pedig a feladat hivatkozik rájuk (a 2. pont „lásd 7. pont”). A súgót a 2. pont leírása szerint terveztem meg (7. fejezet). Ha volt további szöveg, kérlek küldd el. | Ne találjak ki követelményt. |
+| 10 | Google Fonts, Supabase élő adat | A betűk Google Fonts-ról töltődnek (offline fallback: a rendszerbetű). Supabase élő adatot nem becsülök: a szint és a UI-beállítás az `opt` dokumentumban szinkronizál, külön SQL nem kell. | Nincs szerveroldali változás ebben a szakaszban. |
 
-## 3. Fájlszerkezet
+## 1. Funkciólista-mátrix
 
-A mostani szerkezetet megtartom. Új és módosuló fájlok:
+Jelölés: ✓ van, ✗ **hiányzik** (javítandó), ~ részleges. **Szint**: 1 = Csak a lényeg, 2 = Ajánlott, 3 = Minden. A szint csak a *látható* tartalmat szabja, a funkciók keresésen át mindig elérhetők (4. és 6. fejezet).
+Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, szabály: ≤ 2).
+
+### 1.1 Ma (Edzés, Terv, Napló)
+
+| Azonosító | Funkció | Szint | Pro | Gym | Family | Elérés | Megjegyzés |
+|---|---|---|---|---|---|---|---|
+| `home.hero` | Kezdőlap: mai edzés és indítás/folytatás | 1 | ✓ | ✓ | ✓ | 0 | |
+| `home.week` | Heti napsor (kész / ma / tervezett) | 1 | ✓ | ✓ | ✓ | 0 | |
+| `home.easy` | Könnyű mozdulatok ajánlása, ha nincs tervezett edzés | 2 | ✓ | ✓ | ✓ | 0 | minden irányba |
+| `home.profile` | Profil-gomb a Kezdőlapon | 1 | ✓ | ✓ | ✓ | 1 | Family: a menüben van, a Kezdőlapon nem |
+| `home.fontsize` | Gyors betűméret-kapcsoló a Kezdőlapon | 3 | ✓ | ✓ | ✓ | 0 | minden irányba (a Beállításokban már mind) |
+| `home.volume` | Heti volumen, 8 hét grafikon és változás | 2 | ✓ | ✓ | ✓ | 0 | |
+| `home.records` | Rekordok (becsült 1RM, top 3) | 3 | ✓ | ✓ | ✓ | 0 | |
+| `home.pr` | Legutóbbi új rekord (21 napon belül) | 3 | ✓ | ✓ | ✓ | 0 | |
+| `home.streak` | Hetes széria | 3 | ✓ | ✓ | ✓ | 0 | |
+| `home.groups` | Heti sorozatok izomcsoportonként | 2 | ✓ | ✓ | ✓ | 0 | |
+| `workout.pick` | Tervválasztó, ismétlés, üres edzés | 1 | ✓ | ✓ | ✓ | 2 | közös (LogPick) |
+| `workout.sets` | Súly × ismétlés, sorozat kész | 1 | ✓ | ✓ | ✓ | 2 | |
+| `workout.lastline` | „Legutóbb: 80 kg × 8, rekord …” egy sor | 1 | ✓ | ✓ | ✓ | – | |
+| `workout.prevsets` | **Az előző alkalmak sorozatai** a gyakorlatnál (utolsó 3 edzés, dátummal) | 2 | ✓ | ✓ | ✓ | – | **új** (a feladat példája) |
+| `workout.addset` | Sorozat hozzáadása | 2 | ✓ | ✓ | ✓ | – | |
+| `workout.rpe` | RPE oszlop | 3 | ✓ | ✓ | ✓ | – | |
+| `workout.rest` | Pihenő-időzítő (automatikus, elnémítható) | 1 | ✓ | ✓ | ✓ | – | |
+| `workout.restadj` | Pihenő ±15 mp | 2 | ✓ | ✓ | ✓ | – | |
+| `workout.clock` | Eltelt idő az edzésben | 2 | ✓ | ✓ | ✓ | – | |
+| `workout.finish` | Edzés befejezése gomb a fejlécben | 1 | ✓ | ✓ | ✓ | – | Family: csak az utolsó sorozat után |
+| `workout.list` | Gyakorlat-lista, váltás, törlés, hozzáadás | 1 | ✓ | ✓ | ✓ | – | |
+| `workout.info` | Gyakorlat-leírás és videókereső | 1 | ✓ | ✓ | ✓ | – | |
+| `workout.plates` | Rúd és tárcsák ábra | 3 | ✓ | ✓ | ✓ | – | rudas gyakorlatnál, minden irányba |
+| `plan.week` | Heti terv és célsúlyok | 2 | ✓ | ✓ | ✓ | 1 | közös |
+| `plan.notify` | Értesítések, naptár (Google, .ics) | 3 | ✓ | ✓ | ✓ | 2 | |
+| `plan.editor` | Tervszerkesztő (saját tervek) | 3 | ✓ | ✓ | ✓ | 2 | most a menüben, ezután a Terv képernyőről |
+| `log.list` | Napló: edzések, törlés | 1 | ✓ | ✓ | ✓ | 1 | |
+| `log.progress` | Fejlődés-grafikon gyakorlatonként | 2 | ✓ | ✓ | ✓ | 1 | |
+| `log.records` | Rekordok és izomcsoport-sávok | 2 | ✓ | ✓ | ✓ | 1 | |
+
+### 1.2 Étkezés
+
+| Azonosító | Funkció | Szint | P | G | F | Elérés |
+|---|---|---|---|---|---|---|
+| `food.log` | Napló: kalória, makrók, étkezések | 2 | ✓ | ✓ | ✓ | 1 |
+| `food.water` | Vízbevitel | 3 | ✓ | ✓ | ✓ | 1 |
+| `food.week` | Kalória, utolsó 7 nap | 3 | ✓ | ✓ | ✓ | 1 |
+| `food.fav` | Kedvencek (csillag) | 2 | ✓ | ✓ | ✓ | 2 |
+| `food.suggest` | Receptjavaslat a hátralévő keretre | 3 | ✓ | ✓ | ✓ | 1 |
+| `recipes.list` | Receptek: keresés, szűrők, adag | 3 | ✓ | ✓ | ✓ | 1 |
+
+### 1.3 Fejlődés
+
+| Azonosító | Funkció | Szint | P | G | F | Elérés |
+|---|---|---|---|---|---|---|
+| `body.measure` | Mérések: súly, méretek, grafikon | 2 | ✓ | ✓ | ✓ | 1 |
+| `body.photos` | Haladási fotók, összehasonlítás, megosztás | 3 | ✓ | ✓ | ✓ | 2 |
+| `tools.cardio` | Kardió-számoló | 3 | ✓ | ✓ | ✓ | 2 |
+| `tools.kcal` | Kalória és makró (TDEE) | 3 | ✓ | ✓ | ✓ | 2 |
+| `tools.strength` | 1RM, százalékok, tárcsák, bemelegítés | 3 | ✓ | ✓ | ✓ | 2 |
+| `tools.interval` | Intervall-időzítő (Tabata, HIIT, EMOM) | 3 | ✓ | ✓ | ✓ | 2 |
+| `cycle.main` | Ciklus-követés (csak ha bekapcsolva) | 3 | ✓ | ✓ | ✓ | 1 |
+
+### 1.4 Közösség
+
+| Azonosító | Funkció | Szint | P | G | F | Elérés |
+|---|---|---|---|---|---|---|
+| `social.feed` | Hírfolyam | 3 | ✓ | ✓ | ✓ | 1 |
+| `social.conn` | Kapcsolatok: követés, barátkérés, keresés | 3 | ✓ | ✓ | ✓ | 2 |
+| `social.groups` | Csoportok és kihívások | 3 | ✓ | ✓ | ✓ | 2 |
+| `social.profile` | Közösségi profil, adatvédelem, tiltottak | 3 | ✓ | ✓ | ✓ | 2 |
+| `social.report` | Jelentés és tiltás | 3 | ✓ | ✓ | ✓ | – |
+
+### 1.5 Fiók és beállítások
+
+| Azonosító | Funkció | Szint | P | G | F | Elérés | Megjegyzés |
+|---|---|---|---|---|---|---|---|
+| `me.profile` | Profil: adatok, napi célok | 1 | ✓ | ✓ | ✓ | 1 | |
+| `opt.ui` | Felület és színséma váltó, élő előnézettel | 1 | ✓ | ✓ | ✓ | 2 | |
+| `opt.lang` | Nyelv | 1 | ✓ | ✓ | ✓ | 2 | |
+| `opt.fontsize` | Betűméret | 1 | ✓ | ✓ | ✓ | 2 | |
+| `opt.motion` | Animációk ki/be | 1 | ✓ | ✓ | ✓ | 2 | |
+| `opt.vibrate` | Rezgés | 1 | ✓ | ✓ | ✓ | 2 | |
+| `opt.level` | **Szint-választó** | 1 | ✓ | ✓ | ✓ | 2 | **új** |
+| `opt.contrast` | **Nagy kontrasztú mód** | 2 | ✓ | ✓ | ✓ | 2 | **új** |
+| `opt.quiet` | **Értesítések és csendes órák** | 3 | ✓ | ✓ | ✓ | 2 | **új** (az emlékeztetők már vannak a Tervben) |
+| `opt.workout` | Edzés-beállítások (heti cél, pihenő, lépcső) | 2 | ✓ | ✓ | ✓ | 2 | |
+| `opt.export` | Export: CSV, PDF, mentés másolása | 3 | ✓ | ✓ | ✓ | 2 | |
+| `opt.json` | **JSON-export** | 3 | ✓ | ✓ | ✓ | 2 | **új** |
+| `opt.account` | Fiók, szinkron, kilépés, fiók törlése | 1 | ✓ | ✓ | ✓ | 2 | |
+| `opt.reset` | **Alapértékek visszaállítása** | 2 | ✓ | ✓ | ✓ | 2 | **új** |
+| `help.main` | **Súgó** | 1 | ✗ | ✗ | ✗ | 1 | **új** |
+| `nav.search` | **Funkció-keresés a menüben** | 1 | ✗ | ✗ | ✗ | 1 | **új** |
+
+**Hiányok összesen (a mátrixból számolva):** a meglévő funkciókban Pro 6, Gym 5, Family 12 hiány (+1 részleges), vagyis 23. Ehhez jön az új `workout.prevsets` (mindhárom irányból hiányzik), és 6 másik új funkció (`opt.level`, `opt.contrast`, `opt.quiet`, `opt.reset`, `help.main`, `nav.search`), valamint a JSON-export. A paritás-teszt (3. fejezet) ezt a mátrixot gépi formában is tartalmazza.
+
+## 2. Fájlszerkezet a szétbontás után
+
+Az `index.html` marad héj. A betöltési sorrend ma is a `<script>` sorrend (klasszikus scriptek, közös globális tér, build nélkül). **A szabály nem változik:** új globális neveket nem ütköztetünk, a `?v=` a `BUILD`-et követi.
 
 ```
-index.html                 (korai téma-script, betöltési sorrend, a betűk csak a kiválasztott irányhoz töltődnek)
-css/style.css              (marad: az "eredeti" kinézet, nem módosul szerkezetében)
-css/tokens.css             ÚJ  irányonként és sémánként a változók (szín, betű, sarok, méret, mozgás)
-css/base.css               ÚJ  tokenekből alapstílus, Tailwind-osztályok átképzése irányonként
-css/motion.css             ÚJ  kulcskeretek, mozgás-tokenek, reduced-motion
-css/ui-pro.css             ÚJ  csak a Pro-specifikus (szerkesztőségi lista, tábla)
-css/ui-gym.css             ÚJ  csak a Gym-specifikus (csíkos sáv, blokkok, tárcsák)
-css/ui-family.css          ÚJ  csak a Family-specifikus (nagy sorok, kerekítés)
-js/ui-core.js              ÚJ  UI és színséma állapot, alkalmazás az html elemre, mentés, korai olvasás
-js/ui-motion.js            ÚJ  Cnt (count-up), DrawRing/DrawLine (stroke-dashoffset), Check (pipa), stagger segéd, rezgés
-js/ui-menu.js              ÚJ  lenyitható menü: sáv + lap, hozzáférhetőség
-js/ui-settings.js          ÚJ  UI-váltó kártyák élő előnézettel, színséma-lista, "Vissza az eredeti kinézetre"
-js/ui-loader.js            ÚJ  három töltő-animáció
-js/ui-pro.js, ui-gym.js, ui-family.js   ÚJ  irányonként Kezdőlap és Edzés komponens (HomePro, LogPro, ...)
-js/app.js, workout.js      MÓD a dock és a MENU helyett az új menü, a Home/Log az aktív irány komponensét hívja
-js/settings.js             MÓD az új "Felület" kártya a Megjelenés fölé, a régi Kinézet/Téma/Szín az "eredeti" irányban marad
-js/i18n-en.js              MÓD minden új szöveg
-js/auth.js                 MÓD BUILD
-sw.js                      MÓD gyorsítótár-név emelése az új fájlok miatt (nincs előre gyorsítótárazott lista)
+js/
+  features/            ÚJ  a funkció-nyilvántartás (nézet nélkül)
+    registry.js        az összes funkció: azonosító, csoport, szint, útvonal, ikon, kulcsszavak, súgó-kulcs
+    levels.js          a szintek definíciója és a szűrés (uiVisible(id, level))
+    help.js            súgó-bejegyzések (hu/en) a funkció-azonosítók szerint
+    parity.js          irányonkénti megvalósítási tábla (melyik komponens rendereli a funkciót)
+  ui/                  A MOST KÜLÖN "ui-*.js" FÁJLOK ÁTKÖLTÖZNEK IDE (átnevezés, tartalom nem változik)
+    core.js (ui-core), kit.js, menu.js, home.js, workout.js, loader.js, picker.js, settings.js, previews.js
+    onboarding.js      ÚJ  szint-választó + bemutató
+    help-ui.js         ÚJ  súgó-lap, első-látogatás tipp
+    search.js          ÚJ  menü-keresés
+  (a meglévő: workout.js, tools.js, food.js, recipes*.js, cycle.js, social*.js, photos.js, settings.js, auth.js, util.js, data.js, app.js)
+css/
+  tokens.css  base.css  motion.css  ui-kit.css  (a mostaniak)
+  ui-onboarding.css  ui-help.css  ui-search.css  ÚJ
+tests/
+  parity.check.js      ÚJ  funkció × irány × súgó
+  features.check.js    ÚJ  a nyilvántartás belső egyezései (egyedi azonosító, érvényes útvonal, szint)
+  levels.check.js      ÚJ  a szintek tartalma képernyőnként
+docs/
+  UI-IMPLEMENTATION.md (ez), CHANGES.md (ÚJ, fázisonként)
 ```
 
-**A 2. lépés („Szétbontás") konkrétan:** az `index.html`-t nem kell újra bontani. Ellenőrzöm, hogy minden meglévő teszt zöld (`recipes`, `cycle`, `social`), a `node --check` minden `js/*.js`-en átmegy, és az `index.html` betöltési sorrendje helyes. A témarendszerhez a `css/style.css` **tartalmát** kétfelé választom: ami tokenekből jön (szín, betű, sarok), az átkerül a `tokens.css`/`base.css`-be, ami a régi kinézet kiegészítése, az marad. Ezt a 3. lépéssel együtt, a `feature/settings-switch` ágon csinálom, és a végén a régi kinézetnek pixelre azonosnak kell lennie (képernyőkép-összevetés).
+**Átköltöztetés kockázata:** a fájlok átnevezése minden `?v=` hivatkozást és a CLAUDE.md-t érinti. Javaslat: **az átnevezést csak a fázis 1 végén és külön commitban** végezzük, hogy a diff olvasható maradjon (kérdés: K6).
 
-## 4. Tokenek
+### A funkció-nyilvántartás szerkezete
 
-Az irány egy attribútum az `html` elemen: `data-ui="pro|gym|family"` (nincs attribútum = eredeti kinézet), a séma `data-scheme="..."`. A tokenek CSS-változók.
+Egy bejegyzés (a megjelenítés nélkül):
 
-**Szín** (a README táblázata szerint):
+```js
+{id:'food.water', group:'meal', level:3, route:['food',''], deep:{tab:'food',sub:'',focus:'water'},
+ ic:'drop', t:'Vízbevitel', kw:['víz','ivás','folyadék','water'], help:'food.water', needs:null}
+```
 
-| Token | Pro (Papír) | Gym (Sárga) | Family (Zöld) |
-|---|---|---|---|
-| `--bg` háttér | `#ECEAE5` | `#0F0F0D` | `#F2F4F0` |
-| `--surface` | `#F7F6F3` | `#1C1C19` | `#FFFFFF` |
-| `--surface2` | `#F7F6F3` (nincs mockup) | `#2B2B27` | `#E6EEEA` |
-| `--text` | `#16171A` | `#F3F0E8` | `#1A2420` |
-| `--muted` | `#5B5C60` | `#A8A49A` | `#46524D` |
-| `--line` | `#CFCCC4` | `#3A3A35` | `#CDD5D0` |
-| `--line2` | `#E2DFD8` | `#6E6B65` | `#9AA6A0` |
-| `--control-line` (üres jelölő, bevitel, gombkeret) | `#16171A` | `#6E6B65` | `#6F7C76` (javaslat) |
-| `--accent` | `#C2410C` | `#FFC93C` | `#0E6B5E` |
-| `--on-accent` | `#FFFFFF` | `#0F0F0D` | `#FFFFFF` |
-| `--accent-text` (kis szöveg, link) | `#A63608` (javaslat) | = `--accent` | = `--accent` |
+- `group`: `today` | `meal` | `progress` | `social` | `me`.
+- `route`/`deep`: hová visz a koppintás (képernyő, almenü, és a fókuszálandó rész).
+- `needs`: feltétel (pl. a Ciklus csak bekapcsolva látszik; a Közösség csak bejelentkezve).
+- `kw`: a keresés kulcsszavai, magyar és angol.
+- A **megjelenítést** a három irány adja (`parity.js`): `{pro:'HomePro.volume', gym:'—', family:'—'}`. Az új funkció akkor „kész”, ha mindhárom irányban van megvalósítás, vagy egy közös komponens (kit).
+- A három irány menüje, kezdőlapja és keresése **a nyilvántartásból** épül. Új funkció felvétele = egy bejegyzés + a három irány komponense. A paritás-teszt nem enged zöldet, amíg valamelyik hiányzik.
 
-**Betű, méret, sarok, érintés:**
+**Szabály: legfeljebb két koppintás.** A teszt gráfként bejárja a `deep` útvonalakat a Kezdőlaptól, és hibát ad, ha egy funkció 2-nél több lépésre van.
+
+## 3. Paritás-teszt (`npm run check:parity` és `node tests/parity.check.js`)
+
+Nincs CI, ezért **npm script** (a `package.json` már van; `check:parity`, `check:features`, `check:levels`) és közvetlenül a `tests/` mappából futtatható. Ellenőrzi:
+1. Minden nyilvántartott funkcióhoz mindhárom irányban van megvalósítás (`parity.js`) vagy közös komponens.
+2. Minden funkcióhoz van súgó-bejegyzés (hu és en), és minden **látható elemhez** (a nyilvántartás „elemei”: menüsor, kezdőlapi kártya, edzés-oszlop, gomb) van `help` kulcs.
+3. Minden szöveg-kulcs létezik a `setDict`-ben (a meglévő `tests/ui.check.js` bővítve).
+4. Szint-konzisztencia: egy funkció szintje nem lehet kisebb, mint a szülő képernyőé.
+5. Két koppintás szabály (gráf-bejárás).
+6. Az angol szöveg nem hosszabb, mint a `max` mező (rövid menüleírásoknál, a mockup 7. szabálya).
+
+## 4. Tokenek, témák, színsémák
+
+**A tokenek már megvannak** (`css/tokens.css`), ez a terv nem módosítja őket, kivéve a nagy kontraszt módot. Összefoglaló (a mockup README és a `tests/ui.check.js` szerint):
 
 | Token | Pro | Gym | Family |
 |---|---|---|---|
-| `--font-body` | IBM Plex Sans 400/500/600 | Archivo 400/600/800 | Atkinson Hyperlegible 400/700 |
-| `--font-head` | IBM Plex Sans 600 | Anton | Atkinson Hyperlegible 700 |
-| `--font-mono` | IBM Plex Mono 400/500 | – (Anton a számokhoz) | – |
-| `--fs` alap | 15–16 px | 15 px | 20 px |
-| `--r-s / --r-m / --r-l` | 4 / 4 / 4 px | 0 | 14 / 16 / 20 px |
-| `--tap` min. érintési méret | 44 px | 48 px | 56–64 px |
+| betűcsalád (szöveg / cím) | IBM Plex Sans / Plex Sans 600 (számok: Plex Mono) | Archivo / Anton | Atkinson Hyperlegible 400/700 |
+| alap betűméret | 16 px | 15 px | 16 px |
+| betűskála (azonos mindháromban) | 12 / 13 / 14 / 16 / 20 / 28 | ugyanaz | ugyanaz |
+| sarok | 4 px | 0 | 14 / 16 / 20 px |
+| min. érintési méret | 44 px | 48 px | 48 px (gombok 52+) |
+| mozgás | finom, 120–280 ms | gyors, csapódó, 80–200 ms | lassú, 250–450 ms |
 
-**A meglévő képernyők átképzése:** a Tailwind-osztályokat nem írom át. A `base.css` irányonként átképzi őket változókra: `bg-zinc-800/900`, `border-zinc-800`, `text-zinc-300/400/500`, `text-lime-300/400`, `bg-lime-400` (a szöveg `--on-accent`), `rounded-xl/2xl/3xl` (`--r-*`), `.fd` (`--font-head`), a `body` (`--font-body`, `--fs`). Az `html{font-size}` a Tailwind `rem` miatt az irány `--fs` értéke, a „Betűméret" beállítással szorozva.
+A betűméret a Beállításokban (Kicsi 14, Normál 16, Nagy 18, Nagyon nagy 20) mindhárom irányban skáláz (a Kezdőlap gyorskapcsolója is, F2).
 
-**Mozgás-tokenek** (a 6. fejezet táblázata szerint): `--dur-page --ease-page --page-dy --dur-scrim --dur-sheet --ease-sheet --sheet-dy --dur-row --row-step --row-dx --row-dy --dur-arrow --ease-arrow --dur-press --dur-count --dur-draw --dur-check`. Egyetlen kulcskeret-készlet van, az irányok csak a tokenekben térnek el. Így az animáció nyelve egy helyen állítható.
+**Színsémák** (9 db, mért kontraszt: normál szöveg ≥ 4,5:1, vezérlő ≥ 3:1; a `tests/ui.check.js` minden build előtt számolja):
 
-## 5. Témák és színsémák
+| Irány | Séma | Háttér | Szöveg | Akcent (kitöltés) | Akcent mint szöveg | Megjegyzés |
+|---|---|---|---|---|---|---|
+| Pro | Papír (alap) | `#ECEAE5` | `#16171A` | `#C2410C` | `#A63608` | fehér az akcenten 5,18:1 |
+| Pro | Kő | `#E6E0D4` | `#221E18` | `#C2410C` | `#A63608` | |
+| Pro | Grafit | `#1B1C1F` | `#ECEAE5` | `#C2410C` | **`#EC7344`** | 5,76 / 5,25 / 4,65:1 (lásd 0/5) |
+| Gym | Sárga (alap) | `#0F0F0D` | `#F3F0E8` | `#FFC93C` | ugyanaz | 12,5:1 |
+| Gym | Narancs | `#0F0F0D` | `#F3F0E8` | `#FF5A1F` | ugyanaz | 6,2:1 |
+| Gym | Zöld | `#0F0F0D` | `#F3F0E8` | `#7CFF4F` | ugyanaz | 14,9:1 |
+| Family | Zöld (alap) | `#F2F4F0` | `#1A2420` | `#0E6B5E` | ugyanaz | 6,4:1 |
+| Family | Meleg | `#F5EEE4` | `#1A2420` | `#A8481F` | ugyanaz | 5,8:1 |
+| Family | Hűvös | `#EEF2F7` | `#1A2420` | `#1F4E99` | ugyanaz | 8,1:1 |
 
-Három irány, mindegyikben három séma, plusz az „Eredeti" (a mostani sötét kinézet, ez marad az alap, amíg nincs más kiválasztva).
+**Nagy kontrasztú mód (új, F6):** egy kapcsoló, amely irányonként a szöveget és a vonalakat a legnagyobb kontrasztra állítja (szöveg ≥ 7:1, vezérlő-keret ≥ 4,5:1, a halvány szöveg a szöveg színe, a díszítő vonalak vastagabbak, az akcent mint szöveg is ≥ 7:1). Tokenekkel: `html[data-contrast="high"]` felülírja a `muted`, `line`, `line2`, `control` és `accent-text` értékeit az aktív sémára. A teszt mindkét módot méri (9 séma × 2).
 
-| Irány | Séma | Háttér | Szöveg | Akcent | Megjegyzés |
-|---|---|---|---|---|---|
-| Pro | **Papír** (alap) | `#ECEAE5` | `#16171A` | `#C2410C` | szöveg 14,9:1, halvány 5,6:1 |
-| Pro | Kő | `#E6E0D4` | `#221E18` | `#C2410C` | szöveg 12,6:1, halvány 5,1:1 |
-| Pro | Grafit | `#1B1C1F` | `#ECEAE5` | gomb `#C2410C`, szöveg `#E2622B` | lásd lent |
-| Gym | **Sárga** (alap) | `#0F0F0D` | `#F3F0E8` | `#FFC93C` | sötét szöveg rajta 12,5:1 |
-| Gym | Narancs | `#0F0F0D` | `#F3F0E8` | `#FF5A1F` | sötét szöveg rajta 6,2:1 |
-| Gym | Zöld | `#0F0F0D` | `#F3F0E8` | `#7CFF4F` | sötét szöveg rajta 14,9:1 |
-| Family | **Zöld** (alap) | `#F2F4F0` | `#1A2420` | `#0E6B5E` | fehér rajta 6,4:1 |
-| Family | Meleg | `#F5EEE4` | `#1A2420` | `#A8481F` | fehér rajta 5,8:1, link 5,05:1 |
-| Family | Hűvös | `#EEF2F7` | `#1A2420` | `#1F4E99` | fehér rajta 8,1:1, link 7,16:1 |
+## 5. Szintek tartalma képernyőnként
 
-**Grafit felületek javaslata** (nincs mockup, ezeket én mértem, jóváhagyásra):
+A szint a **látható** tartalmat szabályozza (menü, kezdőlap-kártyák, képernyőn belüli fülek és oszlopok). Szint váltásakor adat nem vész el, csak elrejtődik. A rejtett funkció a **keresésben** mindig megtalálható, és megnyitva a kért rész látszik, az adott képernyő többi része a szintjének megfelelően.
 
-| Token | Érték | Mért kontraszt |
+| Képernyő | Csak a lényeg (1) | Ajánlott (2) | Minden (3) |
+|---|---|---|---|
+| **Menü** | Edzés, Terv, Napló, Profil, Beállítások | + Étel, Test és mérések | + Receptek, Közösség, Ciklus, Számolók, Tervszerkesztő, Export |
+| **Kezdőlap** | **minimális:** üdvözlés, mai edzés és indítás, heti napsor, „Kezdőlap testreszabása” | + a szint alapja szerinti 1 fő kártya (Pro volumen, Gym izomcsoportok, Family könnyű mozdulatok) | + az összes kártya. A felhasználó bármelyiket be- és kikapcsolhatja (K4) |
+| **Edzés (aktív)** | kg × ism, kész, pihenő, következő, befejezés, legutóbbi alkalom egy sor | + előző alkalmak sorozatai, pihenő ±15, eltelt idő, sorozat hozzáadása | + RPE, tárcsák, gyakorlat-leírás gyorsgomb |
+| **Terv** | heti terv, mai célsúlyok | + naptár-emlékeztetők | + értesítések, .ics, Tervszerkesztő |
+| **Napló** | edzés-lista | + fejlődés-grafikon, rekordok | + izomcsoport-sávok, részletes sorozatok |
+| **Étel** | – | kalória és makrók, étkezések, kedvencek | + víz, 7 napos grafikon, receptjavaslat |
+| **Test és mérések** | – | súly és méretek | + fotók, összehasonlítás, megosztás |
+| **Közösség** | – | – | hírfolyam, kapcsolatok, csoportok, profil |
+| **Beállítások** | Felület, nyelv, betűméret, animáció, rezgés, szint, fiók | + edzés-beállítások, alapértékek visszaállítása, nagy kontraszt | + értesítések és csendes órák, export, ciklus-kapcsoló, haladó |
+
+Megjegyzés (K2): a Terv a „Csak a lényeg” szinten is látszik.
+
+**Alapértelmezés:** Ajánlott (új felhasználónak). **Meglévő felhasználók (K3)** a következő indításkor egyszer megkapják a szint-választó képernyőt; addig a **Minden** szint él, hogy semmi ne tűnjön el. A **Kezdőlap** tartalma külön kapcsolható (K4), a szint csak az alapot adja.
+
+## 6. Menü szerkezete (mindhárom irányban)
+
+A mockup stílusa marad (felnyíló lap, sorszám, ikon, cím, egysoros leírás). A tartalom négy csoport, a lap tetején kereső:
+
+```
+[ Keresés… ]                                   (nav.search, a rejtett funkciókat is megtalálja)
+MA              Edzés · Terv · Napló
+ÉTKEZÉS         Étel · Receptek
+FEJLŐDÉS        Test és mérések · Statisztikák és rekordok · Számolók · Ciklus (ha be van kapcsolva)
+KÖZÖSSÉG        Közösség
+────────────────
+Profil · Beállítások · Súgó                    (fix lábsor, minden szinten)
+```
+
+Hova kerültek azok a funkciók, amelyek a feladat négy csoportjában nem szerepeltek (ésszerű besorolás, jóváhagyásra):
+
+| Funkció | Hová | Indok |
 |---|---|---|
-| `--bg` | `#1B1C1F` | szöveg `#ECEAE5` rajta 14,17:1 |
-| `--surface` | `#232427` | szöveg 12,91:1 |
-| `--surface2` | `#2C2D31` | halvány szöveg 5,52:1 |
-| `--muted` | `#A3A4A8` | háttéren 6,84:1, felületen 6,23:1 |
-| `--line` (díszítő) | `#3A3B40` | 1,52:1 (nem vezérlő) |
-| `--control-line` | `#75767C` | háttéren 3,76:1, felületen 3,43:1 |
-| `--accent-text` | `#E2622B` | háttéren 4,88:1, **felületen 4,45:1** |
+| Tervszerkesztő | a **Terv** képernyőn gomb (és a keresés) | a Terv része, 2 koppintás |
+| Számolók (kardió, kalória, erő, intervall) | **Fejlődés** | mérés és kalkuláció |
+| Ciklus | **Fejlődés** (csak ha be van kapcsolva) | testi követés |
+| Rekordok, grafikonok | **Fejlődés › Statisztikák és rekordok** (a Napló rekordjait és grafikonjait összefogó nézet) | a feladat „statisztikák, rekordok” pontja |
+| Export és adatok | **Beállítások › Adatok** (a menüből kikerül) | adatkezelés |
+| Profil, Beállítások, Súgó | fix lábsor | fiók-szintű, mindig kell |
+| Kedvencek, Víz, Fotók | a szülő képernyő fülei (Étel, Test és mérések) | alfunkciók |
 
-Figyelem: a `#E2622B` akcent-szöveg a `#232427` felületen 4,45:1, a 4,5:1 alatt. Ezért Grafiton kis akcent-szöveg csak a háttéren (`--bg`) állhat, felületen a `--text` színt használom, vagy a szöveg 14 px fölötti és félkövér (nagy szöveg, 3:1 elég). Ezt az ellenőrző is vizsgálja.
+A „Statisztikák és rekordok” új, **gyűjtő** nézet: nem új adat, a meglévő rekord-lista, fejlődés-grafikon és izomcsoport-sáv egy helyen (a Napló „Fejlődés” és „Rekordok” része ide költözik, a Napló az edzések listája marad). Ennek mockupja a 11. pontban szerepel.
 
-**Séma-mentés:** minden irányhoz külön séma tárolódik, az irányváltáskor az adott irány utoljára használt sémája tér vissza.
+**Menü a szinteken:** a csoportok és sorok az 5. fejezet táblája szerint rejtettek vagy láthatók. Egy üres csoport nem jelenik meg. A lap alján, ha van rejtett funkció: „Még N funkció elérhető a Beállításokban (Szint)” sor.
 
-## 6. Animációk
+**Menü-keresés:** gépelés közben szűri a nyilvántartást (cím, kulcsszó, magyarul és angolul). Egy találat egy koppintással a funkcióra visz, a rejtett funkciónál a találat mellett „Nem látszik a szinteden” jelzés van, és a koppintás megnyitja. Üres keresésnél a legutóbb használt három funkció látszik.
 
-### Alapelvek (a feladatod szerint)
-Eseményhez kötött, képernyőnként legfeljebb egy „hős" animáció, nem blokkolja az érintést, megszakítható, gépelés közben nincs mozgás a beviteli mezőn, csak `transform` és `opacity` (kivétel: SVG `stroke-dashoffset`), `prefers-reduced-motion` alatt nincs mozgás, de az állapot változik.
+## 7. Súgó rendszer terve
 
-**Megvalósítás:** CSS-változókkal paraméterezett kulcskeretek (`transform: translateY(var(--page-dy))`), így egy kulcskeret-készlet szolgál mindhárom irányt. A JS-nek csak a count-up (`requestAnimationFrame`) és az osztályváltások maradnak. A megszakíthatóság a `transition`/`animation` természetes viselkedése: új esemény azonnal átveszi. A `pointer-events` sosem kapcsol ki animáció alatt. A menülap nyitás- és zárásához a lap közvetlenül `transform`-ot állít, nem `height`-ot.
+(A feladat 7. pontja nem érkezett meg, ez a 2. pont leírásából és a „minden látható elemhez súgó-bejegyzés” szabályból készült. Kérlek jelezd, ha más volt a szándék.)
 
-### Animációs táblázat
+- **Egyetlen forrás:** `js/features/help.js`, kulcsa a funkció-azonosító. Egy bejegyzés: cím, 1–2 mondat „mi ez”, 1–3 pont „hogyan használd”, opcionálisan „tipp”. Magyarul és angolul, a `setDict`-ben is.
+- **Hol jelenik meg:**
+  1. **„?” gomb** minden képernyő fejlécében (a „Menü” és a cím mellett), megnyitja az adott képernyő súgólapját (KSheet, a közös lap).
+  2. **Elemi súgó:** hosszú nyomás / a „i” ikon az olyan elemeken, amelyek nem magától értetődőek (RPE, becsült 1RM, hetes széria, nagy kontraszt…). A hosszú nyomás helyett **mindig van látható „i”** is (nem csak kézmozdulat).
+  3. **Első-látogatás tipp:** egy képernyő első megnyitásakor egy kis, bezárható buborék (egyszer), a szinttől függően: Csak a lényeg szinten mutatja, Minden szinten nem.
+  4. **Súgó a menüben és a keresésben:** „Súgó” a lábsorban, a keresés a súgó-címeket is találja.
+- **Tartalom-szabály:** minden nyilvántartott funkcióhoz és minden „látható elemhez” (menüsor, kártya, oszlopfej, gomb) van bejegyzés. A paritás-teszt ellenőrzi (3. fejezet).
+- **Hossz:** a cím és a „mi ez” 360 px-en két sorban elférjen, az angol is.
+- **Akadálymentesség:** a súgólap fókuszt csapdáz, Esc zár, a „?” gomb `aria-haspopup='dialog'`.
 
-Az „(R)" jelű értékek a README-ből vannak, a többi az én javaslatom, jóváhagyásra.
+### 7b. Megnyugtató mikroszövegek (a felhasználó kérésére)
 
-| Esemény | Pro | Gym | Family | Reduced-motion |
+Ahol egy képernyő elsőre bonyolultnak tűnik, egy rövid, nyugodt mondat mondja ki, hogy **nem lehet elrontani**, és **semmi nem vész el**. Ezek a súgó-bejegyzések „calm” mezői (a nyilvántartás `help` kulcsán), a képernyőn halk, egysoros szövegként jelennek meg, a súgólapon is szerepelnek. Szabály: egy mondat, nincs felkiáltójel, nem tilt, hanem megnyugtat; magyarul és angolul is.
+
+| Hol | Szöveg (hu) | Mikor |
+|---|---|---|
+| Szint-választó | „Bármikor átállíthatod. Semmi sem törlődik, csak elrejtjük.” | már a mockupban |
+| Menü, „Még N funkció” sor | „Minden elérhető, a keresés mindent megtalál.” | F3 |
+| Beállítások › Szint | „A rejtett funkciók a keresésből továbbra is elérhetők.” | F2 |
+| Kezdőlap tartalma | „Bármikor visszakapcsolhatod, az adataid nem változnak.” | F7 |
+| Tervszerkesztő (üres) | „Nem kell mindent kitöltened. Hagyj üresen, amit nem használsz.” | F5 |
+| Terv | „Ha kihagysz egy napot, semmi baj: a célsúlyok az utolsó edzésedből számolódnak.” | F4 |
+| Edzés (első indítás) | „Nem kell mindent kitöltened. Elég a súlyt és az ismétlést.” | F4 |
+| Edzés › RPE | „Nem kötelező. Ha nem tudod, hagyd üresen.” | F5 |
+| Étel / Kalória | „A számok tájékoztatók. Nem kell pontosnak lenned.” | F4 |
+| Számolók | „Ezek becslések, bármikor átírhatod az eredményt.” | F4 |
+| Közösség (első megnyitás) | „Alapból minden privát. Te döntöd el, mit lát más.” | F4 |
+| Fotók | „Csak te látod, amíg külön nem osztod meg.” | már él (Fotók) |
+| Export / adatok | „Az exportálás nem töröl semmit.” | F6 |
+| Törlés-gombok (kétlépcsős) | „Nem töröl, amíg másodszor is rá nem koppintasz.” | F4 |
+| Alapértékek visszaállítása | „Az adataid (edzések, étel, mérések) nem érintettek, csak a kinézet és a beállítások.” | F6 |
+| Nagy kontraszt | „Bármikor kikapcsolható.” | F6 |
+| Vendég mód | „Később fiókot is létrehozhatsz, az adataidat átviheted.” | F8 |
+| Fiók törlése | „Ez végleges. Előtte exportálhatod az adataidat.” | meglévő megerősítés bővítése |
+
+A paritás-teszt ezeket is ellenőrzi: minden „calm” szövegnek van angol párja, és legfeljebb 90 karakter.
+
+## 8. Animációs táblázat
+
+Az irányok alap-animációi változatlanok (lásd a mockup README és `css/motion.css`). **Új** elemek:
+
+| Esemény | Pro | Gym | Family | Reduced-motion / „Animációk ki” |
 |---|---|---|---|---|
-| Karakter | finom, pontos | gyors, csapódó | lassú, egyenletes | – |
-| Oldalváltás | opacity + 10 px, 240 ms, `cubic-bezier(.2,.7,.2,1)` (R) | 180 ms, `cubic-bezier(.3,1.5,.5,1)` (R) | 420 ms csúszás, `cubic-bezier(.4,0,.2,1)`, nincs túllendülés (R) | azonnali csere, nincs mozgás |
-| Menü háttér | opacity 200 ms (R) | opacity 100 ms (R) | opacity 400 ms (R) | azonnal |
-| Menülap nyitás | translateY 12 px + opacity, 280 ms (R) | translateY 48 px, 200 ms, túllendül (R) | translateY 40 px + opacity, 450 ms (R) | azonnal |
-| Menülap zárás | fordítva, 180 ms | 140 ms | 300 ms | azonnal |
-| Menüsorok | translateY 8 px, 220 ms, 25 ms lépcső (R) | translateX −24 px, 140 ms, 20 ms lépcső (R) | translateY 6 px, 320 ms, 50 ms lépcső (R) | azonnal |
-| Menü nyíl | 180° forgás, 240 ms (R) | 180°, 200 ms, túllendül (R) | 180°, 500 ms (R) | fordított állapot, nincs forgás |
-| Gombnyomás | scale .97, 120 ms (R) | scale .97, 80 ms + `navigator.vibrate(10)`, ha van (R) | scale .97, 250 ms (R) | nincs scale, a rezgés marad |
-| Lista hover | translateX 4 px (R) | – (R) | – (R) | nincs |
-| Focus-visible | 2 px akcent kontúr, 2 px távolság | 3 px, 2 px távolság | 3 px, 3 px távolság | nincs átmenet (kontúr marad) |
-| UI-váltás | finom áthalványítás, 240 ms | gyors csapódó, 180 ms, túllendül | lassú egyenletes csúszás, 450 ms | azonnali csere |
-| Számok (count-up) | 750 ms, ease-out | 600 ms | 900 ms | azonnal a végérték |
-| Körgyűrű és grafikon (vonal, `stroke-dashoffset`) | 700 ms, `cubic-bezier(.2,.7,.2,1)` | 500 ms, `cubic-bezier(.2,.9,.2,1)` | 900 ms, `cubic-bezier(.4,0,.2,1)` | azonnal teljes |
-| Sorozat kész (pipa) | pipa kirajzolódik 200 ms | 150 ms + scale 1,15 pop | 400 ms, a kör kitöltődik | azonnal kész állapot, visszajelzés szöveggel |
-| Lista belépés (lépcsős) | 8 px, 220 ms, 25 ms lépcső | −24 px X, 140 ms, 20 ms | 6 px, 320 ms, 50 ms | azonnal |
-| Töltő | vonal kirajzolódik, 1,8 s ciklus (R) | tárcsák becsúsznak, 2,4 s ciklus (R) | lélegző kör, 4 s ciklus (R) | álló kép, felirat marad |
-| Pihenő-visszaszámlálás sáv | lineáris, 1 s lépés | lineáris, csíkos sáv | lineáris | lineáris (ez állapot, nem dekoráció) |
+| Onboarding kártyák belépése (lépcsős) | translateY 8 px + opacity, 220 ms, 25 ms lépcső | translateX −24 px, 140 ms, 20 ms lépcső | translateY 6 px, 320 ms, 50 ms lépcső | nincs mozgás, azonnal látszik |
+| Kiválasztott kártya kiemelése | keret-szín 120 ms | keret + 80 ms csapódó scale 1.02 | keret + 250 ms scale 1.01 | csak keret-szín |
+| Onboarding › Kezdőlap átmenet | áthalványítás, 240 ms | gyors csapódó csúszás, 180 ms | lassú csúszás, 450 ms | nincs |
+| Menü-keresés találati lista | opacity 120 ms | translateX −12 px, 100 ms | opacity + translateY 4 px, 250 ms | nincs |
+| Súgólap nyitás | a KSheet saját animációja (irányonként) | | | a KSheet szabálya |
+| Első-látogatás tipp | opacity 200 ms | 100 ms | 400 ms | nincs |
+| Szint váltásakor a tartalom (elrejt/megjelenik) | opacity 160 ms | 100 ms | 300 ms | azonnali |
+| Nagy kontraszt kapcsoló | azonnali (színváltás átmenet nélkül) | | | azonnali |
 
-### Teljesítmény
-Csak `transform` és `opacity` (a `stroke-dashoffset` kivételével), `will-change` csak aktív animáció alatt. A count-up egyetlen `requestAnimationFrame`-ciklus, a szöveg frissítése `textContent`. Gépelés közben a beviteli mezőn nincs animáció (`input:focus` mezőre `transition: none`).
+Szabály marad: csak `transform` és `opacity` animálódik (kivétel az SVG `stroke-dashoffset`). Az **„Animációk” kapcsoló** (`opt.an`) a rendszerbeállítástól függetlenül kikapcsol minden mozgást (ma is így van, a `noanim` osztállyal).
 
-**Amit nem tudok itt mérni:** a „CPU 4× lassítás melletti folyamatos" működést a beépített böngészőből nem lehet szimulálni. Ezt a Chrome DevTools-ban (Performance → CPU: 4× slowdown) vagy a telefonon kell megnézned, a lépésenként megadott kézi lépések szerint.
+## 9. Tesztlista
 
-## 7. Menü (lenyitható)
+Minden fázisnál: (a) `node --check` minden módosított JS-en, (b) a meglévő tesztek zöldek (`ui`, `ui-kit`, `ui-data`, `cycle`, `social`, `photos`, `groups`, `moderation`, `recipes`), (c) az új tesztek zöldek.
 
-**Szerkezet:** `UiMenu` komponens. Az összecsukott sáv valódi `<button aria-expanded aria-controls="ui-menu-list">`, a lap `<section role="dialog" aria-label="Menü">`, a lista `<ul id="ui-menu-list" role="list">`. Az alsó dock és a `MENU` csempés lap megszűnik. A sáv a **Kezdőlapon** látszik, más képernyőn a fejlécben lévő vissza-gomb visz haza (a mockupok szerint a menü a kezdőlapról nyílik).
-
-**Hozzáférhetőség:** nyitáskor a fókusz az első pontra kerül, záráskor vissza a sávra, Esc és háttérkoppintás zár, Tab a lapon belül marad (fókuszcsapda), a háttér `inert`/`aria-hidden`. A lista görgethető, a vezérlő fix. `padding-bottom: calc(16px + env(safe-area-inset-bottom))`.
-
-**Méretek irányonként:** Pro: lap teteje 168 px, 42% sötét háttér, számozás 01–10 monospace. Gym: összecsukva 72 px, nyitva 112 px-től, 60% sötét háttér, 56 px-es blokk-sorok, bal oldali színes sáv. Family: összecsukva 80 px, nyitva 52 px-től, 24 px-es felső sarok, minimum 60 px-es sorok, 2 px keret, kör alakú ikonháttér.
-
-**A tíz pont és hova visznek** (a meglévő képernyőkre):
-
-| # | Pont | Meglévő képernyő |
-|---|---|---|
-| 1 | Edzés | `Log` (az edzés rögzítése) |
-| 2 | Terv | `Plan` |
-| 3 | Napló | `Hist` |
-| 4 | Étel | `Food` (Napló fül) |
-| 5 | Receptek | `Food`, Receptek fül (közvetlenül) |
-| 6 | Test és mérések | `Tools` (a Kardió/Kalória/Erő/Intervall fülekkel együtt) |
-| 7 | Közösség | `Social` |
-| 8 | Ciklus | `Cycle`, **csak ha** `cycAvail()` és a funkció be van kapcsolva (`cyc.on`) |
-| 9 | Profil | új „Profil" képernyő (lásd nyitott kérdések) |
-| 10 | Beállítások | `Opts` |
-
-A Kardió, Kalória, Erő, Intervall, Tervszerkesztő és Export csempék **nem kerülnek a tíz pont közé**. Javaslat: a számolók a „Test és mérések" fülsávjában maradnak, a Tervszerkesztő gombként a Terv képernyőre kerül, az Export már megvan a Beállítások „Adatok" kártyáján.
-
-**Szövegek** (magyar a feladatból, angol az én javaslatom, nyitott kérdés). Az angol leírások nem hosszabbak a magyarnál.
-
-| Pont | Pro (HU / EN) | Gym (HU / EN) | Family (HU / EN) |
+| Teszt | Mit | Hogyan | Hol futtatható |
 |---|---|---|---|
-| Edzés | Mai edzés és a gyakorlatok / Today's workout and exercises | Mai edzés, gyakorlatok / Today's workout, exercises | A mai mozgás / Today's movement |
-| Terv | Heti és havi terv / Weekly and monthly plan | Heti és havi ciklus / Weekly and monthly cycle | Mi jön a héten / What's coming this week |
-| Napló | Korábbi edzések és sorozatok / Past workouts and sets | Mit és mennyit emeltél / What and how much you lifted | Amit már megcsináltál / What you've already done |
-| Étel | Kalória és makrók / Calories and macros | Kalória és fehérje / Calories and protein | Mit ettél ma / What you ate today |
-| Receptek | Mentett ételek és ötletek / Saved meals and ideas | Mentett ételek / Saved meals | Mentett ételek / Saved meals |
-| Test és mérések | Súly, méretek, fotók / Weight, measures, photos | Súly, méretek, rekordok / Weight, measures, records | Súly és méretek / Weight and measures |
-| Közösség | Csoportok és kihívások / Groups and challenges | Csoportok, kihívások / Groups, challenges | Barátok, csoportok / Friends, groups |
-| Ciklus | Csak ha be van kapcsolva / Only when turned on | Csak ha bekapcsoltad / Only if you turned it on | Ha bekapcsoltad / If you turned it on |
-| Profil | Adatok és célok / Details and goals | Adatok és célok / Details and goals | Adataid / Your details |
-| Beállítások | Felület, színséma, fiók / Look, color scheme, account | Felület, színek, fiók / Look, colors, account | Betűméret, színek / Text size, colors |
+| T1 | Kontraszt, 9 séma × normál és nagy kontraszt | `tests/ui.check.js` | node |
+| T2 | Paritás: funkció × irány × súgó | `tests/parity.check.js` | node |
+| T3 | Szint-szűrés: minden szinten a várt menüsorok és kártyák | `tests/levels.check.js` | node |
+| T4 | Két koppintás szabály | `tests/features.check.js` | node |
+| T5 | Szövegek: hu és en, hossz-limitek | `tests/ui.check.js` | node |
+| T6 | Elrendezés: túlcsordulás, levágás, érintési méret 360 / 390 / 430 px, magyarul és angolul, 3 irány, mind a képernyők, mind a szint | böngészőpanel, `uiCheck()` | **emuláció** |
+| T7 | Képernyőképek fázisonként 360 / 390 / 430, hu és en | böngészőpanel | emuláció |
+| T8 | Billentyűzet és fókusz: menü, keresés, súgólap, szint-választó (Tab, Esc, fókuszcsapda) | böngészőpanel | emuláció |
+| T9 | Meglévő felhasználó frissítése: nincs `opt.level` → Minden, semmi nem tűnik el | node + böngészőpanel | emuláció |
+| T10 | Onboarding: első bejelentkezés (új fiók), kihagyás, „Később” = Ajánlott | böngészőpanel hamis munkamenettel | emuláció |
+| T11 | Mozgás: a beállított időtartamok, `prefers-reduced-motion` és az „Animációk ki” | a CSS tokenek és a Web Animations API vizsgálata | emuláció (futás közben a panel nem rajzol mozgást) |
+| T12 | **CPU-lassítás (4×), valódi érintés, rezgés, értesítés, kamera** | – | **csak telefonon ellenőrizhető**, a kézi tesztlistában |
 
-**Ikonok:** a forrásban lévő SVG-útvonalak (`ProMenu`, `GymMenu`, `FamilyMenu`), `viewBox` 24×24, `overflow: visible` csak tesztelve, emoji nincs. Az útvonalakat az `icons.js` mintájára egy `UI_ICONS` objektumba teszem.
+Kézi tesztlista telefonra (minden fázis végére a `docs/CHANGES.md` mellé): a fenti „csak telefonon” elemek, plusz a Galaxy S26 Ultra-n a három irány × három szint végigpróbálása, az APK-ban a Google-belépés érintetlensége.
 
-## 8. Beállítások
+## 10. Döntések (a nyitott kérdésekre kapott válaszok)
 
-**Felület:** három kártya (Pro, Gym, Family), mindegyiken a **Kezdőlap kicsinyített, valódi renderelése**. Technika: a kártya `container-type: inline-size`, benne a Kezdőlap-komponens egy fix 390 px széles elrendezésben, `transform: scale(...)`-lel a kártya szélességéhez igazítva, vagy a forrásban lévő `cqw`-alapú méretezéssel. Előnézetben nincs interakció (`inert`), nincs animáció és nincs hálózat (mintaadatokkal renderel, a saját adataidat nem használja). Kiválasztáskor azonnali váltás, az átmenet a 6. fejezet szerint.
-
-**Színséma:** az aktív irány három sémája listában, színmintákkal és pipával (a `ProSettings` szerint).
-
-**„Vissza az eredeti kinézetre":** az `ui` és a `scheme` törlése, az eredeti sötét kinézet tér vissza. Amíg nincs választás, az eredeti marad.
-
-**A régi beállítások sorsa:** a Kinézet (sötét/világos), a Téma és a Kiemelő szín az **eredeti** kinézethez tartozik, új irány aktív esetén a színsémák veszik át a szerepüket, ezért ezek a kártyák elrejtődnek. A Nyelv, Betűméret, Animációk és az Edzés kártyák minden irányban megmaradnak. Family-ben a „Betűméret" a menüleírásnak megfelelően hangsúlyos (alap 20 px).
-
-**Mentés:** az `opt` objektumba kerül (`opt.ui`, `opt.scheme`), tehát bejelentkezve a meglévő szinkronnal a Supabase-be (`user_data.opt`) kerül, **nincs szükség SQL-re**. Ezen felül minden változtatáskor tükrözöm a localStorage-ba (`en_ui`, `en_scheme`), hogy a korai script az első festés előtt alkalmazza (nincs villanás), és hogy bejelentkezés előtt (töltő, belépő képernyő) is a választott irány látszódjon. Minden olvasás és írás `try/catch`-ben, letiltott localStorage esetén az alap marad.
-
-## 9. Ikonok és szövegek: védelem a levágás ellen
-
-Ezek a szabályok a mockupok ellenőrzéséből jönnek, és a kódba is bekerülnek:
-
-- **Nem törő szóköz:** egy segéd (`nb()`) a számokhoz és mértékegységekhez („2 × 8", „20 perc", „102,5 kg") és `&#8209;` a „2-ből" alakokhoz, a magyar és angol szövegben is. Az `i18n-en.js` fordításai is ezt használják.
-- **Címek:** `overflow-wrap: break-word; min-width: 0`. Az `anywhere` csak olyan helyen, ahol valóban nagyon hosszú szó állhat (pl. felhasználónév).
-- **SVG:** minden ikonnak `viewBox` és belső margó a vonalvastagság miatt. A grafikonok `width: 100%; height: auto`.
-- **Gombok és linkek:** `box-sizing: border-box` mindkettőre globálisan.
-- **Safe-area:** minden fix elemnél (menüsáv, alsó gombok) `env(safe-area-inset-*)`.
-- **Family 360 px-en:** a tartalom görgessen, a fix elemek nem nőnek, az illusztráció rugalmas (`flex: 0 1 180px; min-height: 120px`).
-- **Szövegek hossza:** minden címnél és gombnál többsoros tördelés megengedett, és a belső térköz nem csökken. Az angol szöveg nem lehet hosszabb a magyarnál; ezt az ellenőrző is méri.
-
-## 10. Lépések, ágak, jóváhagyási kapuk
-
-| # | Lépés | Ág | Kapu |
+| # | Kérdés | Döntés | Következmény a tervre |
 |---|---|---|---|
-| 1 | Ez a terv | `feature/ui-terv` (csak docs) | jóváhagyásod |
-| 2 | Szétbontás ellenőrzése, `style.css` kettébontása | `feature/settings-switch` | a régi kinézet pixelre azonos, minden teszt zöld |
-| 3 | Témarendszer, tokenek, beállítás-váltó, színsémák | `feature/settings-switch` | jóváhagyás képernyőképekkel |
-| 4 | Lenyitható menü (mind a három irányban a tokenekből) | `feature/settings-switch` | jóváhagyás |
-| 5 | Pro: Kezdőlap, Edzés, Töltés + tokenekből a többi | `feature/theme-pro` | teszt, jóváhagyás |
-| 6 | Gym: ugyanez | `feature/theme-gym` | teszt, jóváhagyás |
-| 7 | Family: ugyanez | `feature/theme-family` | teszt, jóváhagyás |
+| K1 | Vendég mód | **Legyen „Folytatás vendégként" a bejelentkezés mellett.** Csak akkor kell felhívni a figyelmet, hogy az adat csak helyben tárolódik. | Új **vendég mód** (lásd lent). Új fázis: `feature/ui-vendeg`. |
+| K2 | Terv a „Csak a lényeg" szinten | **Jelenjen meg.** | A Terv a lényeg szinten is a menüben van (5 sor: Edzés, Terv, Napló, Profil, Beállítások). |
+| K3 | Meglévő felhasználók | **Ők is megkapják a szint-választó képernyőt.** | Nincs automatikus „Minden" szint: a következő indításkor egyszer megjelenik a szint-választó (az UI-választót nem kérjük újra). Amíg nem választanak, a **Minden** szint él, hogy semmi ne tűnjön el. |
+| K4 | Kezdőlap | **Letisztult, ne legyen tele információval. A felhasználó kérheti a többit, és legyen beállítás, hogy mit lásson a Kezdőlapon.** | A Kezdőlap **alapból minimális** (üdvözlés, mai edzés és indítás, heti napsor, egy „Kezdőlap testreszabása" sor). A többi kártya (heti volumen, rekordok, új rekord, széria, izomcsoportok, könnyű mozdulatok, gyors betűméret) **kártya-választóból** kapcsolható be, mindhárom irányban ugyanaz a lista. A szint csak az alapértelmezést adja. Új beállítás: **Kezdőlap tartalma** (`opt.home`, szinkronizál). |
+| K5 | Az edzésnézetek hiányai | **Meglévő stílusban.** | Az új elemek a pw/gw/fw nézetek formanyelvén készülnek, új mockup-irány nincs (a M6 az illesztést mutatja). |
+| K6 | Fájl-átnevezés | **Ahogy jónak látom:** az 1. fázis végén, külön commitban. | Lásd 12. fejezet. |
 
-Az ágak a `main`-ről indulnak (az 5–7. az `feature/settings-switch`-ről, mert az alap kell hozzájuk). A `main`-t nem módosítom, push és merge csak kérésedre. Minden téma külön commit-sorozat. Minden commit után `node --check` és a három meglévő teszt.
+### Vendég mód (K1) részletei
+- A bejelentkező képernyőn a belépés alatt egy másodlagos „**Folytatás vendégként**" gomb. Alatta egyetlen mondat: *„Vendégként az adataid csak ezen a készüléken tárolódnak."* Több figyelmeztetés nincs.
+- Vendégként minden helyi funkció működik (edzés, napló, terv, étel, receptek, mérések, ciklus, számolók, fotók helyben nem: a fotó a Supabase tárolóba megy, ezért vendégnek **nem elérhető**, és a menüben „Fiókkal elérhető" jelzést kap). A **szinkron és a Közösség** (hírfolyam, csoportok, megosztás) szintén fiókhoz kötött.
+- Az adat a `en:guest:*` helyi kulcsok alatt van. A Kezdőlapon és a Beállításokban egy halk „Vendég · csak helyi adat" jelzés és egy „Fiók létrehozása" gomb.
+- **Fiók létrehozásakor / belépéskor** a rendszer felajánlja, hogy a vendég-adatokat átviszi a fiókba (összefésülés a meglévő mergeD szabályával), vagy külön tartja. A döntés a vendég-fázisban (`feature/ui-vendeg`) kerül részletes jóváhagyásra.
+- Google-belépés (APK handoff) érintetlen marad.
 
-**Minden fázis végén:** leírom a telefonos kézi tesztlépéseket, és kérek képernyőképeket (valódi eszközön nem tudok tesztelni).
+### Kezdőlap-testreszabás (K4) részletei
+- Kártya-lista (a nyilvántartás `home.*` bejegyzései): Heti napsor, Heti volumen, Rekordok, Új rekord, Hetes széria, Heti sorozatok izomcsoportonként, Könnyű mozdulatok, Gyors betűméret.
+- **Alap szintenként:** Csak a lényeg: csak a napsor. Ajánlott: napsor + (irányonként a saját fő kártya: Pro volumen, Gym izomcsoportok, Family könnyű mozdulatok). Minden: az összes. A felhasználó bármelyiket be- vagy kikapcsolhatja, ez felülírja a szint alapját.
+- Elérés: a Kezdőlap alján „Kezdőlap testreszabása" sor, és Beállítások › Kezdőlap tartalma. Mindhárom irányban ugyanaz a lap (KSheet, kapcsolók).
+- A **Statisztikák és rekordok** nézet (Fejlődés) így minden adatot tartalmaz, a Kezdőlap pedig csak azt, amit a felhasználó kér.
 
-## 11. Tesztlista
+## 10b. Eredeti nyitott kérdések (a válaszok fent)
 
-**Ellenőrző eszköz.** A `check_overflow.py` Playwrightot igényel, ami a gépen nincs. Írok helyette egy `tests/ui-check.js`-t: ugyanaz a logika (kilógó elem, levágott szöveg, két sorra tört szó), de böngészőben fut, a beépített böngészőpanelből, 360, 390 és 430 px-en. Ha később telepítesz Pythont és Playwrightot, a `check_overflow.py` is használható.
+Mindegyiknél 2–3 opció, az ajánlott első helyen.
 
-Minden fázisban:
+**K1. Vendég mód.** Az onboarding „bejelentkezés vagy vendég” lépésében vendég = ?
+ 1. **Nincs vendég mód ebben a szakaszban** (ajánlott): az app fiókhoz kötött, a vendég külön feladat.
+ 2. Helyi vendég: minden adat csak a készüléken, szinkron és közösség nélkül, később fiókhoz köthető.
+ 3. Csak „Kipróbálom” demó-adatokkal, mentés nélkül.
 
-1. Mind a 15 képernyő 360/390/430 px-en: nincs kilógás, nincs levágott szöveg, nincs két sorra tört szó. Magyarul és angolul.
-2. Mindhárom irány és mind a 9 séma: a kontrasztok az 5. fejezet szerint (szöveg 4,5:1, nagy szöveg és UI-elem 3:1), az ellenőrző számolja.
-3. Oldalváltás, menünyitás, beállítás-váltás: megszakítható (gyors egymás utáni koppintás), az érintés közben nincs blokkolva.
-4. `prefers-reduced-motion` bekapcsolva: nincs mozgás, az állapot mégis változik.
-5. Mentés: bejelentkezve az `opt` szinkronba kerül, kijelentkezve localStorage-ba, localStorage letiltva esetén nem hibázik.
-6. Nyelvváltás magyar és angol között minden képernyőn.
-7. A régi (eredeti) kinézet pixelre változatlan, amíg nincs más választva.
-8. Billentyűzettel minden elérhető, a menü fókusza helyes, Esc zár.
-9. A meglévő tesztek zöldek: `recipes`, `cycle`, `social`.
+**K2. Terv a „Csak a lényeg” szinten.** A feladat szerint a Terv itt nem látszik.
+ 1. **Marad rejtett, de ha van beállított terv, a Kezdőlapon megjelenik egy „Terv” gomb** (ajánlott).
+ 2. A Terv is látszik a lényeg szinten (a menüben 5 sor).
+ 3. Teljesen rejtett, csak keresés.
 
-**Amit nem tudok vállalni:** valódi telefonos teszt, a 4× CPU-lassításos folyamatosság, és a rezgés (Vibration API) tényleges érzete.
+**K3. Meglévő felhasználók szintje a frissítéskor.**
+ 1. **Minden szint** (ajánlott): semmi sem tűnik el, a felhasználó szűkíthet.
+ 2. Ajánlott: egységes, de egyesek elveszítenek látható funkciót.
+ 3. Egyszer megkérdezzük a következő indításkor (a szint-választó lapot kapják meg).
 
-## 12. Nyitott kérdések
+**K4. Szintenkénti „Kezdőlap-kártyák” irányonként eltérőek (Pro: volumen+rekord, Gym: gyűrűk+széria, Family: könnyű mozdulatok).** A mátrix szerint mindhárom irányban elérhető kell legyen minden.
+ 1. **A kezdőlapon a saját irány kártyái maradnak, a hiányzók a „Fejlődés › Statisztikák és rekordok” nézetben vannak mindhárom irányban** (ajánlott: a mockupokhoz nem kell új kezdőlap).
+ 2. Mindhárom kezdőlapra mindhárom kártya kerül, szint szerint rejtve (a mockupok módosulnak).
+ 3. Kezdőlap-kártyák beállítása a felhasználóra bízva (testreszabható, nagyobb munka).
 
-**A te három kérdésed:**
+**K5. Az edzésnézetek hiányai (RPE, sorozat hozzáadása, ±15, óra, tárcsák, előző sorozatok).**
+ 1. **Mindhárom irányban elérhetők, a szint szerint** (ajánlott), az új elemek a meglévő nézetek stílusában (a Family-ben a sorozat-hozzáadás és az előző sorozatok a lap alján, nagy gombbal).
+ 2. Az edzésnézetek mockupját módosítjuk, és új mockupot kérünk.
+ 3. Csak az „előző sorozatok” új, a többi irányonkénti marad.
 
-1. **A Grafit séma felületei és vonalai.** A fenti javaslatot (5. fejezet) mértem, a mockup nincs. Elfogadod, vagy más árnyalatot szeretnél? Figyelem a `#E2622B` akcent-szövegre a felületen (4,45:1).
-2. **A Gym és Family menüleírások angol fordítása.** A 7. fejezetben javasoltam az összeset (Pro-t is). Jó így?
-3. **A transform/opacity szabály kivétele.** Javaslat: **elfogadni** az SVG `stroke-dashoffset`-et kis grafikonokra, körgyűrűre és a pipára, mert nem okoz újraelrendezést, és a jóváhagyott Pro töltő is ezt használja. Minden más animáció csak `transform` és `opacity`.
+**K6. Fájlok átnevezése (`ui-*.js` → `js/ui/*.js`).**
+ 1. **Fázis 1 végén, külön commitban** (ajánlott).
+ 2. Nem nevezzük át, a `features/` mappa új, a többi marad.
+ 3. Azonnal, a fázis 1 elején.
 
-**A tervezés közben találtam, ezekhez is döntés kell:**
+## 11. Új mockupok (0. fázis: elkészültek, jóváhagyásra várnak)
 
-4. **A mockupok tartalma nem azonos a mostani appéval.** Pro: heti volumen-grafikon és rekordok (e1RM van az appban, ✓). Gym: heti sorozatok izomcsoportonként célértékkel (16/16/14/12), az appban az izomcsoportonkénti 7 napos sorozat megvan, a **cél** nincs, és „NAP 3/5" a tervből jön. Family: „A mai mozgás" pipálható lista, ez a terv mai napjának gyakorlataiból készülne. Javaslat: ezekből készítek tartalmat a meglévő adatokból, a hiányzó célértékeket állítható alapértékkel (16 sorozat) pótolom.
-5. **Gym Edzés képernyő:** a tárcsák rajza az „Oldalanként" tárcsakalkulátorra épülhet (az Erő számolóban megvan). **Family Edzés képernyő:** egy gyakorlat egyszerre, illusztrációval és „Hogyan csináljam? Videó" hivatkozással. **Illusztrációk és videók az appban nincsenek.** Javaslat: első változatban illusztráció nélkül, a videó-link a meglévő gyakorlat-információs lapra mutat; a végleges illusztrációkhoz külön forrás kell. Mi legyen?
-6. **A leírások olyan funkciókat említenek, amik nincsenek meg:** „fotók" (Test és mérések, Pro), „Csoportok és kihívások" (Közösség; az appban követés, barátok és hírfolyam van, csoport és kihívás nincs), „Mentett ételek" (a receptekben nincs mentés). Javaslat: a szöveg marad úgy, ahogy megadtad, és jelezd, ha át kell írni az igazsághoz, vagy ha ezek a funkciók később jönnek.
-7. **Profil képernyő:** a menüben „Profil: Adatok és célok" van. Most nincs önálló Profil képernyő, a profil (nem, kor, magasság, súly, makrócélok) a Kardió/Kalória számolók kártyáján van. Javaslat: új, egyszerű Profil képernyő ugyanezekkel az adatokkal, a Kezdőlap monogram-gombja ide visz.
-8. **A régi kinézet sorsa** (8. fejezet): az „eredeti" megmarad, és a régi Kinézet/Téma/Szín kártyák csak ott látszanak. Jó így?
-9. **Betűk betöltése:** a mockupok Google Fontsról töltenek (IBM Plex, Anton, Archivo, Atkinson). Az app már most is Google Fontsról tölt. Javaslat: csak a kiválasztott irány betűit töltöm be. Ha szeretnéd, saját tárhelyről is szolgálható (offline és adatvédelmi okból), de az nagyobb letöltés és külön lépés.
-10. **A bejelentkező és a „Fiók" képernyők** nincsenek a mockupok között. Javaslat: tokenekből öröklik a kinézetet, mint a többi.
-11. **Tailwind CDN marad** (nincs build): az átképzés a `base.css`-ben történik. Kockázat: a CDN-es Tailwind futásidőben generál stílust, ezért a `base.css`-nek `!important` nélkül, magasabb specificitással kell felülírnia az osztályokat (`html[data-ui] .bg-zinc-900`).
+A mockupok a `docs/mockups/uj/` mappában vannak, **mindhárom irányban** (`pro.html`, `gym.html`, `family.html`, belépés: `index.html`). A kinézetet az app valódi tokenjei és elemkészlete adja, ezért a színséma is váltható (`?s=graphite`). A generálás: `node docs/mockups/uj/build.js`. Telefonon a helyi tesztszerveren nyithatók meg.
+
+| # | Mockup (képernyő) | Mit mutat | Döntés, amihez kapcsolódik |
+|---|---|---|---|
+| M2a | Bejelentkezés, vendég móddal | „Folytatás vendégként” gomb, alatta egy mondat a helyi tárolásról | K1 |
+| M1 | Szint-választó (új felhasználó) | 3 kártya (név, mondat, 3–4 pont), a középső „Ajánlott”, „Később” | onboarding 3. lépés |
+| M1b | Szint-választó (meglévő felhasználó) | ugyanaz, „Újdonság” fejléccel, „Később” = mindent mutat | K3 |
+| M2b–d | Rövid bemutató (3 lépés) | átugorható, pontjelző | onboarding 4. lépés |
+| M8 | Kezdőlap (alap: letisztult) | üdvözlés, mai edzés, indítás, heti napsor, „Kezdőlap testreszabása”, vendég-jelzés | K4 |
+| M8b | Kezdőlap tartalma (lap) | kártya-kapcsolók (napsor, volumen, rekordok, új rekord, széria, izomcsoportok, könnyű mozdulatok, gyors betűméret) | K4 |
+| M3a | Menü csoportokkal, Ajánlott szint | Ma / Étkezés / Fejlődés, kereső, „Még 6 funkció”, fix lábsor (Profil, Beállítások, Súgó) | 6. fejezet |
+| M3b | Menü, Minden szint | + Receptek, Statisztikák, Számolók, Ciklus, Közösség | 6. fejezet |
+| M3c | Menü-keresés | találatok, „Nem látszik a szinteden”, súgó-találat | 6. fejezet |
+| M4a | Súgó: „?” gomb és első-látogatás tipp | fejléc „?”, bezárható tipp-buborék | 7. fejezet |
+| M4b | Súgó-lap | cím, mi ez, hogyan használd, tipp | 7. fejezet |
+| M5 | Statisztikák és rekordok | rekordok, heti volumen, izomcsoportok, fülek | K4 (a Kezdőlapról kikerült kártyák helye) |
+| M6 | Edzés: az új elemek | előző alkalmak, RPE, sorozat hozzáadása, ±15, idő, szint-jelzés | K5 (meglévő stílusban) |
+| M7 | Beállítások: új sorok | Szint, Kezdőlap tartalma, Nagy kontraszt, Csendes órák, JSON, Alapértékek | 4. fejezet |
+
+**Megjegyzések a mockupokhoz**
+- A mockupok **magyarul** vannak. Az angol szöveg és a hosszkorlát-ellenőrzés az implementációban készül (setDict, `tests/ui.check.js`).
+- A menü-leírások irányonként a meglévő `UI_MENU` szövegei maradnak. Itt egy közös szöveget mutatnak.
+- Az M6 a **meglévő** pw/gw/fw nézetek kerete helyett egy egyszerűsített keretet mutat: az új elemek (előző alkalmak, RPE, sorozat hozzáadása, ±15) formáját és helyét. Az implementáció az adott irány meglévő nézetébe illeszti őket.
+- Ami itt jóváhagyást kap, az kerül át a `css/ui-onboarding.css`, `ui-help.css` és `ui-search.css` fájlokba. Kódolás csak a jóváhagyás után indul (1. fázis).
+
+## 12. Fázisok (egy fázis = egy ág, a `main` érintetlen, fázis végén megállás)
+
+| Fázis | Ág | Tartalom | Kimenet |
+|---|---|---|---|
+| 0 | `feature/ui-mockupok` | M1–M7 mockupok | jóváhagyás |
+| 1 | `feature/ui-regiszter` | funkció-nyilvántartás, a menü a nyilvántartásból épül (kinézet változatlan), `parity`, `features` tesztek, (K6 szerint) fájl-átnevezés | `CHANGES.md`, képernyőképek |
+| 2 | `feature/ui-szintek` | szintek, Beállítások › Szint, szűrés minden képernyőn, meglévő felhasználók migrációja | |
+| 3 | `feature/ui-menu` | csoportos menü, kereső, „Statisztikák és rekordok” nézet, Tervszerkesztő a Tervből | |
+| 4 | `feature/ui-sugo` | súgó: „?”, elemi súgó, első-látogatás tipp, tartalom hu/en | |
+| 5 | `feature/ui-paritas` | a hiányzó funkciók pótlása a Gym és Family nézetekben (K5), az `workout.prevsets` | |
+| 6 | `feature/ui-beallitasok` | nagy kontraszt, csendes órák, JSON export, alapértékek visszaállítása, Kezdőlap gyors betűméret mindenhol | |
+| 7 | `feature/ui-onboarding` | szint-választó az első bejelentkezés után **és a meglévő felhasználóknak is egyszer** (K3), rövid bemutató, Kezdőlap-testreszabás (K4: `opt.home`, kártya-választó) | |
+| 8 | `feature/ui-vendeg` | vendég mód (K1): „Folytatás vendégként”, helyi adat, jelzés, átvitel fiókba | |
+
+**Függőségek:** 1 → 2 → 3, 4 és 5 párhuzamos lehetne, de egyszerre egy fázist csinálok. 7 az 1 és 2 után bármikor jöhet. A fázis 5 közben a nyilvántartás „✗” sorai fogynak, a paritás-teszt a végén zöld.
+
+Minden fázis végén: `docs/CHANGES.md` bejegyzés, képernyőképek (360 / 390 / 430, hu és en), a kézi tesztlista telefonra (a T12 pontokkal), megállás és jóváhagyás. Valódi telefont nem tudok tesztelni, ezt minden fázisban jelzem.
 
 ## 13. Kockázatok
 
-- A tokenekkel való átképzés a ~20 meglévő képernyőn **nem lesz pixelre azonos** a mockupokkal, mert azok más szerkezetűek. A jóváhagyott 15 képernyő pontos, a többi a stílushoz illeszkedő, de nem mockup-hű. Ezt a 2. fejezet táblázata és a 4. nyitott kérdés is jelzi.
-- Három új Kezdőlap és három új Edzés-képernyő sok kód. Ezért menet közben, irányonként, külön ágon, külön jóváhagyással haladok.
-- A Family nagy betűmérete (20 px alap) a 360 px-es szélességen tördelést okozhat a meglévő képernyőkön, ezt az ellenőrző minden fázisban méri.
-
-## 14. Döntések és módosítások (a terv jóváhagyása után)
-
-A válaszaid alapján a hatókör **bővül**, a terv fenti része ehhez igazodik:
-
-| # | Döntés | Következmény |
-|---|---|---|
-| 1 | A mockupokon látható funkciókat meg kell csinálni, és hasznos, működő kiegészítések is jöhetnek | A Kezdőlap, az Edzés és a Beállítások tartalma a mockupokkal azonos, valódi adatokból (rekordok, heti volumen, izomcsoportonkénti heti sorozatok célértékkel, széria, tárcsakalkulátor, lépésenkénti edzésvezetés) |
-| 2 | A leírásokban szereplő, de még nem létező funkciókat is meg kell csinálni | Külön **B fázis** (lent): haladási fotók, csoportok és kihívások, mentett ételek |
-| 3 | Az SVG `stroke-dashoffset` kivétel elfogadva | Marad a 6. fejezet szerint |
-| 4 | A menüben legyen több pont | A tíz pont után további pontok: Számolók, Tervszerkesztő, Export és adatok (lásd lent) |
-| 5 | A mockupon kívüli képernyők is legyenek mockup-hűek, egy irány mindenhol ugyanúgy néz ki | A „csak tokenekből örökölnek" megoldás **nem elég**. Közös **komponens-készlet** készül (kártya, szakasz, lista-sor, gomb, bevitel, szegmens, kapcsoló, fül, cím, mutató, grafikon), amelyet minden irány saját megjelenéssel valósít meg, és minden meglévő képernyő erre épül át |
-| 6 | A Közösség fül (amit eddig elkészítettünk) kerüljön be | A Közösség menüpont a meglévő Hírfolyam / Kapcsolatok / Profil képernyőkre mutat, és ezek a komponens-készletre épülnek át. Ide kerülnek a csoportok és kihívások is |
-| 7 | Python és Playwright | **Nem kell telepíteni.** A `tests/ui-check.js` a beépített böngészőben fut. Ha később mégis szeretnéd a `check_overflow.py`-t, akkor érdemes, de ehhez a munkához nem szükséges |
-
-**Új menüpontok** (a tíz pont után, a sorszámozás folytatódik, a Ciklus továbbra is feltételes):
-
-| # | Pont | Meglévő képernyő | Pro | Gym | Family |
-|---|---|---|---|---|---|
-| 11 | Számolók | `Tools` (Kardió, Kalória, Erő, Intervall fülekkel) | Kardió, kalória, erő, intervall | Kardió, kalória, erő | Kalória és kardió |
-| 12 | Tervszerkesztő | `Editor` | Saját edzések szerkesztése | Saját edzések | Saját edzéseid |
-| 13 | Export és adatok | `Opts` Adatok kártya | CSV, PDF, mentés | Export, mentés | Adataid mentése |
-
-Angol: *Cardio, calories, strength, interval / Cardio, calories, strength / Calories and cardio*; *Edit your workouts / Your workouts / Your workouts*; *CSV, PDF, backup / Export, backup / Save your data*.
-
-**Komponens-készlet (a „mockup-hű mindenhol" alapja):** a közös segédkomponensek (`Cd`, `Lb`, `Sw`, `Sg`, `F`, `R`, `Ring`, `Bars`, a bevitel-stílus, a fejlécek) és a gyakori nyers Tailwind-minták (kártya, gomb, szegmens, lista-sor) egy `ui-*` osztálykészletre épülnek, amelyet a `css/ui-pro.css`, `ui-gym.css`, `ui-family.css` irányonként definiál. A mockupokból vett mintákat követem: Pro lapos szakaszok és vékony elválasztók, négyzetes sarok, mono számok. Gym tömör blokkok, csíkos jelzősáv, nagybetűs Anton cím, éles sarok. Family fehér kártya 2 px kerettel, nagy sarok, nagy érintési felület. Az átépítés képernyőnként történik, minden képernyő a saját irányában ellenőrizve (360/390/430 px).
-
-**Fázisok (módosított sorrend):**
-
-| Fázis | Tartalom | Ág |
-|---|---|---|
-| A1 | Témarendszer, tokenek, váltó, színsémák (2–3. lépés) | `feature/settings-switch` |
-| A2 | Lenyitható menü (4. lépés) | `feature/settings-switch` |
-| A3 | Komponens-készlet és a meglévő képernyők átépítése | `feature/settings-switch` |
-| A4–A6 | Pro, Gym, Family: Kezdőlap, Edzés, Töltés a mockup szerint + a többi képernyő finomítása | `feature/theme-pro`, `-gym`, `-family` |
-| B1 | Mentett ételek (kedvencek, saját étel) | `feature/mentett-etelek` |
-| B2 | Haladási fotók (Supabase Storage + RLS, `supabase/progress_photos.sql`) | `feature/fotok` |
-| B3 | Csoportok és kihívások (Supabase táblák + RLS, `supabase/social_4_groups.sql`) | `feature/csoportok` |
-
-Minden fázis végén megállok, és jóváhagyást kérek. A B2 és B3 adatbázis-változása csak SQL-fájlban lesz, amit te futtatsz le. A B3 a közösségi 5. lépéshez (jelentés és tiltás) kapcsolódik: a csoportok tartalma jelenthető kell legyen, ezért javaslom, hogy az 5. lépés előbb készüljön el.
+- **Nagy átnevezés (K6):** minden `?v=` és a CLAUDE.md érintett. Külön commit, a tesztek futtatása előtt és után.
+- **Szint-szűrés és meglévő képernyők:** a Közösség, Fotók, Csoportok mind külön képernyőn belüli fülek. A szűrés **fülszinten** is kell (pl. Test és mérések › Fotók csak a 3. szinten látszik), különben a szint nem működik. A nyilvántartás `deep` mezője ezt a fókuszt hordozza.
+- **Súgó-szövegek mennyisége:** ~70 funkció × 2 nyelv. A teszt hiányt jelez, de a szöveg-írás (különösen az angol rövid hossz-limit) külön munka.
+- **A „két koppintás” szabály és a szint:** a rejtett funkció keresésen át 2 koppintás (menü, találat), de a szint-váltás maga több.
+- **Szinkron:** az `opt.level`, `opt.contrast` és társai az `opt` dokumentumban szinkronizálnak (latest-ts wins); két eszközön eltérő szintnél a későbbi nyer. Elfogadott.

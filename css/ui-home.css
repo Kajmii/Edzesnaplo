@@ -111,3 +111,7 @@ html[data-ui] .fh-go{height:52px;margin-top:4px;display:flex;align-items:center;
 .fh-dot.done.now{border-color:rgb(var(--ui-accent));box-shadow:0 0 0 3px rgb(var(--ui-bg)),0 0 0 5px rgb(var(--ui-text))}
 .fh-dl{font-size:13px}.fh-dl.now{font-weight:700}
 .fh-note{margin:0;font-size:15px;line-height:1.4;color:rgb(var(--ui-muted))}
+
+/* Family: a Profil gomb és a betűméret-gomb a fejlécben */
+.fh-btns{display:flex;align-items:center;gap:8px;flex-shrink:0}
+html[data-ui] .fh-avatar{flex-shrink:0;width:48px;height:48px;min-height:48px;padding:0;border-radius:50%;border:2px solid rgb(var(--ui-text));background:rgb(var(--ui-surface));color:rgb(var(--ui-text));font-family:inherit;font-weight:700;font-size:15px;cursor:pointer}

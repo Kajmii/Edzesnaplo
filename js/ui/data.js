@@ -28,6 +28,8 @@ const uiDayOf=(plan,today)=>{const wk=weekOf(today),pl=wk.filter(k=>plan.days&&p
 // Tárcsák egy oldalra a rúdhoz; maradék: amit a készlet nem tud kirakni
 const UI_PLATES=[25,20,15,10,5,2.5,1.25];
 const uiPlates=(kg,bar=20)=>{let side=Math.max(0,(+kg||0)-bar)/2;const list=[];for(const p of UI_PLATES){const c=Math.floor(side/p+1e-9);if(c>0){list.push({w:p,c});side-=c*p}}return{list,rest:Math.round(side*100)/100}};
+// Az előző alkalmak sorozatai egy gyakorlatnál, legfrissebb elöl (legfeljebb max alkalom): [{d, sets:[{kg,reps}]}]
+const uiPrevSets=(hist,name,max=3)=>[...hist].sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:b.id-a.id).map(w=>{const e=w.ex.find(x=>x.n===name);return e&&e.sets.length?{d:w.date,sets:e.sets.map(s=>({kg:+s.kg||0,reps:+s.reps||0}))}:null}).filter(Boolean).slice(0,max);
 // Szabad edzéshez ajánlott könnyű mozdulatok (Family, ha nincs tervezett edzés)
 const UI_EASY=['Séta, 20 perc','Lábemelés ülve, 2 × 10','Fekvőtámasz a falnál, 2 × 8','Nyújtás, 5 perc'];
 const uiFirstName=u=>{const s=String(u||'').split(/[._\-+@\s]/)[0]||'';return s?s[0].toUpperCase()+s.slice(1):''};

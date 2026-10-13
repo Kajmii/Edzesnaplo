@@ -6,7 +6,18 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win --publish never"
+    "dist": "electron-builder --win --publish never",
+    "check:features": "node tests/features.check.js",
+    "check:parity": "node tests/parity.check.js",
+    "check:parity:strict": "node tests/parity.check.js --strict",
+    "check": "node tests/ui.check.js && node tests/ui-kit.check.js && node tests/ui-data.check.js && node tests/features.check.js && node tests/parity.check.js && node tests/levels.check.js && node tests/search.check.js && node tests/help.check.js && node tests/contrast.check.js && node tests/settings.check.js && node tests/onboarding.check.js && node tests/guest.check.js && node tests/social.check.js && node tests/photos.check.js && node tests/groups.check.js && node tests/moderation.check.js && node tests/cycle.check.js && node tests/recipes.check.js",
+    "check:levels": "node tests/levels.check.js",
+    "check:search": "node tests/search.check.js",
+    "check:help": "node tests/help.check.js",
+    "check:contrast": "node tests/contrast.check.js",
+    "check:settings": "node tests/settings.check.js",
+    "check:onboarding": "node tests/onboarding.check.js",
+    "check:guest": "node tests/guest.check.js"
   },
   "devDependencies": {
     "electron": "^37.0.0",
@@ -15,9 +26,16 @@
   "build": {
     "appId": "hu.edzesnaplo.app",
     "productName": "Edzesnaplo",
-    "files": ["main.js", "package.json", "icon.png"],
+    "files": [
+      "main.js",
+      "package.json",
+      "icon.png"
+    ],
     "win": {
-      "target": ["nsis", "portable"],
+      "target": [
+        "nsis",
+        "portable"
+      ],
       "icon": "icon.png"
     },
     "nsis": {
