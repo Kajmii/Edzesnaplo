@@ -78,3 +78,11 @@ for(const m of MENU){
 }
 for(const k of ['Menü bezárása','Bezár','Napló, étel és a többi','Menü'])assert.ok(dict[k]!==undefined,'nincs angol: '+k);
 console.log('rendben: menü, 13 pont, minden szöveg lefordítva');
+
+// --- első bejelentkezés: a felület-választó szövegei lefordítva, a három irányhoz van ajánlás
+const pk=rd('js/ui-picker.js');
+const who=new Function(pk.slice(pk.indexOf('const UI_WHO='),pk.indexOf('function UiPicker'))+';return UI_WHO')();
+for(const ui of Object.keys(UI)){assert.ok(who[ui]&&who[ui].w,ui+': hiányzó ajánlás');assert.ok(dict[who[ui].w]!==undefined,ui+': nincs angol ajánlás')}
+for(const k of ['Válaszd ki a kinézetet','Ezt választom','Ezt egyszer kell kiválasztanod. A Beállításokban később bármikor módosíthatod.'])assert.ok(dict[k]!==undefined,'nincs angol: '+k);
+assert.ok(app.includes('<${UiPicker}')&&app.includes('opt.uiChosen'),'az App nem mutatja a felület-választót');
+console.log('rendben: felület-választó');
