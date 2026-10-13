@@ -34,14 +34,15 @@ const UiIco=({n,s=24,f})=>html`<svg width=${s} height=${s} viewBox='0 0 24 24' c
 // Menüpontok: k, hova (tab, sub), ikon, név, irányonkénti egysoros leírás. A Ciklus csak bekapcsolt funkciónál látszik.
 // A főmenü a funkció-nyilvántartásból épül (js/features/registry.js): a menü-sorokat az `m` mezős funkciók adják, `m.o` sorrendben.
 const UI_MENU=FEATURES.filter(f=>f.m).sort((x,y)=>x.m.o-y.m.o).map(f=>({k:f.m.k,id:f.id,tab:f.tab,sub:f.sub,ic:f.ic,t:f.m.t,d:f.m.d}));
-const uiMenuItems=cyc=>UI_MENU.filter(m=>m.k!=='cycle'||cyc);
+const uiMenuItems=cyc=>UI_MENU.filter(m=>(m.k!=='cycle'||cyc)&&lvlOn(m.id));
 // A képernyő címe a fejlécben (a Test és mérések / Számolók ugyanaz a Tools képernyő, a sub dönt)
 const uiTitle=(tab,sub)=>({log:'Edzés',plan:'Terv',hist:'Napló',food:sub==='rec'?'Receptek':'Étel',tools:sub==='b'?'Test és mérések':'Számolók',social:'Közösség',cycle:'Ciklus',profile:'Profil',opt:sub==='data'?'Export és adatok':'Beállítások',edit:'Tervszerkesztő'})[tab]||'';
 const uiCloseMs=()=>{try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return 0;return +getComputedStyle(document.documentElement).getPropertyValue('--close-ms')||200}catch(e){return 200}};
 const uiBarSub=(items,ui)=>{
- if(ui==='family')return 'Napló, étel és a többi';
- const nm=['hist','food','log'].map(k=>tr(items.find(m=>m.k===k).t)); // Gym: "EDZÉS · NAPLÓ · ÉTEL · +N"
- return [tr(items[0].t),nm[0],nm[1]].join(' · ')+' · +'+(items.length-3);
+ const has=k=>items.some(m=>m.k===k);
+ if(ui==='family')return has('food')?'Napló, étel és a többi':'Napló és a többi';
+ const sh=['log','hist','food'].filter(has).map(k=>tr(items.find(m=>m.k===k).t)); // Gym: "EDZÉS · NAPLÓ · ÉTEL · +N"
+ return sh.join(' · ')+(items.length>sh.length?' · +'+(items.length-sh.length):'');
 };
 
 // A menü: összecsukott sáv (csak a Kezdőlapon) és a felnyíló lap
@@ -67,7 +68,7 @@ function UiMenu({open,setOpen,home,go}){
   document.addEventListener('keydown',k);return()=>document.removeEventListener('keydown',k)},[open]);
  const close=()=>{why.current='back';setOpen(false)},pick=m=>{why.current='nav';setOpen(false);go(m.tab,m.sub)};
  const chev=r=>html`<span class=${'ui-chev'+(r?' ui-chev-open':'')}><${UiIco} n='up' s=${24}/></span>`;
- const n=items.length,oldal=LANG==='en'?n+' pages':n+' oldal';
+ const n=items.length,oldal=LANG==='en'?n+' pages':n+' oldal',hid=lvlHidden();
  return html`<${React.Fragment}>
   ${home&&html`<div class='ui-bar-wrap'><button ref=${bar} type='button' class='ui-bar' aria-expanded=${open} aria-controls='ui-menu-list' onClick=${()=>setOpen(true)}>
     <span class='ui-bar-stripe' aria-hidden='true'></span>
@@ -81,7 +82,8 @@ function UiMenu({open,setOpen,home,go}){
     <ul id='ui-menu-list' class='ui-mlist ui-stagger' role='list'>${items.map((m,i)=>html`<li key=${m.k} style=${{'--i':i}}><button ref=${i===0?first:null} type='button' class=${'ui-mrow'+(i===0?' on':'')} onClick=${()=>pick(m)}>
       <span class='ui-mnum' aria-hidden='true'>${String(i+1).padStart(2,'0')}</span><span class='ui-mbar' aria-hidden='true'></span>
       <span class='ui-mico' aria-hidden='true'><${UiIco} n=${m.ic}/></span>
-      <span class='ui-mtx'><span class='ui-mt'>${m.t}</span><span class='ui-md'>${m.d[ui]}</span></span></button></li>`)}</ul></div></section></div>`}
+      <span class='ui-mtx'><span class='ui-mt'>${m.t}</span><span class='ui-md'>${m.d[ui]}</span></span></button></li>`)}
+     ${hid>0&&html`<li key='more' style=${{'--i':items.length}}><button type='button' class='ui-mmore' onClick=${()=>{why.current='nav';setOpen(false);go('opt','level')}}><span class='ui-mmore-t'>${LANG==='en'?hid+' more features hidden':'Még '+hid+' funkció rejtve'}</span><span class='ui-mmore-s'>${tr('Beállítások › Szint: bármikor visszakapcsolhatod, semmi sem törlődött.')}</span></button></li>`}</ul></div></section></div>`}
  <//>`;
 }
 

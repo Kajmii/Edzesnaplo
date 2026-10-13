@@ -61,7 +61,7 @@ const FEAT_IMPL=(()=>{const S=m=>[m,m,m],G=p=>({gap:p});return{
  'opt.fontsize':S('function Opts('),
  'opt.motion':S('function Opts('),
  'opt.vibrate':S('function Opts('),
- 'opt.level':[G('F2'),G('F2'),G('F2')],
+ 'opt.level':S('function LevelPick('),
  'opt.contrast':[G('F6'),G('F6'),G('F6')],
  'opt.quiet':[G('F6'),G('F6'),G('F6')],
  'opt.workout':S('function Opts('),

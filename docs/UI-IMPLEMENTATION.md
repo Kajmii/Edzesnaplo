@@ -28,19 +28,19 @@ Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, 
 |---|---|---|---|---|---|---|---|
 | `home.hero` | Kezdőlap: mai edzés és indítás/folytatás | 1 | ✓ | ✓ | ✓ | 0 | |
 | `home.week` | Heti napsor (kész / ma / tervezett) | 1 | ✓ | ✓ | ✓ | 0 | |
-| `home.easy` | Könnyű mozdulatok ajánlása, ha nincs tervezett edzés | 1 | ✗ | ✗ | ✓ | 0 | minden irányba |
+| `home.easy` | Könnyű mozdulatok ajánlása, ha nincs tervezett edzés | 2 | ✗ | ✗ | ✓ | 0 | minden irányba |
 | `home.profile` | Profil-gomb a Kezdőlapon | 1 | ✓ | ✓ | ✗ | 1 | Family: a menüben van, a Kezdőlapon nem |
-| `home.fontsize` | Gyors betűméret-kapcsoló a Kezdőlapon | 2 | ✗ | ✗ | ✓ | 0 | minden irányba (a Beállításokban már mind) |
+| `home.fontsize` | Gyors betűméret-kapcsoló a Kezdőlapon | 3 | ✗ | ✗ | ✓ | 0 | minden irányba (a Beállításokban már mind) |
 | `home.volume` | Heti volumen, 8 hét grafikon és változás | 2 | ✓ | ✗ | ✗ | 0 | |
-| `home.records` | Rekordok (becsült 1RM, top 3) | 2 | ✓ | ✗ | ✗ | 0 | |
-| `home.pr` | Legutóbbi új rekord (21 napon belül) | 2 | ✗ | ✓ | ✗ | 0 | |
-| `home.streak` | Hetes széria | 2 | ✗ | ✓ | ✗ | 0 | |
-| `home.groups` | Heti sorozatok izomcsoportonként | 3 | ✗ | ✓ | ✗ | 0 | |
+| `home.records` | Rekordok (becsült 1RM, top 3) | 3 | ✓ | ✗ | ✗ | 0 | |
+| `home.pr` | Legutóbbi új rekord (21 napon belül) | 3 | ✗ | ✓ | ✗ | 0 | |
+| `home.streak` | Hetes széria | 3 | ✗ | ✓ | ✗ | 0 | |
+| `home.groups` | Heti sorozatok izomcsoportonként | 2 | ✗ | ✓ | ✗ | 0 | |
 | `workout.pick` | Tervválasztó, ismétlés, üres edzés | 1 | ✓ | ✓ | ✓ | 2 | közös (LogPick) |
 | `workout.sets` | Súly × ismétlés, sorozat kész | 1 | ✓ | ✓ | ✓ | 2 | |
 | `workout.lastline` | „Legutóbb: 80 kg × 8, rekord …” egy sor | 1 | ✓ | ✓ | ✗ | – | |
 | `workout.prevsets` | **Az előző alkalmak sorozatai** a gyakorlatnál (utolsó 3 edzés, dátummal) | 2 | ✗ | ✗ | ✗ | – | **új** (a feladat példája) |
-| `workout.addset` | Sorozat hozzáadása | 1 | ✓ | ✓ | ✗ | – | |
+| `workout.addset` | Sorozat hozzáadása | 2 | ✓ | ✓ | ✗ | – | |
 | `workout.rpe` | RPE oszlop | 3 | ✓ | ✗ | ✗ | – | |
 | `workout.rest` | Pihenő-időzítő (automatikus, elnémítható) | 1 | ✓ | ✓ | ✓ | – | |
 | `workout.restadj` | Pihenő ±15 mp | 2 | ✓ | ✓ | ✗ | – | |
@@ -99,7 +99,7 @@ Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, 
 | `opt.fontsize` | Betűméret | 1 | ✓ | ✓ | ✓ | 2 | |
 | `opt.motion` | Animációk ki/be | 1 | ✓ | ✓ | ✓ | 2 | |
 | `opt.vibrate` | Rezgés | 1 | ✓ | ✓ | ✓ | 2 | |
-| `opt.level` | **Szint-választó** | 1 | ✗ | ✗ | ✗ | 2 | **új** |
+| `opt.level` | **Szint-választó** | 1 | ✓ | ✓ | ✓ | 2 | **új** |
 | `opt.contrast` | **Nagy kontrasztú mód** | 2 | ✗ | ✗ | ✗ | 2 | **új** |
 | `opt.quiet` | **Értesítések és csendes órák** | 3 | ✗ | ✗ | ✗ | 2 | **új** (az emlékeztetők már vannak a Tervben) |
 | `opt.workout` | Edzés-beállítások (heti cél, pihenő, lépcső) | 2 | ✓ | ✓ | ✓ | 2 | |

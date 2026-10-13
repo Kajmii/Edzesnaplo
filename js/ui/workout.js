@@ -64,26 +64,26 @@ const uiNum0=v=>(+v||0).toLocaleString(LANG==='en'?'en-US':'hu-HU',{maximumFract
 
 /* ---------- Pro ---------- */
 function LogPro({w,aw,hist,finish,quit,onBack}){
- const{e,sets,k,i,n}=w,nx=aw.ex[i+1];
+ const{e,sets,k,i,n}=w,nx=aw.ex[i+1],rpe=lvlOn('workout.rpe');
  return html`<div class='pw'>
-  <header class='pw-hdr'><button type='button' class='pw-back' onClick=${onBack}><${UiIco} n='back' s=${16}/><span>Vissza</span></button><span class='pw-timer'><${Clk} t=${aw.t}/></span><button type='button' class='pw-fin' disabled=${!w.nd} onClick=${finish}>Befejezés</button></header>
+  <header class='pw-hdr'><button type='button' class='pw-back' onClick=${onBack}><${UiIco} n='back' s=${16}/><span>Vissza</span></button><span class='pw-timer'>${lvlOn('workout.clock')&&html`<${Clk} t=${aw.t}/>`}</span><button type='button' class='pw-fin' disabled=${!w.nd} onClick=${finish}>Befejezés</button></header>
   <div class='pw-body'>
    ${!e?html`<${WkEmpty} w=${w} cls='pw-empty'/>`:html`<div class='pw-main'>
     <div class='pw-head'><div class='pw-row'><span class='pw-wk'>${tr(aw.name)}</span><button type='button' class='pw-ex' onClick=${()=>w.setSheet('list')}>${i+1} / ${n}</button></div>
      <h1 class='pw-h'><button type='button' class='pw-hb' onClick=${()=>w.setSheet('info')}>${e.n}</button></h1><span class='pw-sub'>${lastTxt(hist,e.n)}</span></div>
-    <table class='pw-t'><thead><tr><th scope='col'>${tr('SOR.')}</th><th scope='col'>KG</th><th scope='col'>${tr('ISM')}</th><th scope='col'>RPE</th><th scope='col' class='pw-r'>${tr('KÉSZ')}</th></tr></thead>
-     <tbody>${sets.map((s,q)=>s.done?html`<tr key=${q} class='pw-done'><td>${q+1}</td><td>${uiNum0(s.kg)}</td><td>${s.reps||'–'}</td><td>${s.rpe||'–'}</td><td class='pw-r'><input type='checkbox' checked aria-label=${(q+1)+'. '+tr('sorozat kész')} onChange=${()=>w.toggle(i,q)}/></td></tr>`
+    <table class='pw-t'><thead><tr><th scope='col'>${tr('SOR.')}</th><th scope='col'>KG</th><th scope='col'>${tr('ISM')}</th>${rpe&&html`<th scope='col'>RPE</th>`}<th scope='col' class='pw-r'>${tr('KÉSZ')}</th></tr></thead>
+     <tbody>${sets.map((s,q)=>s.done?html`<tr key=${q} class='pw-done'><td>${q+1}</td><td>${uiNum0(s.kg)}</td><td>${s.reps||'–'}</td>${rpe&&html`<td>${s.rpe||'–'}</td>`}<td class='pw-r'><input type='checkbox' checked aria-label=${(q+1)+'. '+tr('sorozat kész')} onChange=${()=>w.toggle(i,q)}/></td></tr>`
       :html`<tr key=${q} class=${'pw-act'+(q===k?' on':'')} onClick=${()=>w.setAk(q)}><td>${q+1}</td>
        <td><input type='text' inputMode='decimal' aria-label=${(q+1)+'. '+tr('sorozat súly')} class='pw-in' style=${{width:'56px'}} value=${s.kg} placeholder='–' onChange=${ev=>w.setS(i,q,'kg',ev.target.value)}/></td>
        <td><input type='text' inputMode='numeric' aria-label=${(q+1)+'. '+tr('sorozat ismétlés')} class='pw-in' style=${{width:'44px'}} value=${s.reps} placeholder='–' onChange=${ev=>w.setS(i,q,'reps',ev.target.value)}/></td>
-       <td><input type='text' inputMode='decimal' aria-label=${(q+1)+'. RPE'} class='pw-in' style=${{width:'44px'}} value=${s.rpe} placeholder='–' onChange=${ev=>w.setS(i,q,'rpe',ev.target.value)}/></td>
+       ${rpe&&html`<td><input type='text' inputMode='decimal' aria-label=${(q+1)+'. RPE'} class='pw-in' style=${{width:'44px'}} value=${s.rpe} placeholder='–' onChange=${ev=>w.setS(i,q,'rpe',ev.target.value)}/></td>`}
        <td class='pw-r'><input type='checkbox' aria-label=${(q+1)+'. '+tr('sorozat kész')} onChange=${()=>w.toggle(i,q)}/></td></tr>`)}</tbody></table>
-    <button type='button' class='pw-add' onClick=${w.addSet}>+ ${tr('Sorozat hozzáadása')}</button>
+    ${lvlOn('workout.addset')&&html`<button type='button' class='pw-add' onClick=${w.addSet}>+ ${tr('Sorozat hozzáadása')}</button>`}
     <div class='pw-next'><span class='pw-nk'>${tr('Következő')}</span><span>${nx?html`<button type='button' class='pw-nb' onClick=${()=>w.go(i+1)}>${nx.n}</button>`:html`<button type='button' class='pw-nb' onClick=${()=>w.setSheet('pick')}>+ ${tr('Gyakorlat hozzáadása')}</button>`}</span></div></div>`}
   </div>
   <section class='pw-rest' aria-label=${tr('Pihenőidő')}>
    <div class='pw-rh'><div class='pw-rl'><span class='pw-rk'>${tr('PIHENŐ')}</span><span class=${'pw-rt'+(w.rest?'':' idle')+(w.rdone?' ok':'')}>${w.mmss(w.left)}</span></div>
-    <div class='pw-rb'><button type='button' aria-label=${tr('15 másodperccel kevesebb')} onClick=${()=>w.adj(-15)}>−15</button><button type='button' aria-label=${tr('15 másodperccel több')} onClick=${()=>w.adj(15)}>+15</button></div></div>
+    ${lvlOn('workout.restadj')&&html`<div class='pw-rb'><button type='button' aria-label=${tr('15 másodperccel kevesebb')} onClick=${()=>w.adj(-15)}>−15</button><button type='button' aria-label=${tr('15 másodperccel több')} onClick=${()=>w.adj(15)}>+15</button></div>`}</div>
    <div class='pw-bar'><div class='pw-fill' style=${{'--p':w.rest?Math.min(1,w.left/Math.max(1,w.rest.total)):0}}></div></div>
    ${e&&html`<button type='button' class='pw-ok' onClick=${()=>w.allDone?(w.last?finish():w.go(i+1)):w.toggle(i,k)}>${w.allDone?(w.last?tr('Edzés befejezése'):tr('Következő gyakorlat')):tr('Sorozat kész')}</button>`}
   </section><${WkSheets} w=${w} finish=${finish} quit=${quit}/></div>`;
@@ -102,18 +102,18 @@ function GymBar({kg,bb}){
 function LogGym({w,aw,hist,finish,quit,onBack}){
  const{e,sets,k,i,n,s}=w,inf=e?exInfo(e.n):null,tk=(+(s&&s.kg)||0);
  return html`<div class='gw'>
-  <header class='gw-hdr'><button type='button' class='gw-back' onClick=${onBack} aria-label=${tr('Vissza')}><${UiIco} n='back' s=${22}/></button><span class='gw-title'>${uiShort(tr(aw.name))}</span><span class='gw-timer'><${Clk} t=${aw.t}/></span></header><div class='ui-stripe' aria-hidden='true'></div>
+  <header class='gw-hdr'><button type='button' class='gw-back' onClick=${onBack} aria-label=${tr('Vissza')}><${UiIco} n='back' s=${22}/></button><span class='gw-title'>${uiShort(tr(aw.name))}</span><span class='gw-timer'>${lvlOn('workout.clock')&&html`<${Clk} t=${aw.t}/>`}</span></header><div class='ui-stripe' aria-hidden='true'></div>
   <div class='gw-body'>
    ${!e?html`<${WkEmpty} w=${w} cls='gw-empty'/>`:html`<div class='gw-main'>
     <div class='gw-eh'><button type='button' class='gw-ek' onClick=${()=>w.setSheet('list')}>${LANG==='en'?'EXERCISE '+(i+1)+'/'+n:'GYAKORLAT '+(i+1)+'/'+n}</button><h1 class='gw-h'><button type='button' class='gw-hb' onClick=${()=>w.setSheet('info')}>${e.n}</button></h1></div>
     <div class='gw-big'><label class='gw-num'><span class='ui-sr'>KG</span><input type='text' inputMode='decimal' class='gw-bi' style=${{width:Math.max(2,String(s.kg||0).length)+'ch'}} value=${s.kg} placeholder='0' onChange=${ev=>w.setS(i,k,'kg',ev.target.value)}/></label><span class='gw-kg'>KG</span><span class='gw-x'>×</span><label class='gw-num'><span class='ui-sr'>${tr('Ismétlés')}</span><input type='text' inputMode='numeric' class='gw-bi gw-br' style=${{width:Math.max(1,String(s.reps||0).length)+'ch'}} value=${s.reps} placeholder='0' onChange=${ev=>w.setS(i,k,'reps',ev.target.value)}/></label></div>
-    ${inf&&inf.bb&&html`<${GymBar} kg=${tk}/>`}
-    <div role='list' aria-label=${tr('Sorozatok')} class='gw-chips'>${sets.map((z,q)=>html`<button key=${q} role='listitem' type='button' aria-current=${q===k?'step':undefined} onClick=${()=>w.setAk(q)} class=${'gw-chip'+(z.done?' done':'')+(q===k?' on':'')}>${z.done?html`<span class='gw-ck'>✓</span><span class='gw-cs'>${uiNum0(z.kg)}×${z.reps||0}</span>`:html`<span class='gw-cn'>${q+1}</span>`}</button>`)}<button type='button' class='gw-chip gw-plus' onClick=${w.addSet} aria-label=${tr('Sorozat hozzáadása')}>+</button></div>
+    ${inf&&inf.bb&&lvlOn('workout.plates')&&html`<${GymBar} kg=${tk}/>`}
+    <div role='list' aria-label=${tr('Sorozatok')} class='gw-chips'>${sets.map((z,q)=>html`<button key=${q} role='listitem' type='button' aria-current=${q===k?'step':undefined} onClick=${()=>w.setAk(q)} class=${'gw-chip'+(z.done?' done':'')+(q===k?' on':'')}>${z.done?html`<span class='gw-ck'>✓</span><span class='gw-cs'>${uiNum0(z.kg)}×${z.reps||0}</span>`:html`<span class='gw-cn'>${q+1}</span>`}</button>`)}${lvlOn('workout.addset')&&html`<button type='button' class='gw-chip gw-plus' onClick=${w.addSet} aria-label=${tr('Sorozat hozzáadása')}>+</button>`}</div>
     <span class='gw-last'>${lastTxt(hist,e.n)}</span></div>`}
   </div>
   <section class='gw-rest' aria-label=${tr('Pihenőidő')}>
    <div class='gw-rbox'><div class='gw-rh'><div class='gw-rl'><span class='gw-rk'>${tr('PIHENŐ')}</span><span class=${'gw-rt'+(w.rest?'':' idle')+(w.rdone?' ok':'')}>${w.mmss(w.left).replace(/^0/,'')}</span></div>
-    <div class='gw-rb'><button type='button' aria-label=${tr('15 másodperccel kevesebb')} onClick=${()=>w.adj(-15)}>−15</button><button type='button' aria-label=${tr('15 másodperccel több')} onClick=${()=>w.adj(15)}>+15</button></div></div>
+    ${lvlOn('workout.restadj')&&html`<div class='gw-rb'><button type='button' aria-label=${tr('15 másodperccel kevesebb')} onClick=${()=>w.adj(-15)}>−15</button><button type='button' aria-label=${tr('15 másodperccel több')} onClick=${()=>w.adj(15)}>+15</button></div>`}</div>
     <div class='gw-bar'><div class='gw-fill' style=${{'--p':w.rest?Math.min(1,w.left/Math.max(1,w.rest.total)):0}}></div></div></div>
    ${e&&html`<button type='button' class='gw-ok' onClick=${()=>w.allDone?(w.last?finish():w.go(i+1)):w.toggle(i,k)}>${w.allDone?(w.last?tr('Edzés befejezése'):tr('Következő gyakorlat')):tr('Sorozat kész')}</button>`}
    <div class='gw-sec'><button type='button' onClick=${()=>w.setSheet('list')}>${tr('Gyakorlatok')}</button><button type='button' disabled=${!w.nd} onClick=${finish}>${tr('Befejezés')}</button></div>

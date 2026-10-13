@@ -6,20 +6,31 @@ const LIGHT=['Világos','190 190 197','228 228 231','255 255 255','244 245 248']
 const Cd=({t,children})=>html`<div class='up k-card'><div class='k-cd-t'>${t}</div>${children}</div>`;
 const Lb=({t})=>html`<div class='k-lb'>${t}</div>`;
 const Sw=KSw;
+// Szint-választó (Beállítások › Szint): a szint csak a látható tartalmat szabja, az adat nem törlődik
+function LevelPick({opt,o}){
+ const cur=lvlOf(opt),hid=lvlHidden();
+ return html`<${Cd} t='Szint'>
+  <p class='k-hint k-mb'>Bármikor átállíthatod. Semmi sem törlődik, csak elrejtjük.</p>
+  <div role='radiogroup' aria-label=${tr('Szint')} class='k-stack'>${LEVELS.map(([v,n,d])=>html`<button key=${v} type='button' role='radio' aria-checked=${cur===v} onClick=${()=>o({lvl:v,lvlSet:true})} class=${'k-card'+(cur===v?' on':'')} style=${{marginBottom:0}}><span class='k-row-t'>${n}</span><span class='k-row-s' style=${{display:'block'}}>${d}</span></button>`)}</div>
+  ${hid>0&&html`<p class='k-hint k-mt'>${LANG==='en'?hid+' features are hidden at this level. They are still available when you switch level.':hid+' funkció rejtve ezen a szinten. Szintváltással bármikor visszakapcsolhatod.'}</p>`}
+ <//>`;
+}
 function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc}){
  const[bk,setBk]=useState(''),[cf,setCf]=useState(false),[cd,setCd]=useState(false),o=x=>setOpt(p=>({...p,...x}));
  const exp=()=>{const j=JSON.stringify({hist,plan,opt});setBk(j);try{navigator.clipboard.writeText(j).then(()=>toast('Mentés a vágólapra másolva')).catch(()=>{})}catch(e){}};
  const imp=()=>{try{const d=JSON.parse(bk);if(d.hist)setHist(d.hist);if(d.plan)setPlan(d.plan);if(d.opt)setOpt(d.opt);toast('Adatok visszatöltve')}catch(e){toast('A mentés szövege hibás')}};
  const bt='k-btn sec sm';
- useEffect(()=>{if(anchor==='data')setTimeout(()=>{try{document.getElementById('opt-data').scrollIntoView({block:'start'})}catch(e){}},60)},[]);
+ useEffect(()=>{if(anchor==='data'||anchor==='level')setTimeout(()=>{try{document.getElementById(anchor==='level'?'opt-level':'opt-data').scrollIntoView({block:'start'})}catch(e){}},60)},[]);
  return html`<div>
   <${UiSwitcher} opt=${opt} o=${o}/>
   <${Cd} t='Megjelenés'>
    <${Lb} t='Nyelv / Language'/><${Sg} v=${opt.lang} on=${x=>{try{localStorage.setItem('en_lang',x)}catch(e){}o({lang:x})}} o=${[['hu','Magyar'],['en','English']]}/>
    <${Lb} t='Betűméret'/><${Sg} v=${opt.fs} on=${x=>o({fs:+x})} o=${[[14,'Kicsi'],[16,'Normál'],[18,'Nagy'],[20,'Nagyon nagy']]}/>
    <${Sw} l='Animációk' s='Kikapcsolva gyorsabb, kíméli az akkut' v=${opt.an} on=${x=>o({an:x})}/>
+   <${Sw} l='Rezgés' s='Érintéskor és a pihenő végén' v=${opt.vib} on=${x=>o({vib:x})}/>
   <//>
-  <${Cd} t='Edzés'>
+  <div id='opt-level'></div><${LevelPick} opt=${opt} o=${o}/>
+  ${lvlOn('opt.workout')&&html`<${Cd} t='Edzés'>
    <${Lb} t='Heti edzéscél'/><${Sg} v=${opt.wg} on=${x=>o({wg:+x})} o=${[[2,'2'],[3,'3'],[4,'4'],[5,'5'],[6,'6']]}/>
    <${Lb} t='Alap pihenőidő'/><${Sg} v=${opt.rest} on=${x=>o({rest:+x})} o=${[[60,'60 mp'],[90,'90 mp'],[120,'120 mp'],[180,'180 mp']]}/>
    <${Sw} l='Automatikus pihenő' s='A sorozat kipipálása elindítja az időzítőt' v=${opt.auto} on=${x=>o({auto:x})}/>
@@ -27,16 +38,15 @@ function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,d
    <${Lb} t='Heti emelés a célsúlyoknál'/><${Sg} v=${opt.pct} on=${x=>o({pct:+x})} o=${[[1.5,'1,5%'],[2.5,'2,5%'],[5,'5%']]}/>
    <${Sw} l='Képernyő ébren tartása' s='Edzés közben nem kapcsol le' v=${opt.wake} on=${x=>o({wake:x})}/>
    <${Sw} l='Hang' s='Sípszó a pihenő végén' v=${opt.snd} on=${x=>o({snd:x})}/>
-   <${Sw} l='Rezgés' s='Érintéskor és a pihenő végén' v=${opt.vib} on=${x=>o({vib:x})}/>
-  <//>
-  ${cycAvail()&&html`<${Cd} t='Ciklus-követés'><${Sw} l='Ciklus-követés' s='Naptár és edzési javaslatok. Az adat csak ezen az eszközön van.' v=${cycGet().on} on=${x=>cycSet({...cycGet(),on:x})}/><//>`}
+  <//>`}
+  ${lvlOn('cycle.main')&&cycAvail()&&html`<${Cd} t='Ciklus-követés'><${Sw} l='Ciklus-követés' s='Naptár és edzési javaslatok. Az adat csak ezen az eszközön van.' v=${cycGet().on} on=${x=>cycSet({...cycGet(),on:x})}/><//>`}
   <div id='opt-data'></div>
-  <${Cd} t='Adatok'>
+  ${lvlOn('opt.export',anchor==='data')&&html`<${Cd} t='Adatok'>
    <div class='k-g2 k-mb'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
    <div class='k-g2 k-mb'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>
    <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Másold ide a mentés szövegét a visszatöltéshez' class='k-in k-ta k-mb'></textarea>
    <button onClick=${()=>{if(cf){setHist([]);setCf(false);toast('Előzmények törölve')}else setCf(true)}} class=${'k-btn dan sm full'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Összes edzés törlése'}</button>
-  <//>
+  <//>`}
   <${Cd} t='Fiók és szinkron'><div class='k-row-t' style=${{overflowWrap:'anywhere'}}>${(SESS&&SESS.user&&SESS.user.email)||user}</div><div class='k-hint k-mb'>${sy.s==='ok'?'Utoljára szinkronizálva: '+sy.t:sy.s==='busy'?'Szinkronizálás...':sy.s==='off'?'Offline, a változások később szinkronizálódnak.':sy.s==='err'?'Szinkronhiba':'Még nem szinkronizált'}</div><div class='k-g2 k-mb'><button onClick=${syncNow} class=${bt}>Szinkronizálás most</button><button onClick=${out} class=${bt}>Kilépés</button></div><button onClick=${()=>{if(cd)delAcc();else setCd(true)}} class=${'k-btn dan sm full'+(cd?' ask':'')}>${cd?'Biztosan törlöd a fiókot és minden adatot?':'Fiók törlése'}</button><//>
  </div>`;
 }

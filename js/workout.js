@@ -54,8 +54,8 @@ function Hist({hist,del}){
  const dates=[...new Set(hist.map(w=>w.date))].sort().reverse();
  return html`<div>
   ${!hist.length&&html`<${KEmpty} ic='log' t='Előzmények' s='Itt jelennek meg a befejezett edzéseid. Indíts egyet az Edzés menüpontból.'/>`}
-  ${hist.length>0&&html`<${Rec} hist=${hist}/>`}
-  ${hist.length>0&&html`<${KSec} t='Fejlődés'><${KCard}>
+  ${hist.length>0&&lvlOn('log.records')&&html`<${Rec} hist=${hist}/>`}
+  ${hist.length>0&&lvlOn('log.progress')&&html`<${KSec} t='Fejlődés'><${KCard}>
    <${KSel} v=${cur} on=${setEx} o=${names.map(n=>[n,n])}/>
    <div style=${{height:'12px'}}></div>
    <${KSeg} v=${m} on=${setM} o=${[['w','Max súly'],['v','Térfogat'],['r','Becsült 1RM']]}/>
@@ -97,12 +97,12 @@ function Plan({plan,setPlan,hist,begin,today}){
    ${x&&html`<${CycChip} k=${wdNext(d)}/>`}
    ${x&&html`<div class='k-goals'>${g.map(y=>html`<div key=${y.n} class='k-goal'><span>${y.n}</span><b>${y.kg?y.kg+' kg × '+(y.reps||'?'):'új'}</b></div>`)}</div>`}
    ${x&&d===td&&html`<${KBtn} full=${true} c='k-mt' onClick=${()=>begin(x.n,x.e,Object.fromEntries(g.map(y=>[y.n,y])),today)}>Mai edzés indítása a célokkal<//>`}<//>`})}</div>
-  <${KSec} t='Értesítések'><${KCard}>
+  ${lvlOn('plan.notify')&&html`<${KSec} t='Értesítések'><${KCard}>
    <${KSw} l='Értesítések' s='Motiváció, napi edzés és célsúlyok' v=${plan.on} on=${tgl}/>
    <${KField} l='Időpont' type='time' v=${plan.time} on=${t=>setPlan(p=>({...p,time:t}))}/>
    <div class='k-lb'>Naptár-emlékeztető</div><div class='k-btns' style=${{margin:0}}>${W.filter(([d])=>plan.days[d]).map(([d,l])=>html`<a key=${d} href=${gl(d)} target='_blank' rel='noopener noreferrer' class='k-btn sec full'>${l}: hozzáadás a Google Naptárhoz</a>`)}${!W.some(([d])=>plan.days[d])&&html`<p class='k-hint'>Előbb jelölj ki edzésnapokat.</p>`}</div>
    <div class='k-btns k-mt'><${KBtn} v='sec' sm=${true} onClick=${test}>Teszt értesítés<//><${KBtn} v='sec' sm=${true} onClick=${ics}>.ics fájl<//></div>
-   <p class='k-hint'>Az app csak nyitva tud értesíteni. Zárt appnál a naptár értesít: a gombok megnyitják a Google Naptárat kitöltött, hetente ismétlődő eseménnyel, csak mentsd el benne. A célsúlyok a hozzáadáskori állapotot mutatják.</p><//><//></div>`;
+   <p class='k-hint'>Az app csak nyitva tud értesíteni. Zárt appnál a naptár értesít: a gombok megnyitják a Google Naptárat kitöltött, hetente ismétlődő eseménnyel, csak mentsd el benne. A célsúlyok a hozzáadáskori állapotot mutatják.</p><//><//>`}</div>`;
 }
 
 function Rec({hist}){

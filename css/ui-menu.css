@@ -131,6 +131,11 @@ html[data-ui="family"] .ui-back{align-self:flex-start;font-size:16px;font-weight
 html[data-ui="family"] .ui-back .ui-ico{width:18px;height:18px;stroke-width:2.6}
 html[data-ui="family"] .ui-hdr-t{font-size:24px;line-height:1.15;font-weight:700}
 
+/* "Még N funkció rejtve": a szint miatt rejtett funkciók jelzése a menü alján (a szint a Beállításokban váltható) */
+.ui-mmore{box-sizing:border-box;width:100%;min-height:var(--ui-tap);display:flex;flex-direction:column;gap:2px;text-align:left;margin-top:8px;padding:10px 14px;font-family:inherit;color:inherit;background:transparent;border:1px dashed rgb(var(--ui-line2));border-radius:var(--ui-r-m);cursor:pointer}
+.ui-mmore-t{font-size:14px;font-weight:600;color:rgb(var(--ui-accent-text))}
+.ui-mmore-s{font-size:13px;line-height:1.3;color:rgb(var(--ui-muted))}
+
 @media (prefers-reduced-motion:reduce){
   .ui-chev,.ui-chev-open{animation:none;transition:none}
   .ui-scrim,.ui-msheet,.ui-closing .ui-scrim,.ui-closing .ui-msheet{animation:none!important}

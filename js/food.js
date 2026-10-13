@@ -21,19 +21,19 @@ function Food({init}){
  const fi=(l,k,u)=>html`<${F} l=${l} u=${u} type=${k==='n'?'text':'number'} v=${cu[k]} on=${x=>setCu(o=>({...o,[k]:x}))}/>`;
  return html`<div>
   <div class='k-datenav'><button type='button' class='k-ib' aria-label=${tr('Előző nap')} onClick=${()=>shift(-1)}><${UiIco} n='back' s=${20}/></button><span class='k-datenav-t'>${d===dk(new Date())?'Ma':fs(d)}</span><button type='button' class='k-ib k-flip' aria-label=${tr('Következő nap')} onClick=${()=>shift(1)}><${UiIco} n='back' s=${20}/></button></div>
-  <${KTabs} v=${sub} on=${setSub} o=${[['log','Napló'],['rec','Receptek']]}/>
+  ${lvlOn('recipes.list',sub==='rec'||init==='rec')&&html`<${KTabs} v=${sub} on=${setSub} o=${[['log','Napló'],['rec','Receptek']]}/>`}
   ${sub==='rec'?html`<${Recipes} rem=${rem} diet=${diet} setDiet=${setDiet} open=${setRcp} fit=${fitF} setFit=${setFitF}/>`:html`<div>
   <${KCard}><div class='k-fsum'>
    <${Ring} v=${sum.k} max=${tg.k} col='rgb(var(--ui-accent))' s=${120} w=${11}><div class='k-fsum-v'>${Math.round(Math.max(0,tg.k-sum.k))}</div><div class='k-fsum-l'>kcal maradt</div><//>
    <div class='k-macros'><${MR} l='Fehérje' v=${sum.p} m=${tg.p} c='rgb(var(--ui-accent))'/><${MR} l='Szénhidrát' v=${sum.c} m=${tg.c} c='rgb(var(--ui-text))'/><${MR} l='Zsír' v=${sum.f} m=${tg.f} c='rgb(var(--ui-muted))'/></div></div>
    <div class='k-hint k-center'>${Math.round(sum.k)} / ${tg.k} kcal${!P2.tg?' (alap cél: a Kalória számolóban állíthatod be)':''}</div><//>
-  <${Sugg} rem=${rem} ok=${ok} open=${setRcp} all=${()=>{setFitF(true);setSub('rec')}}/>
-  <${KCard}><div class='k-wh' style=${{alignItems:'center',marginBottom:0}}><span class='k-water-t'><${UiIco} n='drop' s=${22}/>Víz</span><${KStep} v=${day.w||0} min=${0} step=${250} lab=${(day.w||0)+' / '+wt+' ml'} on=${nv=>{upd(x=>({...x,w:nv}));if(nv>(day.w||0))buzz()}}/></div>
-   <div class='k-bar-tr k-mt'><div class='k-bar-f' style=${{'--p':Math.min(1,(day.w||0)/wt)}}></div></div><//>
+  ${lvlOn('food.suggest')&&html`<${Sugg} rem=${rem} ok=${ok} open=${setRcp} all=${()=>{setFitF(true);setSub('rec')}}/>`}
+  ${lvlOn('food.water')&&html`<${KCard}><div class='k-wh' style=${{alignItems:'center',marginBottom:0}}><span class='k-water-t'><${UiIco} n='drop' s=${22}/>Víz</span><${KStep} v=${day.w||0} min=${0} step=${250} lab=${(day.w||0)+' / '+wt+' ml'} on=${nv=>{upd(x=>({...x,w:nv}));if(nv>(day.w||0))buzz()}}/></div>
+   <div class='k-bar-tr k-mt'><div class='k-bar-f' style=${{'--p':Math.min(1,(day.w||0)/wt)}}></div></div><//>`}
   <div class='ui-stagger'>${MEALS.map((mn,mi)=>{const es=e.filter(x=>x.m===mi);return html`<${KCard} key=${mi}>
    <div class='k-wh' style=${{alignItems:'center',marginBottom:es.length?'4px':0}}><div class='k-wh-tx'><div class='k-wh-t'>${mn}</div><div class='k-row-s'>${Math.round(es.reduce((a,x)=>a+x.k,0))} kcal</div></div><${KBtn} sm=${true} ic='plus' onClick=${()=>setAd(mi)}>Hozzáadás<//></div>
    <div class='k-list'>${es.map(x=>html`<div key=${x.id} class='k-row'><span class='k-row-tx'><span class='k-row-t'>${x.n}</span><span class='k-row-s'>${x.g?x.g+' g · ':''}P ${x.p} · C ${x.c} · F ${x.f}</span></span><span class='k-row-r'>${x.k} kcal</span><button type='button' class='k-ib' aria-pressed=${isFav(x)} aria-label=${tr(isFav(x)?'Eltávolítás a kedvencekből':'Mentés kedvencnek')} onClick=${()=>togFav(x)}><${UiIco} n='star' s=${20} f=${isFav(x)}/></button><${KDel} on=${()=>upd(o=>({...o,e:o.e.filter(y=>y.id!==x.id)}))}/></div>`)}</div><//>`})}</div>
-  <${KSec} t='Kalória, utolsó 7 nap'><${KCard}><${Bars} vals=${days7} labels=${labs}/><//><//>
+  ${lvlOn('food.week')&&html`<${KSec} t='Kalória, utolsó 7 nap'><${KCard}><${Bars} vals=${days7} labels=${labs}/><//><//>`}
   ${ad!==null&&html`<${KSheet} t=${MEALS[ad]} onClose=${()=>setAd(null)}>
    ${ch?html`<div class='up'><div class='k-cd-t'>${ch.n}</div><${F} l='Mennyiség' u='g' v=${gm} on=${x=>setGm(+x||0)}/><div class='k-hint' style=${{margin:'12px 0'}}>${Math.round(ch.k*gm/100)} kcal · P ${(ch.p*gm/100).toFixed(1)} · C ${(ch.c*gm/100).toFixed(1)} · F ${(ch.f*gm/100).toFixed(1)}</div><div class='k-btns'><${KBtn} v='sec' onClick=${()=>setCh(null)}>Vissza<//><${KBtn} onClick=${()=>put(ch.n,ch.k*gm/100,ch.p*gm/100,ch.c*gm/100,ch.f*gm/100,gm)}>Hozzáadás<//></div></div>`:html`<div>
     <${KTabs} v=${ft} on=${setFt} o=${[['s','Keresés'],['f','Kedvencek']]}/>

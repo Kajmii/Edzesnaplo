@@ -10,7 +10,8 @@
     "check:features": "node tests/features.check.js",
     "check:parity": "node tests/parity.check.js",
     "check:parity:strict": "node tests/parity.check.js --strict",
-    "check": "node tests/ui.check.js && node tests/ui-kit.check.js && node tests/ui-data.check.js && node tests/features.check.js && node tests/parity.check.js && node tests/social.check.js && node tests/photos.check.js && node tests/groups.check.js && node tests/moderation.check.js && node tests/cycle.check.js && node tests/recipes.check.js"
+    "check": "node tests/ui.check.js && node tests/ui-kit.check.js && node tests/ui-data.check.js && node tests/features.check.js && node tests/parity.check.js && node tests/levels.check.js && node tests/social.check.js && node tests/photos.check.js && node tests/groups.check.js && node tests/moderation.check.js && node tests/cycle.check.js && node tests/recipes.check.js",
+    "check:levels": "node tests/levels.check.js"
   },
   "devDependencies": {
     "electron": "^37.0.0",
