@@ -5,7 +5,7 @@ const kc=(...a)=>a.filter(Boolean).join(' ');
 // szakasz: cím + jobb oldali művelet + tartalom
 function KSec({t,a,c,children}){return html`<section class=${kc('k-sec',c)}>${(t||a)&&html`<div class='k-sec-h'><h2 class='k-sec-t'>${t}</h2>${a}</div>`}${children}</section>`}
 // kártya; onClick esetén gomb
-function KCard({on,onClick,c,children}){const cl=kc('up k-card',on&&'on',c);return onClick?html`<button type='button' class=${cl} onClick=${onClick}>${children}</button>`:html`<div class=${cl}>${children}</div>`}
+function KCard({on,onClick,c,children}){const cl=kc('k-card',on&&'on',c);return onClick?html`<button type='button' class=${cl} onClick=${onClick}>${children}</button>`:html`<div class=${cl}>${children}</div>`}
 // listasor: ic = UiIco neve, t cím, s alcím, r jobb oldali érték, go = nyíl
 function KRow({ic,t,s,r,go,onClick,c}){
  const b=html`${ic&&html`<span class='k-row-ic'><${UiIco} n=${ic} s=${22}/></span>`}<span class='k-row-tx'><span class='k-row-t'>${t}</span>${s&&html`<span class='k-row-s'>${s}</span>`}</span>${r!=null&&r!==''&&html`<span class='k-row-r'>${r}</span>`}${go&&html`<span class='k-chev' aria-hidden='true'><${UiIco} n='back' s=${18}/></span>`}`;
@@ -26,3 +26,13 @@ function KTabs({v,on,o}){return html`<div class='k-tabs' role='tablist'>${o.map(
 function KEmpty({ic='dumbbell',t,s,a}){return html`<div class='up k-empty'><span class='k-empty-ic'><${UiIco} n=${ic} s=${40}/></span><div class='k-empty-t'>${t}</div>${s&&html`<div class='k-empty-s'>${s}</div>`}${a}</div>`}
 // töltés a képernyőn belül (az irányhoz illő animációval); hosszabb műveletnél ezt tedd a lista helyére
 function KBusy({t='Egy pillanat…',s}){return html`<div class='k-busy' role='status' aria-live='polite'><div class='k-busy-a' aria-hidden='true'><i></i><i></i><i></i></div><div class='k-busy-t'>${t}</div>${s&&html`<div class='k-busy-s'>${s}</div>`}</div>`}
+// ikongomb (44 px) és kétlépcsős törlés: az első koppintás "Biztosan?"-t kér, a fókusz elvesztése visszavonja
+function KDel({on,label='Törlés'}){const[c,setC]=useState(false);return html`<button type='button' class=${kc('k-ib',c&&'dan')} aria-label=${tr(label)} onClick=${()=>c?on():setC(true)} onBlur=${()=>setC(false)}>${c?html`<span class='k-ib-t'>Biztosan?</span>`:html`<${UiIco} n='trash' s=${20}/>`}</button>`}
+// alulról felnyíló lap: Esc és háttér-koppintás zár, nyitás/zárás az irány mozgás-tokenjeivel
+function KSheet({t,onClose,foot,c,children}){
+ const[cl,setCl]=useState(false),ref=React.useRef(null),sh=React.useRef(false);
+ const shut=()=>{if(sh.current)return;sh.current=true;setCl(true);setTimeout(onClose,uiCloseMs())};
+ useEffect(()=>{const k=e=>{if(e.key==='Escape')shut()},p=document.activeElement;document.addEventListener('keydown',k);ref.current&&ref.current.focus();return()=>{document.removeEventListener('keydown',k);p&&p.focus&&p.focus()}},[]);
+ return html`<div class=${kc('k-sc',cl&&'cl')} onClick=${shut}><div ref=${ref} tabIndex='-1' role='dialog' aria-modal='true' aria-label=${tr(t)} class=${kc('k-sh',c)} onClick=${e=>e.stopPropagation()}>
+  <div class='k-sh-h'><h3 class='k-sh-t'>${t}</h3><button type='button' class='k-ib' onClick=${shut} aria-label=${tr('Bezárás')}><${UiIco} n='x' s=${22}/></button></div>
+  <div class='k-sh-b'>${children}</div>${foot&&html`<div class='k-sh-f'>${foot}</div>`}</div></div>`}

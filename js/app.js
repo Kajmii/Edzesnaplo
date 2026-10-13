@@ -50,7 +50,7 @@ function App({user,out}){
   ${tab!=='home'&&!(tab==='log'&&aw)&&html`<${UiHeader} title=${uiTitle(tab,sub)} onBack=${()=>{setTab('home');setSub('');setMenu(true);try{window.scrollTo(0,0)}catch(e){}}}/>`}
   <div id='ui-main' key=${tab} class="ui-main up max-w-md mx-auto" data-home=${tab==='home'?'':undefined} data-inner=${tab!=='home'?'':undefined}>
    ${tab==='home'&&html`<${UiHome} hist=${hist} sel=${sel} setSel=${setSel} today=${today} aw=${aw} go=${()=>setTab('log')} nav=${go2} startToday=${startToday} plan=${plan} user=${user} out=${out} opt=${opt} setOpt=${setOpt}/>`}
-   ${tab==='log'&&aw&&html`<${UiLog} aw=${aw} setAw=${setAw} hist=${hist} rest=${rest} setRest=${setRest} rd=${rd} setRd=${setRd} startRest=${startRest} finish=${finish} quit=${quit} onBack=${()=>{setTab('home');setSub('');setMenu(false)}}/>`}${tab==='log'&&!aw&&html`<${Log} aw=${aw} setAw=${setAw} hist=${hist} sel=${sel} rd=${rd} setRd=${setRd} startRest=${startRest} begin=${begin} finish=${finish} quit=${quit}/>`}
+   ${tab==='log'&&aw&&html`<${UiLog} aw=${aw} setAw=${setAw} hist=${hist} rest=${rest} setRest=${setRest} rd=${rd} setRd=${setRd} startRest=${startRest} finish=${finish} quit=${quit} onBack=${()=>{setTab('home');setSub('');setMenu(false)}}/>`}${tab==='log'&&!aw&&html`<${LogPick} hist=${hist} sel=${sel} begin=${begin}/>`}
    ${tab==='hist'&&html`<${Hist} hist=${hist} del=${id=>setHistT(hist.filter(w=>w.id!==id))}/>`}
    ${tab==='plan'&&html`<${Plan} plan=${plan} setPlan=${setPlan} hist=${hist} today=${today} begin=${(...a)=>{begin(...a);setTab('log')}}/>`}
    ${tab==='tools'&&html`<${Tools} key=${sub} init=${sub}/>`}
