@@ -13,16 +13,16 @@
 --   * A név ugyanazt a trágárság-szűrőt kapja (social_name_ok), mint a profilnevek.
 --   * A profil törlésekor a tagságok és a saját csoportok is törlődnek.
 
--- 1) Segédfüggvények (security definer, hogy az RLS ne hivatkozzon önmagára)
+-- 1) Segédfüggvények (security definer, hogy az RLS ne hivatkozzon önmagára). plpgsql, mert a táblák csak ez után jönnek létre.
 create or replace function public.social_in_group(g uuid, u uuid)
-returns boolean language sql stable security definer set search_path = public
-as $$ select exists (select 1 from public.social_group_members where group_id = g and user_id = u) $$;
+returns boolean language plpgsql stable security definer set search_path = public
+as $$ begin return exists (select 1 from public.social_group_members where group_id = g and user_id = u); end $$;
 revoke all on function public.social_in_group(uuid, uuid) from public, anon;
 grant execute on function public.social_in_group(uuid, uuid) to authenticated;
 
 create or replace function public.social_is_group_owner(g uuid, u uuid)
-returns boolean language sql stable security definer set search_path = public
-as $$ select exists (select 1 from public.social_groups where id = g and owner_id = u) $$;
+returns boolean language plpgsql stable security definer set search_path = public
+as $$ begin return exists (select 1 from public.social_groups where id = g and owner_id = u); end $$;
 revoke all on function public.social_is_group_owner(uuid, uuid) from public, anon;
 grant execute on function public.social_is_group_owner(uuid, uuid) to authenticated;
 
