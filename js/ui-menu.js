@@ -20,12 +20,13 @@ const UI_ICO={
  check:'M5 12.5l4.5 4.5L19 7',
  back:'M14 4l-7 7 7 7',
  plus:'M12 5v14M5 12h14',
+ star:'M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z',
  minus:'M5 12h14',
  drop:'M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z',
  x:'M6 6l12 12M18 6L6 18',
  trash:'M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13M10 11v6M14 11v6',
  info:'M12 11v6M12 7.5v.5M12 21a9 9 0 100-18 9 9 0 000 18z'};
-const UiIco=({n,s=24})=>html`<svg width=${s} height=${s} viewBox='0 0 24 24' class='ui-ico' aria-hidden='true' fill='none' stroke='currentColor' strokeLinecap='round' strokeLinejoin='round'><path d=${UI_ICO[n]}/></svg>`;
+const UiIco=({n,s=24,f})=>html`<svg width=${s} height=${s} viewBox='0 0 24 24' class='ui-ico' aria-hidden='true' fill=${f?'currentColor':'none'} stroke='currentColor' strokeLinecap='round' strokeLinejoin='round'><path d=${UI_ICO[n]}/></svg>`;
 
 // Menüpontok: k, hova (tab, sub), ikon, név, irányonkénti egysoros leírás. A Ciklus csak bekapcsolt funkciónál látszik.
 const UI_MENU=[
