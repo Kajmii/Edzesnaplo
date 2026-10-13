@@ -3,7 +3,7 @@ function Rest({rest,setRest,hidden}){
  const[,t]=useState(0);
  useEffect(()=>{
   if(!rest)return;
-  const i=setInterval(()=>{if(Date.now()>=rest.end){clearInterval(i);beep();try{OPT.vib&&navigator.vibrate&&navigator.vibrate([250,100,250])}catch(e){}}t(x=>x+1)},250);
+  const i=setInterval(()=>{if(Date.now()>=rest.end){clearInterval(i);beep();try{OPT.vib&&!quietAt(OPT.qh,new Date())&&navigator.vibrate&&navigator.vibrate([250,100,250])}catch(e){}}t(x=>x+1)},250);
   return()=>clearInterval(i);
  },[rest]);
  if(!rest||hidden)return null;

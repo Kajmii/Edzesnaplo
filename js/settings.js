@@ -6,6 +6,11 @@ const LIGHT=['Világos','190 190 197','228 228 231','255 255 255','244 245 248']
 const Cd=({t,children})=>html`<div class='up k-card'><div class='k-cd-t'>${t}</div>${children}</div>`;
 const Lb=({t})=>html`<div class='k-lb'>${t}</div>`;
 const Sw=KSw;
+// Alapértékek: az edzés-, kinézet- és értesítési beállítások visszaállnak; az irány, a nyelv, a szint, a fiók és minden adat marad
+const OPT_RESET={wg:3,rest:90,auto:true,snd:true,vib:true,wake:true,step:1.25,pct:2.5,an:true,fs:16,hc:false,qh:{on:false,from:'22:00',to:'07:00'},schemes:{pro:'paper',gym:'yellow',family:'green'}};
+const optReset=o=>({...o,...OPT_RESET,qh:{...OPT_RESET.qh},schemes:{...OPT_RESET.schemes}});
+// JSON-export: az összes (helyi és szinkronizált) adat egy fájlban
+const jsonExport=()=>{const b=new Blob([JSON.stringify({app:'Edzésnapló',build:BUILD,exported:new Date().toISOString(),...docNow()},null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='edzesnaplo-'+dk(new Date())+'.json';a.click();toast('JSON mentés letöltve')};
 // Szint-választó (Beállítások › Szint): a szint csak a látható tartalmat szabja, az adat nem törlődik
 function LevelPick({opt,o}){
  const cur=lvlOf(opt),hid=lvlHidden();
@@ -16,7 +21,7 @@ function LevelPick({opt,o}){
  <//>`;
 }
 function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc}){
- const[bk,setBk]=useState(''),[cf,setCf]=useState(false),[cd,setCd]=useState(false),o=x=>setOpt(p=>({...p,...x}));
+ const[bk,setBk]=useState(''),[cf,setCf]=useState(false),[cd,setCd]=useState(false),[rs,setRs]=useState(false),o=x=>setOpt(p=>({...p,...x})),qh={on:false,from:'22:00',to:'07:00',...opt.qh},sq=x=>o({qh:{...qh,...x}});
  const exp=()=>{const j=JSON.stringify({hist,plan,opt});setBk(j);try{navigator.clipboard.writeText(j).then(()=>toast('Mentés a vágólapra másolva')).catch(()=>{})}catch(e){}};
  const imp=()=>{try{const d=JSON.parse(bk);if(d.hist)setHist(d.hist);if(d.plan)setPlan(d.plan);if(d.opt)setOpt(d.opt);toast('Adatok visszatöltve')}catch(e){toast('A mentés szövege hibás')}};
  const bt='k-btn sec sm';
@@ -28,6 +33,7 @@ function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,d
    <${Lb} t='Betűméret'/><${Sg} v=${opt.fs} on=${x=>o({fs:+x})} o=${[[14,'Kicsi'],[16,'Normál'],[18,'Nagy'],[20,'Nagyon nagy']]}/>
    <${Sw} l='Animációk' s='Kikapcsolva gyorsabb, kíméli az akkut' v=${opt.an} on=${x=>o({an:x})}/>
    <${Sw} l='Rezgés' s='Érintéskor és a pihenő végén' v=${opt.vib} on=${x=>o({vib:x})}/>
+   ${lvlOn('opt.contrast')&&html`<${Sw} l='Nagy kontraszt' s='Erősebb szöveg és vonalak' v=${opt.hc} on=${x=>o({hc:x})}/><${HelpCalm} id='opt.contrast'/>`}
   <//>
   <div id='opt-level'></div><${LevelPick} opt=${opt} o=${o}/>
   ${lvlOn('opt.workout')&&html`<${Cd} t='Edzés'>
@@ -39,10 +45,21 @@ function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,d
    <${Sw} l='Képernyő ébren tartása' s='Edzés közben nem kapcsol le' v=${opt.wake} on=${x=>o({wake:x})}/>
    <${Sw} l='Hang' s='Sípszó a pihenő végén' v=${opt.snd} on=${x=>o({snd:x})}/>
   <//>`}
+  ${lvlOn('opt.quiet')&&html`<${Cd} t='Értesítések'>
+   <${Sw} l='Csendes órák' s='Ilyenkor nem szól az app és nem küld értesítést' v=${qh.on} on=${x=>sq({on:x})}/>
+   ${qh.on&&html`<div class='k-g2'><${KField} l='Tól' type='time' v=${qh.from} on=${v=>sq({from:v})}/><${KField} l='Ig' type='time' v=${qh.to} on=${v=>sq({to:v})}/></div>`}
+  <//>`}
+  ${lvlOn('opt.reset')&&html`<${Cd} t='Alapértékek'>
+   <p class='k-hint k-mb'>A kinézet és a beállítások visszaállnak az alapra.</p>
+   <button onClick=${()=>{if(rs){setOpt(p=>optReset(p));setRs(false);toast('Alapértékek visszaállítva')}else setRs(true)}} class=${'k-btn sec sm full'+(rs?' ask':'')}>${rs?'Biztosan visszaállítod?':'Alapértékek visszaállítása'}</button>
+   <${HelpCalm} id='opt.reset'/>
+  <//>`}
   ${lvlOn('cycle.main')&&cycAvail()&&html`<${Cd} t='Ciklus-követés'><${Sw} l='Ciklus-követés' s='Naptár és edzési javaslatok. Az adat csak ezen az eszközön van.' v=${cycGet().on} on=${x=>cycSet({...cycGet(),on:x})}/><//>`}
   <div id='opt-data'></div>
   ${lvlOn('opt.export',anchor==='data')&&html`<${Cd} t='Adatok'>
+   <${HelpCalm} id='opt.export'/>
    <div class='k-g2 k-mb'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
+   <div class='k-mb'><button onClick=${jsonExport} class=${bt+' full'}>JSON-export (teljes mentés)</button></div>
    <div class='k-g2 k-mb'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>
    <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Másold ide a mentés szövegét a visszatöltéshez' class='k-in k-ta k-mb'></textarea>
    <button onClick=${()=>{if(cf){setHist([]);setCf(false);toast('Előzmények törölve')}else setCf(true)}} class=${'k-btn dan sm full'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Összes edzés törlése'}</button>

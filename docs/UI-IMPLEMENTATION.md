@@ -100,13 +100,13 @@ Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, 
 | `opt.motion` | Animációk ki/be | 1 | ✓ | ✓ | ✓ | 2 | |
 | `opt.vibrate` | Rezgés | 1 | ✓ | ✓ | ✓ | 2 | |
 | `opt.level` | **Szint-választó** | 1 | ✓ | ✓ | ✓ | 2 | **új** |
-| `opt.contrast` | **Nagy kontrasztú mód** | 2 | ✗ | ✗ | ✗ | 2 | **új** |
-| `opt.quiet` | **Értesítések és csendes órák** | 3 | ✗ | ✗ | ✗ | 2 | **új** (az emlékeztetők már vannak a Tervben) |
+| `opt.contrast` | **Nagy kontrasztú mód** | 2 | ✓ | ✓ | ✓ | 2 | **új** |
+| `opt.quiet` | **Értesítések és csendes órák** | 3 | ✓ | ✓ | ✓ | 2 | **új** (az emlékeztetők már vannak a Tervben) |
 | `opt.workout` | Edzés-beállítások (heti cél, pihenő, lépcső) | 2 | ✓ | ✓ | ✓ | 2 | |
 | `opt.export` | Export: CSV, PDF, mentés másolása | 3 | ✓ | ✓ | ✓ | 2 | |
-| `opt.json` | **JSON-export** | 3 | ✗ | ✗ | ✗ | 2 | **új** |
+| `opt.json` | **JSON-export** | 3 | ✓ | ✓ | ✓ | 2 | **új** |
 | `opt.account` | Fiók, szinkron, kilépés, fiók törlése | 1 | ✓ | ✓ | ✓ | 2 | |
-| `opt.reset` | **Alapértékek visszaállítása** | 2 | ✗ | ✗ | ✗ | 2 | **új** |
+| `opt.reset` | **Alapértékek visszaállítása** | 2 | ✓ | ✓ | ✓ | 2 | **új** |
 | `help.main` | **Súgó** | 1 | ✗ | ✗ | ✗ | 1 | **új** |
 | `nav.search` | **Funkció-keresés a menüben** | 1 | ✗ | ✗ | ✗ | 1 | **új** |
 

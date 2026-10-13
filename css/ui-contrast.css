@@ -1,0 +1,17 @@
+/* Nagy kontrasztú mód (opt.hc → html[data-hc]): a halvány szöveg és a vonalak a vezérlő-keret erősségére, az akcent-színek sötétebbre
+   (világos sémák) vagy világosabbra (sötét sémák) váltanak. Minden szövegpár legalább 7:1 (WCAG AAA), a vonalak legalább 3:1.
+   A tests/contrast.check.js ugyanazt számolja, mint a tests/ui.check.js az alapsémákra. A "R G B" formátum kötött. */
+html[data-ui][data-hc]{--ui-muted:var(--ui-text);--ui-line:var(--ui-control);--ui-line2:var(--ui-control)}
+html[data-hc] :focus-visible{outline:3px solid rgb(var(--ui-text));outline-offset:2px}
+
+html[data-ui="pro"][data-scheme="paper"][data-hc],html[data-ui="pro"][data-scheme="stone"][data-hc]{
+  --ui-accent:120 30 0;--ui-accent-text:120 30 0;--ui-danger:130 15 5;--ui-warn:90 50 0;
+}
+html[data-ui="pro"][data-scheme="graphite"][data-hc]{
+  --ui-accent:150 45 0;--ui-accent-text:255 170 130;--ui-danger:255 175 165;
+}
+html[data-ui="gym"][data-scheme="yellow"][data-hc],html[data-ui="gym"][data-scheme="green"][data-hc]{--ui-danger:255 175 165}
+html[data-ui="gym"][data-scheme="orange"][data-hc]{--ui-accent:255 125 70;--ui-accent-text:255 160 110;--ui-danger:255 175 165}
+html[data-ui="family"][data-scheme="green"][data-hc]{--ui-accent:8 85 74;--ui-accent-text:8 85 74;--ui-danger:150 20 10;--ui-warn:100 58 0}
+html[data-ui="family"][data-scheme="warm"][data-hc]{--ui-accent:120 45 10;--ui-accent-text:120 45 10;--ui-danger:150 20 10;--ui-warn:100 58 0}
+html[data-ui="family"][data-scheme="cool"][data-hc]{--ui-accent:20 60 130;--ui-accent-text:20 60 130;--ui-danger:150 20 10;--ui-warn:100 58 0}

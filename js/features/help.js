@@ -63,7 +63,7 @@ const HELP={
  "opt.quiet":["Csendes órák: ilyenkor nem szól az app.",["Add meg a kezdő és a záró időpontot."],"",""],
  "opt.workout":["Edzés-beállítások: heti cél, pihenő, célsúly lépcső.",["Válaszd ki az alapértékeket, a többi ezekből számolódik."],"",""],
  "opt.export":["Az adataid mentése CSV, PDF fájlba vagy vágólapra.",["Válaszd ki a formátumot, majd koppints rá."],"","Az exportálás nem töröl semmit."],
- "opt.json":["Az összes adatod egyetlen JSON fájlban.",["Ez a teljes mentés, később visszatöltheted."],"",""],
+ "opt.json":["Az összes adatod egyetlen JSON fájlban.",["Ez a teljes mentésed: őrizd meg, vagy vidd át."],"",""],
  "opt.account":["A fiókod, a szinkron, a kilépés és a fiók törlése.",["A szinkron automatikus, kézzel is indíthatod."],"","Ez végleges. Előtte exportálhatod az adataidat."],
  "opt.reset":["Az alapértékek visszaállítása.",["Csak a kinézet és a beállítások térnek vissza az alapra."],"","Az adataid (edzések, étel, mérések) nem érintettek, csak a kinézet és a beállítások."],
  "help.main":["Itt találod az összes funkció rövid leírását.",["Keress rá a témára, vagy görgess a listán.","Koppints egy sorra a részletekhez."],"",""],
