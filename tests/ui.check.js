@@ -86,3 +86,14 @@ for(const ui of Object.keys(UI)){assert.ok(who[ui]&&who[ui].w,ui+': hiányzó aj
 for(const k of ['Válaszd ki a kinézetet','Ezt választom','Ezt egyszer kell kiválasztanod. A Beállításokban később bármikor módosíthatod.'])assert.ok(dict[k]!==undefined,'nincs angol: '+k);
 assert.ok(app.includes('<${UiPicker}')&&app.includes('opt.uiChosen'),'az App nem mutatja a felület-választót');
 console.log('rendben: felület-választó');
+
+// --- az új képernyők tr('...') szövegei mind le vannak fordítva (a rövid, nem szöveges értékeket kivéve)
+for(const f of ['js/ui-home.js','js/ui-workout.js','js/ui-loader.js','js/ui-picker.js','js/ui-profile.js']){
+ const src=rd(f),miss=[];
+ for(const m of src.matchAll(/tr\('([^']+)'\)/g))if(/[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]/.test(m[1])&&dict[m[1]]===undefined)miss.push(m[1]);
+ assert.deepStrictEqual([...new Set(miss)],[],f+': nincs angol fordítás: '+miss.join(' | '));
+}
+for(const s of ['Séta, 20 perc','Lábemelés ülve, 2 × 10','Fekvőtámasz a falnál, 2 × 8','Nyújtás, 5 perc'])assert.ok(dict[s]!==undefined,'nincs angol: '+s);
+for(const f of ['css/ui-home.css','css/ui-workout.css','css/ui-loader.css','css/ui-picker.css','css/ui-menu.css','css/ui-switch.css','css/tokens.css','css/base.css','css/motion.css'])assert.ok(idx.includes(f),'az index.html nem tölti be: '+f);
+for(const f of ['js/ui-data.js','js/ui-home.js','js/ui-workout.js','js/ui-loader.js','js/ui-picker.js','js/ui-profile.js','js/ui-menu.js','js/ui-core.js'])assert.ok(idx.includes(f),'az index.html nem tölti be: '+f);
+console.log('rendben: új képernyők fordításai és betöltésük');

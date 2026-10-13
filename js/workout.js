@@ -1,14 +1,14 @@
 /* ---------- Pihenőidő-időzítő ---------- */
-function Rest({rest,setRest}){
+function Rest({rest,setRest,hidden}){
  const[,t]=useState(0);
  useEffect(()=>{
   if(!rest)return;
   const i=setInterval(()=>{if(Date.now()>=rest.end){clearInterval(i);beep();try{OPT.vib&&navigator.vibrate&&navigator.vibrate([250,100,250])}catch(e){}}t(x=>x+1)},250);
   return()=>clearInterval(i);
  },[rest]);
- if(!rest)return null;
+ if(!rest||hidden)return null;
  const left=Math.max(0,Math.ceil((rest.end-Date.now())/1000)),done=left===0;
- return html`<div class="up fixed left-0 right-0 z-30 px-3" style=${{bottom:'calc(94px + env(safe-area-inset-bottom,0px))'}}>
+ return html`<div class="up fixed left-0 right-0 z-30 px-3" style=${{bottom:'calc(var(--ui-bar-h,64px) + 12px + env(safe-area-inset-bottom,0px))'}}>
   <div class=${'max-w-md mx-auto rounded-2xl p-3 shadow-xl border '+(done?'bg-lime-400 text-black border-lime-300 glow':'bg-zinc-900 border-cyan-400/50')}>
    <div class="flex items-center gap-3">
     <${Ic} n="timer" c=${done?'text-black':'text-cyan-400'}/>

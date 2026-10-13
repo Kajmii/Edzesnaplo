@@ -47,7 +47,7 @@ html[data-ui="pro"] .rounded-t-3xl,html[data-ui="gym"] .rounded-t-3xl{border-top
 html[data-ui="family"] .rounded-t-3xl{border-top-left-radius:24px;border-top-right-radius:24px}
 
 /* érintési méret: a gombok és bemenetek legalább --ui-tap magasak (a h-9 jelű kis jelölők kivételével) */
-html[data-ui] button:not([class*="h-9"]):not([class*="h-8"]):not([class*="w-6"]):not([class*="w-10"]),html[data-ui] input:not([type=checkbox]):not([type=radio]):not([type=range]),html[data-ui] select{min-height:var(--ui-tap)}
+html[data-ui] :where(button:not([class*="h-9"]):not([class*="h-8"]):not([class*="w-6"]):not([class*="w-10"]),input:not([type=checkbox]):not([type=radio]):not([type=range]),select){min-height:var(--ui-tap)}
 
 /* Pro: lapos szakaszok, négyzetes sarok, monospace számok */
 html[data-ui="pro"] .bg-zinc-900{border-width:0!important}
