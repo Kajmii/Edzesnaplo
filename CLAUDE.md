@@ -43,7 +43,7 @@ Supabase. Az URL és az anon kulcs a `js/auth.js`-ben van (ez publikus, nem tito
 - A felhasználó magyarul ír, Androidon (Galaxy S26 Ultra) teszteli. A lépések legyenek egyszerűek.
 - Valódi eszközön nem tudsz tesztelni, ezt mindig jelezd.
 - A Google-belépés APK-ban Chrome-on és adatbázisos átadáson (handoff) keresztül működik. Ezt ne bontsd le, amíg nincs jó ok.
-- Aktuális build: 12okt-18, a belépés működik.
+- Aktuális build: 12okt-19, a belépés működik.
 - Receptek: adatok a js/recipes*.js fájlokban (alapanyagok `ig(...)`, receptek `rc(...)`, a makrók az alapanyag-grammokból számolódnak, nyers tömegekkel), felület a js/recipes-ui.js-ben. Új recept után: `node tests/recipes.check.js`.
 - Ciklus-követés (js/cycle.js): csak nőknek (`prof.sexSel` + `prof.sex==='f'`), alapból kikapcsolva, az adat csak helyben van (`cyc` kulcs), NEM megy a szinkronba/Supabase-be; eszközök közt export/import fájl viszi át. Teszt: `node tests/cycle.check.js`.
 - Közösség (js/social.js, supabase/social_*.sql, terv: docs/social-1-adatmodell.md): a jogosultságot az RLS adja, a kliens csak anon kulcsot használ. A Supabase SQL-t a felhasználó futtatja, előbb az SQL, csak utána kerülhet élesbe a kód. Teszt: `node tests/social.check.js`.
