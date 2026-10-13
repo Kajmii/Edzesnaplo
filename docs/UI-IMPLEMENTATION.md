@@ -74,7 +74,7 @@ Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, 
 | `body.measure` | Mérések: súly, méretek, grafikon | 2 | ✓ | ✓ | ✓ | 1 |
 | `body.photos` | Haladási fotók, összehasonlítás, megosztás | 3 | ✓ | ✓ | ✓ | 2 |
 | `tools.cardio` | Kardió-számoló | 3 | ✓ | ✓ | ✓ | 2 |
-| `tools.kcal` | Kalória és makró (TDEE) | 2 | ✓ | ✓ | ✓ | 2 |
+| `tools.kcal` | Kalória és makró (TDEE) | 3 | ✓ | ✓ | ✓ | 2 |
 | `tools.strength` | 1RM, százalékok, tárcsák, bemelegítés | 3 | ✓ | ✓ | ✓ | 2 |
 | `tools.interval` | Intervall-időzítő (Tabata, HIIT, EMOM) | 3 | ✓ | ✓ | ✓ | 2 |
 | `cycle.main` | Ciklus-követés (csak ha bekapcsolva) | 3 | ✓ | ✓ | ✓ | 1 |
@@ -103,7 +103,8 @@ Az „Elérés” oszlop a legrövidebb út Kezdőlapról (koppintások száma, 
 | `opt.contrast` | **Nagy kontrasztú mód** | 2 | ✗ | ✗ | ✗ | 2 | **új** |
 | `opt.quiet` | **Értesítések és csendes órák** | 3 | ✗ | ✗ | ✗ | 2 | **új** (az emlékeztetők már vannak a Tervben) |
 | `opt.workout` | Edzés-beállítások (heti cél, pihenő, lépcső) | 2 | ✓ | ✓ | ✓ | 2 | |
-| `opt.export` | Export: CSV, PDF, mentés másolása, **JSON** | 3 | ✓ | ✓ | ✓ | 2 | JSON új |
+| `opt.export` | Export: CSV, PDF, mentés másolása | 3 | ✓ | ✓ | ✓ | 2 | |
+| `opt.json` | **JSON-export** | 3 | ✗ | ✗ | ✗ | 2 | **új** |
 | `opt.account` | Fiók, szinkron, kilépés, fiók törlése | 1 | ✓ | ✓ | ✓ | 2 | |
 | `opt.reset` | **Alapértékek visszaállítása** | 2 | ✗ | ✗ | ✗ | 2 | **új** |
 | `help.main` | **Súgó** | 1 | ✗ | ✗ | ✗ | 1 | **új** |

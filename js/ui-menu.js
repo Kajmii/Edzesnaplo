@@ -20,6 +20,9 @@ const UI_ICO={
  check:'M5 12.5l4.5 4.5L19 7',
  back:'M14 4l-7 7 7 7',
  plus:'M12 5v14M5 12h14',
+ home:'M4 11l8-7 8 7M6 10v10h12V10',
+ help:'M12 21a9 9 0 100-18 9 9 0 000 18zM9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1-1.5 2M12 17v.5',
+ search:'M11 4a7 7 0 100 14 7 7 0 000-14zM20 20l-4-4',
  star:'M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z',
  minus:'M5 12h14',
  drop:'M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z',
@@ -29,20 +32,8 @@ const UI_ICO={
 const UiIco=({n,s=24,f})=>html`<svg width=${s} height=${s} viewBox='0 0 24 24' class='ui-ico' aria-hidden='true' fill=${f?'currentColor':'none'} stroke='currentColor' strokeLinecap='round' strokeLinejoin='round'><path d=${UI_ICO[n]}/></svg>`;
 
 // Menüpontok: k, hova (tab, sub), ikon, név, irányonkénti egysoros leírás. A Ciklus csak bekapcsolt funkciónál látszik.
-const UI_MENU=[
- {k:'log',tab:'log',sub:'',ic:'dumbbell',t:'Edzés',d:{pro:'Mai edzés és a gyakorlatok',gym:'Mai edzés, gyakorlatok',family:'A mai mozgás'}},
- {k:'plan',tab:'plan',sub:'',ic:'cal',t:'Terv',d:{pro:'Heti és havi terv',gym:'Heti és havi ciklus',family:'Mi jön a héten'}},
- {k:'hist',tab:'hist',sub:'',ic:'log',t:'Napló',d:{pro:'Korábbi edzések és sorozatok',gym:'Mit és mennyit emeltél',family:'Amit már megcsináltál'}},
- {k:'food',tab:'food',sub:'',ic:'food',t:'Étel',d:{pro:'Kalória és makrók',gym:'Kalória és fehérje',family:'Mit ettél ma'}},
- {k:'recipes',tab:'food',sub:'rec',ic:'book',t:'Receptek',d:{pro:'Mentett ételek és ötletek',gym:'Mentett ételek',family:'Mentett ételek'}},
- {k:'body',tab:'tools',sub:'b',ic:'chart',t:'Test és mérések',d:{pro:'Súly, méretek, fotók',gym:'Súly, méretek, rekordok',family:'Súly és méretek'}},
- {k:'social',tab:'social',sub:'',ic:'people',t:'Közösség',d:{pro:'Csoportok és kihívások',gym:'Csoportok, kihívások',family:'Barátok, csoportok'}},
- {k:'cycle',tab:'cycle',sub:'',ic:'cycle',t:'Ciklus',d:{pro:'Csak ha be van kapcsolva',gym:'Csak ha bekapcsoltad',family:'Ha bekapcsoltad'}},
- {k:'profile',tab:'profile',sub:'',ic:'user',t:'Profil',d:{pro:'Adatok és célok',gym:'Adatok és célok',family:'Adataid'}},
- {k:'opt',tab:'opt',sub:'',ic:'sliders',t:'Beállítások',d:{pro:'Felület, színséma, fiók',gym:'Felület, színek, fiók',family:'Betűméret, színek'}},
- {k:'calc',tab:'tools',sub:'c',ic:'calc',t:'Számolók',d:{pro:'Kardió, kalória, erő, intervall',gym:'Kardió, kalória, erő',family:'Kalória és kardió'}},
- {k:'edit',tab:'edit',sub:'',ic:'edit',t:'Tervszerkesztő',d:{pro:'Saját edzések szerkesztése',gym:'Saját edzések',family:'Saját edzéseid'}},
- {k:'data',tab:'opt',sub:'data',ic:'download',t:'Export és adatok',d:{pro:'CSV, PDF, mentés',gym:'Export, mentés',family:'Adataid mentése'}}];
+// A főmenü a funkció-nyilvántartásból épül (js/features/registry.js): a menü-sorokat az `m` mezős funkciók adják, `m.o` sorrendben.
+const UI_MENU=FEATURES.filter(f=>f.m).sort((x,y)=>x.m.o-y.m.o).map(f=>({k:f.m.k,id:f.id,tab:f.tab,sub:f.sub,ic:f.ic,t:f.m.t,d:f.m.d}));
 const uiMenuItems=cyc=>UI_MENU.filter(m=>m.k!=='cycle'||cyc);
 // A képernyő címe a fejlécben (a Test és mérések / Számolók ugyanaz a Tools képernyő, a sub dönt)
 const uiTitle=(tab,sub)=>({log:'Edzés',plan:'Terv',hist:'Napló',food:sub==='rec'?'Receptek':'Étel',tools:sub==='b'?'Test és mérések':'Számolók',social:'Közösség',cycle:'Ciklus',profile:'Profil',opt:sub==='data'?'Export és adatok':'Beállítások',edit:'Tervszerkesztő'})[tab]||'';
