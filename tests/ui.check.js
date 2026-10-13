@@ -60,9 +60,9 @@ console.log('rendben: UI-tokenek, '+rows+' színséma, kontraszt és JS-tábla e
 const menuSrc=rd('js/ui/menu.js'),app=rd('js/app.js'),dictSrc=rd('js/i18n-en.js');
 let dict;new Function('setDict',dictSrc)(d=>{dict=d});
 const MENU=new Function(rd('js/features/registry.js')+';'+menuSrc.slice(menuSrc.indexOf('const UI_MENU='),menuSrc.indexOf('const uiMenuItems'))+';return UI_MENU')();
-assert.strictEqual(MENU.length,12,'a menünek 12 pontja van');
-assert.deepStrictEqual(MENU.map(m=>m.k),['log','plan','hist','food','recipes','body','stats','calc','cycle','social','profile','opt'],'a pontok sorrendje csoportonként: Ma, Étkezés, Fejlődés, Közösség, fiók');
-assert.strictEqual(new Set(MENU.map(m=>m.k)).size,12,'a menüpont-azonosítók egyediek');
+assert.strictEqual(MENU.length,13,'a menünek 13 pontja van');
+assert.deepStrictEqual(MENU.map(m=>m.k),['log','plan','hist','food','recipes','body','stats','calc','cycle','social','profile','opt','help'],'a pontok sorrendje csoportonként: Ma, Étkezés, Fejlődés, Közösség, fiók');
+assert.strictEqual(new Set(MENU.map(m=>m.k)).size,13,'a menüpont-azonosítók egyediek');
 const icons=new Function(menuSrc.slice(menuSrc.indexOf('const UI_ICO='),menuSrc.indexOf('const UiIco'))+';return UI_ICO')();
 for(const m of MENU){
  assert.ok(icons[m.ic],m.k+': hiányzó ikon');
@@ -77,7 +77,7 @@ for(const m of MENU){
  assert.ok(app.includes("tab==='"+m.tab+"'"),m.k+': az App nem kezeli a tab-ot: '+m.tab);
 }
 for(const k of ['Menü bezárása','Bezár','Napló, étel és a többi','Menü'])assert.ok(dict[k]!==undefined,'nincs angol: '+k);
-console.log('rendben: menü, 12 pont, minden szöveg lefordítva');
+console.log('rendben: menü, 13 pont, minden szöveg lefordítva');
 
 // --- első bejelentkezés: a felület-választó szövegei lefordítva, a három irányhoz van ajánlás
 const pk=rd('js/ui/picker.js');

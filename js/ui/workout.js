@@ -71,7 +71,7 @@ function LogPro({w,aw,hist,finish,quit,onBack}){
    ${!e?html`<${WkEmpty} w=${w} cls='pw-empty'/>`:html`<div class='pw-main'>
     <div class='pw-head'><div class='pw-row'><span class='pw-wk'>${tr(aw.name)}</span><button type='button' class='pw-ex' onClick=${()=>w.setSheet('list')}>${i+1} / ${n}</button></div>
      <h1 class='pw-h'><button type='button' class='pw-hb' onClick=${()=>w.setSheet('info')}>${e.n}</button></h1><span class='pw-sub'>${lastTxt(hist,e.n)}</span></div>
-    <table class='pw-t'><thead><tr><th scope='col'>${tr('SOR.')}</th><th scope='col'>KG</th><th scope='col'>${tr('ISM')}</th>${rpe&&html`<th scope='col'>RPE</th>`}<th scope='col' class='pw-r'>${tr('KÉSZ')}</th></tr></thead>
+    <table class='pw-t'><thead><tr><th scope='col'>${tr('SOR.')}</th><th scope='col'>KG</th><th scope='col'>${tr('ISM')}</th>${rpe&&html`<th scope='col'>RPE<${HelpI} id='workout.rpe'/></th>`}<th scope='col' class='pw-r'>${tr('KÉSZ')}</th></tr></thead>
      <tbody>${sets.map((s,q)=>s.done?html`<tr key=${q} class='pw-done'><td>${q+1}</td><td>${uiNum0(s.kg)}</td><td>${s.reps||'–'}</td>${rpe&&html`<td>${s.rpe||'–'}</td>`}<td class='pw-r'><input type='checkbox' checked aria-label=${(q+1)+'. '+tr('sorozat kész')} onChange=${()=>w.toggle(i,q)}/></td></tr>`
       :html`<tr key=${q} class=${'pw-act'+(q===k?' on':'')} onClick=${()=>w.setAk(q)}><td>${q+1}</td>
        <td><input type='text' inputMode='decimal' aria-label=${(q+1)+'. '+tr('sorozat súly')} class='pw-in' style=${{width:'56px'}} value=${s.kg} placeholder='–' onChange=${ev=>w.setS(i,q,'kg',ev.target.value)}/></td>

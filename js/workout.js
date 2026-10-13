@@ -24,6 +24,7 @@ function Rest({rest,setRest,hidden}){
 function LogPick({hist,sel,begin}){
  return html`<div>
   <p class='k-lead'>${fd(sel)}: válassz edzéstervet</p>
+  ${hist.length<3&&html`<${HelpCalm} id='workout.pick'/>`}
   <div class='ui-stagger'>${allT().map(t=>html`<${KSec} key=${t.id} t=${t.n}>
    <p class='k-hint' style=${{margin:'-4px 0 10px'}}>${t.s}</p>
    <${KCard}><div class='k-list'>${t.days.map(d=>html`<${KRow} key=${d.n} t=${d.n} r=${html`${d.e.length} gyakorlat`} go=${true} onClick=${()=>begin(d.n,d.e)}/>`)}</div><//><//>`)}</div>
@@ -65,7 +66,7 @@ function Stats({hist,today}){
  const vw=uiVolWeeks(hist,today,8),st=uiStreak(hist,today),w0=pd(weekOf(today)[0]),labs=vw.vals.map((_,i)=>uiIsoWeek(new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()-7*(7-i))));
  const dl=vw.delta!=null?' · '+(vw.delta>=0?'+':'−')+uiPct(vw.delta):'',sk=st>0?(LANG==='en'?' · '+st+'-week streak':' · '+st+' hetes széria'):'';
  return html`<div>
-  <${KSec} t='Heti volumen, utolsó 8 hét'><${KCard}><${Bars} vals=${vw.vals} labels=${labs}/>
+  <${KSec} t='Heti volumen, utolsó 8 hét' a=${html`<${HelpI} id='stats.volume'/>`}><${KCard}><${Bars} vals=${vw.vals} labels=${labs}/>
    <p class='k-hint k-center'>${(LANG==='en'?'This week: ':'Ezen a héten: ')+fmt(vw.cur)+' kg'+dl+sk}</p><//><//>
   <${Rec} hist=${hist}/>
   <${Prog} hist=${hist}/></div>`;
@@ -73,6 +74,7 @@ function Stats({hist,today}){
 function Hist({hist,del}){
  const dates=[...new Set(hist.map(w=>w.date))].sort().reverse();
  return html`<div>
+  ${hist.length>0&&html`<${HelpCalm} id='log.list'/>`}
   ${!hist.length&&html`<${KEmpty} ic='log' t='Előzmények' s='Itt jelennek meg a befejezett edzéseid. Indíts egyet az Edzés menüpontból.'/>`}
   ${dates.map(d=>html`<${KSec} key=${d} t=${fd(d)}>${hist.filter(w=>w.date===d).map(w=>html`<${KCard} key=${w.id}>
    <div class='k-wh'><div class='k-wh-tx'><div class='k-wh-t'>${w.name}</div><div class='k-row-s'>${fmt(w.vol)} kg összes térfogat</div></div><${KDel} on=${()=>del(w.id)}/></div>
@@ -104,6 +106,7 @@ function Plan({plan,setPlan,hist,begin,today,edit}){
  };
  return html`<div>
   <p class='k-lead'>Válaszd ki, melyik napon mit edzel. A cél az előző hasonló edzésed legnehezebb sorozata +${String(OPT.pct).replace('.',',')}%.</p>
+  <${HelpCalm} id='plan.week'/>
   <div class='k-btns'><${KBtn} v='sec' onClick=${()=>setPlan(p=>({...p,days:{1:'ppl:0',2:'ppl:1',3:'ppl:2',5:'ul:0',6:'ul:1'}}))}>Minta terv<//><${KBtn} v='gho' onClick=${()=>setPlan(p=>({...p,days:{}}))}>Törlés<//></div>
   ${lvlOn('plan.editor')&&html`<div class='k-mb'><${KBtn} v='sec' full=${true} ic='edit' onClick=${edit}>Saját edzések szerkesztése<//></div>`}
   <div class='ui-stagger'>${W.map(([d,l])=>{const v=plan.days[d],x=v&&dayOf(v),g=x?goalsFor(hist,x):[];return html`<${KCard} key=${d} on=${d===td}>
@@ -124,7 +127,7 @@ function Rec({hist}){
  const rs=Object.entries(b).sort((a,c)=>c[1].m-a[1].m).slice(0,6),lim=dk(new Date(Date.now()-6*864e5)),g={};GR.forEach(x=>g[x]=0);
  for(const w of hist)if(w.date>=lim)for(const e of w.ex)if(GOF[e.n])g[GOF[e.n]]+=e.sets.length;
  const mx=Math.max(1,...Object.values(g));
- return html`<${React.Fragment}><${KSec} t='Rekordok (becsült 1RM)'><${KCard}><div class='k-list ui-stagger'>${rs.map(([n,r])=>html`<${KRow} key=${n} t=${n} s=${html`${r.k} kg × ${r.r}, ${fs(r.d)}`} r=${html`<b class='k-pr'>${Math.round(r.m)} kg</b>`}/>`)}</div><//><//>
+ return html`<${React.Fragment}><${KSec} t='Rekordok (becsült 1RM)' a=${html`<${HelpI} id='log.records'/>`}><${KCard}><div class='k-list ui-stagger'>${rs.map(([n,r])=>html`<${KRow} key=${n} t=${n} s=${html`${r.k} kg × ${r.r}, ${fs(r.d)}`} r=${html`<b class='k-pr'>${Math.round(r.m)} kg</b>`}/>`)}</div><//><//>
   <${KSec} t='Izomcsoportok, utolsó 7 nap (sorozat)'><${KCard}>${GR.map((x,i)=>html`<div key=${x} class='k-bar'><span class='k-bar-l'>${x}</span><div class='k-bar-tr'><div class='k-bar-f' style=${{'--p':g[x]/mx,'--i':i}}></div></div><span class='k-bar-n'>${g[x]}</span></div>`)}
    ${Object.values(g).some(v=>!v)&&html`<p class='k-hint'>Hiányzó csoportok: ${GR.filter(x=>!g[x]).map(tr).join(', ')}</p>`}<//><//><//>`;
 }

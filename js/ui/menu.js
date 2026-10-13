@@ -36,7 +36,7 @@ const UiIco=({n,s=24,f})=>html`<svg width=${s} height=${s} viewBox='0 0 24 24' c
 const UI_MENU=FEATURES.filter(f=>f.m).sort((x,y)=>x.m.o-y.m.o).map(f=>({k:f.m.k,id:f.id,g:f.group,tab:f.tab,sub:f.sub,ic:f.ic,t:f.m.t,d:f.m.d}));
 const uiMenuItems=cyc=>UI_MENU.filter(m=>(m.k!=='cycle'||cyc)&&lvlOn(m.id));
 // A képernyő címe a fejlécben (a Test és mérések / Számolók ugyanaz a Tools képernyő, a sub dönt)
-const uiTitle=(tab,sub)=>({log:'Edzés',plan:'Terv',hist:'Napló',food:sub==='rec'?'Receptek':'Étel',tools:sub==='b'?'Test és mérések':'Számolók',social:'Közösség',cycle:'Ciklus',profile:'Profil',opt:sub==='data'?'Export és adatok':'Beállítások',edit:'Tervszerkesztő',stats:'Statisztikák'})[tab]||'';
+const uiTitle=(tab,sub)=>({log:'Edzés',plan:'Terv',hist:'Napló',food:sub==='rec'?'Receptek':'Étel',tools:sub==='b'?'Test és mérések':'Számolók',social:'Közösség',cycle:'Ciklus',profile:'Profil',opt:sub==='data'?'Export és adatok':'Beállítások',edit:'Tervszerkesztő',stats:'Statisztikák',help:'Súgó'})[tab]||'';
 const uiCloseMs=()=>{try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return 0;return +getComputedStyle(document.documentElement).getPropertyValue('--close-ms')||200}catch(e){return 200}};
 const uiBarSub=(items,ui)=>{
  const has=k=>items.some(m=>m.k===k);
@@ -98,6 +98,6 @@ function UiMenu({open,setOpen,home,go}){
 }
 
 // Fejléc a nem-Kezdőlap képernyőkön: vissza a menübe + a képernyő címe
-function UiHeader({title,onBack,back='Menü'}){
- return html`<header class='ui-hdr'><div class='ui-hdr-in'><button type='button' class='ui-back' onClick=${onBack}><${UiIco} n='back' s=${18}/><span>${back}</span></button><h1 class='ui-hdr-t'>${title}</h1><span class='ui-hdr-sp' aria-hidden='true'></span></div><div class='ui-hdr-stripe' aria-hidden='true'></div></header>`;
+function UiHeader({title,onBack,back='Menü',onHelp}){
+ return html`<header class='ui-hdr'><div class='ui-hdr-in'><button type='button' class='ui-back' onClick=${onBack}><${UiIco} n='back' s=${18}/><span>${back}</span></button><h1 class='ui-hdr-t'>${title}</h1>${onHelp?html`<button type='button' class='ui-help' aria-haspopup='dialog' aria-label=${tr('Súgó megnyitása')} onClick=${onHelp}><span class='ui-help-c' aria-hidden='true'>?</span></button>`:html`<span class='ui-hdr-sp' aria-hidden='true'></span>`}</div><div class='ui-hdr-stripe' aria-hidden='true'></div></header>`;
 }

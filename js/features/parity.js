@@ -71,5 +71,5 @@ const FEAT_IMPL=(()=>{const S=m=>[m,m,m],G=p=>({gap:p});return{
  'opt.json':[G('F6'),G('F6'),G('F6')],
  'opt.account':S('function Opts('),
  'opt.reset':[G('F6'),G('F6'),G('F6')],
- 'help.main':[G('F4'),G('F4'),G('F4')],
+ 'help.main':S('function Help('),
  'nav.search':S('const featSearch=')}})();

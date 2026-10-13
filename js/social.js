@@ -94,6 +94,7 @@ function Social(){
  if(pv)return html`<div><${SocProfile} u=${pv} me=${id} back=${()=>setPv(null)}/></div>`;
  return html`<div>
   <${KTabs} v=${tb} on=${setTb} o=${[['feed','Hírfolyam'],['conn','Kapcsolatok'],['grp','Csoportok'],['prof','Profil']]}/>
+  <${HelpCalm} id='social.feed'/>
   ${tb==='feed'?html`<${SocFeed} me=${id} open=${setPv}/>`:tb==='conn'?html`<${SocConn} me=${id} open=${setPv}/>`:tb==='grp'?html`<${SocGroups} me=${id} open=${setPv}/>`:html`<div>
   <div class='up k-card'>${Form()}<button onClick=${save} disabled=${busy} class=${bt+' mt-4'}>Mentés</button>${Msg()}</div>
   <div class='up k-card'><div class='k-cd-t'>Adatvédelem</div>

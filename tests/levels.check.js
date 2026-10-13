@@ -5,15 +5,15 @@ const mk=(opt)=>new Function('OPT','tr',rd('js/features/registry.js')+';'+rd('js
 const A=mk({});
 // 1. meglévő felhasználó (nincs választás): Minden szint, semmi sem rejtett (K3)
 assert.strictEqual(A.lvlOf(),3);assert.strictEqual(A.lvlHidden(),0);
-assert.strictEqual(A.uiMenuItems(true).length,12,'Minden szinten mind a 12 menüsor látszik');
-assert.strictEqual(A.uiMenuItems(false).length,11,'ciklus nélkül 11');
+assert.strictEqual(A.uiMenuItems(true).length,13,'Minden szinten mind a 13 menüsor látszik');
+assert.strictEqual(A.uiMenuItems(false).length,12,'ciklus nélkül 12');
 // 2. a választás érvényes értékekre szól; érvénytelen érték = Minden
 assert.strictEqual(mk({lvl:1,lvlSet:true}).lvlOf(),1);assert.strictEqual(mk({lvl:2}).lvlOf(),3,'lvlSet nélkül a lvl nem számít');assert.strictEqual(mk({lvl:7,lvlSet:true}).lvlOf(),3);
 // 3. menü szintenként (a terv 5. fejezete): lényeg = Edzés, Terv, Napló, Profil, Beállítások
 const keys=l=>mk({lvl:l,lvlSet:true}).uiMenuItems(true).map(m=>m.k);
-assert.deepStrictEqual(keys(1),['log','plan','hist','profile','opt']);
-assert.deepStrictEqual(keys(2),['log','plan','hist','food','body','stats','profile','opt']);
-assert.strictEqual(keys(3).length,12);
+assert.deepStrictEqual(keys(1),['log','plan','hist','profile','opt','help']);
+assert.deepStrictEqual(keys(2),['log','plan','hist','food','body','stats','profile','opt','help']);
+assert.strictEqual(keys(3).length,13);
 for(const l of [1,2,3])assert.ok(keys(l).includes('log')&&keys(l).includes('opt')&&keys(l).includes('plan'),'Edzés, Terv és Beállítások minden szinten elérhető');
 // 4. rejtett funkciók száma csökken a szinttel; Minden szinten nulla
 const hid=l=>mk({lvl:l,lvlSet:true}).lvlHidden();

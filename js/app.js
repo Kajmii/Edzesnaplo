@@ -19,6 +19,8 @@ function App({user,out}){
   const d=new Date();setSy({s:'ok',t:pad(d.getHours())+':'+pad(d.getMinutes())})}catch(e){setSy(x=>({...x,s:navigator.onLine?'err':'off'}))}SYB=false};
  const delAcc=async()=>{try{await phPurge()}catch(e){}const r=await sbf('/rest/v1/rpc/delete_my_account',{method:'POST',body:'{}'});if(!r.ok)return toast('A fiók törlése nem sikerült.');try{Object.keys(localStorage).filter(k=>k.startsWith('en:'+CU+':')).forEach(k=>localStorage.removeItem(k))}catch(e){}toast('Fiók és minden adat törölve');out()};
  useEffect(()=>{if(!opt.uiChosen||ldr)syncNow()},[]);
+ const[help,setHelp]=useState(null);
+ useEffect(()=>{const f=e=>setHelp(e.detail);window.addEventListener('helpopen',f);return()=>window.removeEventListener('helpopen',f)},[]);
  const[pkShown,setPkShown]=useState(false); // a választó az első szinkron után jelenik meg, és a döntésig nem tűnik el (a későbbi szinkronok ne indítsák újra)
  useEffect(()=>{if(!opt.uiChosen&&(sy.s==='ok'||sy.s==='err'||sy.s==='off'))setPkShown(true)},[sy.s,opt.uiChosen]);
  useEffect(()=>{if(!ldr)return;if(sy.s==='ok'||sy.s==='err'||sy.s==='off'){const t=setTimeout(()=>setLdr(false),900);return()=>clearTimeout(t)}const t=setTimeout(()=>setLdr(false),6000);return()=>clearTimeout(t)},[sy.s,ldr]);
@@ -47,16 +49,18 @@ function App({user,out}){
  const go2=(t,u,id)=>{lvlForce(id);setTab(t);setSub(u||'');setMenu(false);try{window.scrollTo(0,0)}catch(e){}};
  const startToday=()=>{const v=plan.days[new Date().getDay()],x=v&&dayOf(v);if(!x)return go2('log');const g=goalsFor(hist,x);begin(x.n,x.e,Object.fromEntries(g.map(y=>[y.n,y])),today);setTab('log')};
  return html`<${React.Fragment}>
-  ${tab!=='home'&&!(tab==='log'&&aw)&&html`<${UiHeader} title=${uiTitle(tab,sub)} back=${tab==='edit'?'Terv':undefined} onBack=${()=>{if(tab==='edit')return go2('plan');setTab('home');setSub('');setMenu(true);try{window.scrollTo(0,0)}catch(e){}}}/>`}
+  ${tab!=='home'&&!(tab==='log'&&aw)&&html`<${UiHeader} title=${uiTitle(tab,sub)} back=${tab==='edit'?'Terv':undefined} onHelp=${()=>setHelp(helpFor(tab,sub))} onBack=${()=>{if(tab==='edit')return go2('plan');setTab('home');setSub('');setMenu(true);try{window.scrollTo(0,0)}catch(e){}}}/>`}
   <div id='ui-main' key=${tab} class="ui-main up max-w-md mx-auto" data-home=${tab==='home'?'':undefined} data-inner=${tab!=='home'?'':undefined}>
+   ${tab!=='home'&&!(tab==='log'&&aw)&&helpFor(tab,sub)&&html`<${HelpTip} key=${helpFor(tab,sub)} id=${helpFor(tab,sub)}/>`}
    ${tab==='home'&&html`<${UiHome} hist=${hist} sel=${sel} setSel=${setSel} today=${today} aw=${aw} go=${()=>setTab('log')} nav=${go2} startToday=${startToday} plan=${plan} user=${user} out=${out} opt=${opt} setOpt=${setOpt}/>`}
    ${tab==='log'&&aw&&html`<${UiLog} aw=${aw} setAw=${setAw} hist=${hist} rest=${rest} setRest=${setRest} rd=${rd} setRd=${setRd} startRest=${startRest} finish=${finish} quit=${quit} onBack=${()=>{setTab('home');setSub('');setMenu(false)}}/>`}${tab==='log'&&!aw&&html`<${LogPick} hist=${hist} sel=${sel} begin=${begin}/>`}
    ${tab==='hist'&&html`<${Hist} hist=${hist} del=${id=>setHistT(hist.filter(w=>w.id!==id))}/>`}${tab==='stats'&&html`<${Stats} hist=${hist} today=${today}/>`}
    ${tab==='plan'&&html`<${Plan} plan=${plan} setPlan=${setPlan} hist=${hist} today=${today} begin=${(...a)=>{begin(...a);setTab('log')}} edit=${()=>go2('edit')}/>`}
    ${tab==='tools'&&html`<${Tools} key=${sub} init=${sub}/>`}
-   ${tab==='social'&&html`<${Social}/>`}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='profile'&&html`<${Profile} user=${user} go=${go2} out=${out}/>`}${tab==='food'&&html`<${Food} init=${sub}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}
+   ${tab==='social'&&html`<${Social}/>`}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='profile'&&html`<${Profile} user=${user} go=${go2} out=${out}/>`}${tab==='food'&&html`<${Food} init=${sub}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}${tab==='help'&&html`<${Help}/>`}
    ${tab==='opt'&&html`<${Opts} anchor=${sub} opt=${opt} setOpt=${setOpt} hist=${hist} setHist=${setHistT} plan=${plan} setPlan=${setPlan} user=${user} out=${out} sy=${sy} syncNow=${syncNow} delAcc=${delAcc}/>`}
   </div>
+  ${help&&html`<${HelpSheet} id=${help} onClose=${()=>setHelp(null)} onAll=${tab==='help'?null:()=>{setHelp(null);go2('help')}}/>`}
   <${CycPop} go=${go2}/>
   ${ldr&&html`<${UiLoader}/>`}
   <${UiMenu} open=${menu} setOpen=${setMenu} home=${tab==='home'} go=${go2}/>

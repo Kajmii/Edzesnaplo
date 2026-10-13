@@ -3,9 +3,8 @@
    minden szónak szerepelnie kell. A rejtett (a szintre nem látszó) funkciót is megtalálja, jelzi, és megnyitva a kért rész látszik
    (levels.js: lvlForce). Terv: docs/UI-IMPLEMENTATION.md 6. fejezet. Tiszta függvények, a tests/search.check.js ellenőrzi. */
 const FEAT_GROUP_LBL={today:'Ma',meal:'Étkezés',progress:'Fejlődés',social:'Közösség',me:'Fiók és beállítások'};
-// Kereshető: képernyő-szintű funkciók. A Kezdőlap-kártyák (testreszabás: 7. fázis) és az edzés közbeni elemek nem; a Ciklus csak bekapcsolva;
-// a Súgó a 4. fázisban kerül be (addig nincs hová vinnie)
-const featFindable=(f,cyc)=>!/^(home|workout)\./.test(f.id)&&f.id!=='nav.search'&&f.id!=='help.main'&&(f.id!=='cycle.main'||!!cyc);
+// Kereshető: képernyő-szintű funkciók. A Kezdőlap-kártyák (testreszabás: 7. fázis) és az edzés közbeni elemek nem; a Ciklus csak bekapcsolva
+const featFindable=(f,cyc)=>!/^(home|workout)\./.test(f.id)&&f.id!=='nav.search'&&(f.id!=='cycle.main'||!!cyc);
 const sNorm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 // hová visz: a Számolók a "focus" fülre nyílnak, a többi a képernyőre és almenüre
 const featNav=f=>({tab:f.tab,sub:f.tab==='tools'&&f.sub==='c'?f.focus:f.sub});

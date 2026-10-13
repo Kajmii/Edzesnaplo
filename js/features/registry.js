@@ -7,7 +7,7 @@
    tab/sub/focus: az app útvonala (App.tab, a képernyő almenüje, a képernyőn belüli fül)
    m: ha főmenü-sor is, a menü saját címe, sorrendje (o) és irányonkénti leírása (d). A leírások rövidek (mockup 7. szabálya). */
 const FEAT_GROUPS=['today','meal','progress','social','me'];
-const FEAT_TABS=['home','log','plan','hist','stats','food','tools','social','cycle','profile','opt','edit'];
+const FEAT_TABS=['home','log','plan','hist','stats','food','tools','social','cycle','profile','opt','edit','help'];
 // via: ha a funkció képernyőjét nem a főmenü, hanem egy másik képernyő nyitja (pl. a Tervszerkesztőt a Terv)
 const F_=(id,group,level,tab,sub,focus,ic,t,kw,m,via)=>({id,group,level,tab,sub,focus,ic,t,kw:kw.split(' '),help:id,m:m||null,via:via||''});
 const FEATURES=[
@@ -80,6 +80,6 @@ const FEATURES=[
  F_('opt.json','me',3,'opt','data','','download','JSON-export','json export'),
  F_('opt.account','me',1,'opt','','','user','Fiók és szinkron','fiók szinkron kilépés account sync'),
  F_('opt.reset','me',2,'opt','','','sliders','Alapértékek visszaállítása','visszaállítás alapérték reset defaults'),
- F_('help.main','me',1,'opt','','','help','Súgó','súgó segítség help'),
+ F_('help.main','me',1,'help','','','help','Súgó','súgó segítség help tipp útmutató',{k:'help',t:'Súgó',o:13,d:{pro:'Hogyan működik?',gym:'Hogyan működik?',family:'Segítség és tippek'}}),
  F_('nav.search','me',1,'home','','','search','Funkció-keresés','keresés search find')];
 const featById=id=>FEATURES.find(f=>f.id===id);

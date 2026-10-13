@@ -45,7 +45,7 @@ function Tools({init}){
  }
  if(v==='e')out=html`<${Str}/>`;else if(v==='i')out=html`<${Intv}/>`;else if(v==='b')out=html`<${Body} setP=${setP}/>`;
  const TB=[['c','Kardió','tools.cardio'],['k','Kalória','tools.kcal'],['e','Erő','tools.strength'],['i','Intervall','tools.interval'],['b','Test','body.measure']].filter(([k,,id])=>lvlOn(id,k===(init||'c'))).map(([k,n])=>[k,n]);
- return html`<div>${TB.length>1&&html`<${KTabs} v=${v} on=${setV} o=${TB}/>`}${(v==='c'||v==='k')&&prof}<div key=${v} class='up'>${out}</div></div>`;
+ return html`<div>${TB.length>1&&html`<${KTabs} v=${v} on=${setV} o=${TB}/>`}${v!=='b'&&html`<${HelpCalm} id='tools.cardio'/>`}${(v==='c'||v==='k')&&prof}<div key=${v} class='up'>${out}</div></div>`;
 }
 
 const PC={25:'bg-red-500 h-24',20:'bg-blue-500 h-20',15:'bg-yellow-400 h-16',10:'bg-green-500 h-14',5:'bg-zinc-200 h-12',2.5:'bg-zinc-400 h-10',1.25:'bg-zinc-500 h-8'};

@@ -24,8 +24,8 @@ for(const f of FEATURES){
 }
 // 3. a főmenü sorai: egyedi kulcs és sorrend, minden irányban van leírás
 const menu=FEATURES.filter(f=>f.m);
-assert.strictEqual(menu.length,12,'a főmenünek 12 sora van (+ a fix lábsor Súgó a 4. fázisban)');
-assert.strictEqual(new Set(menu.map(f=>f.m.k)).size,12);assert.strictEqual(new Set(menu.map(f=>f.m.o)).size,12,'a menü-sorrend egyedi');
+assert.strictEqual(menu.length,13,'a főmenünek 13 sora van (a lábsorban Profil, Beállítások, Súgó)');
+assert.strictEqual(new Set(menu.map(f=>f.m.k)).size,13);assert.strictEqual(new Set(menu.map(f=>f.m.o)).size,13,'a menü-sorrend egyedi');
 // a menü csoportok szerint rendezett: Ma, Étkezés, Fejlődés, Közösség, majd a fiók-sorok (lábsor)
 assert.deepStrictEqual(menu.map(f=>FEAT_GROUPS.indexOf(f.group)),[...menu.map(f=>FEAT_GROUPS.indexOf(f.group))].sort((a,b)=>a-b),'a menü-sorok a csoportok sorrendjében vannak');
 for(const f of menu){for(const u of UIS)assert.ok(f.m.d[u]&&f.m.d[u].length>2,f.id+': hiányzó menü-leírás '+u);assert.ok(dict[f.m.t]!==undefined,f.id+': nincs angol menü-cím')}

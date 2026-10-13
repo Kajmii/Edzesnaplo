@@ -23,6 +23,7 @@ function Food({init}){
   <div class='k-datenav'><button type='button' class='k-ib' aria-label=${tr('Előző nap')} onClick=${()=>shift(-1)}><${UiIco} n='back' s=${20}/></button><span class='k-datenav-t'>${d===dk(new Date())?'Ma':fs(d)}</span><button type='button' class='k-ib k-flip' aria-label=${tr('Következő nap')} onClick=${()=>shift(1)}><${UiIco} n='back' s=${20}/></button></div>
   ${lvlOn('recipes.list',sub==='rec'||init==='rec')&&html`<${KTabs} v=${sub} on=${setSub} o=${[['log','Napló'],['rec','Receptek']]}/>`}
   ${sub==='rec'?html`<${Recipes} rem=${rem} diet=${diet} setDiet=${setDiet} open=${setRcp} fit=${fitF} setFit=${setFitF}/>`:html`<div>
+  <${HelpCalm} id='food.log'/>
   <${KCard}><div class='k-fsum'>
    <${Ring} v=${sum.k} max=${tg.k} col='rgb(var(--ui-accent))' s=${120} w=${11}><div class='k-fsum-v'>${Math.round(Math.max(0,tg.k-sum.k))}</div><div class='k-fsum-l'>kcal maradt</div><//>
    <div class='k-macros'><${MR} l='Fehérje' v=${sum.p} m=${tg.p} c='rgb(var(--ui-accent))'/><${MR} l='Szénhidrát' v=${sum.c} m=${tg.c} c='rgb(var(--ui-text))'/><${MR} l='Zsír' v=${sum.f} m=${tg.f} c='rgb(var(--ui-muted))'/></div></div>
