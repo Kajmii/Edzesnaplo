@@ -40,16 +40,12 @@ function useWk({aw,setAw,hist,startRest,rest,setRest,rd,setRd}){
 // Gyakorlatok: váltás, hozzáadás, törlés; edzés befejezése vagy elvetése
 function ExSheet({w,onClose,onPick,finish,quit}){
  const[cf,setCf]=useState(false);
- return html`<div class='fade fixed inset-0 z-50 bg-black/70 flex items-end' onClick=${onClose}><div class='sheet w-full max-w-md mx-auto bg-zinc-900 rounded-t-3xl p-4 max-h-[85vh] flex flex-col' onClick=${ev=>ev.stopPropagation()}>
-  <div class='flex items-center justify-between mb-3'><h3 class='fd text-2xl font-bold'>Gyakorlatok</h3><button onClick=${onClose} class='h-10 w-10 flex items-center justify-center text-zinc-400' aria-label=${tr('Bezárás')}><${Ic} n='x'/></button></div>
-  <div class='overflow-y-auto'>${w.n===0&&html`<p class='text-sm text-zinc-400 py-3'>Még nincs gyakorlat az edzésben.</p>`}
-   ${w.n>0&&Array.from({length:w.n},(_,j)=>j).map(j=>{const y=w.aw.ex[j],dn=y.sets.filter(z=>z.done).length;
-    return html`<div key=${j} class='flex items-center gap-2 py-2 border-b border-zinc-800'><button onClick=${()=>{w.go(j);onClose()}} class='flex-1 text-left min-w-0'><span class=${'block font-semibold '+(j===w.i?'text-lime-400':'')}>${y.n}</span><span class='block text-xs text-zinc-400'>${dn} / ${y.sets.length} ${tr('sorozat')}</span></button>
-     <button onClick=${()=>w.rmEx(j)} class='h-10 w-10 flex items-center justify-center text-zinc-500 shrink-0' aria-label=${tr('Törlés')}><${Ic} n='trash' s=${18}/></button></div>`})}</div>
-  <button onClick=${onPick} class='w-full h-12 rounded-xl bg-zinc-800 text-sm font-semibold mt-3 flex items-center justify-center gap-1.5'><${Ic} n='plus' s=${16}/>Gyakorlat hozzáadása</button>
-  <div class='grid grid-cols-2 gap-2 mt-2'><button disabled=${!w.nd} onClick=${finish} class=${'h-12 rounded-xl text-sm font-bold '+(w.nd?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-500')}>Edzés befejezése</button>
-   <button onClick=${()=>cf?quit():setCf(true)} class=${'h-12 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan?':'Elvetés'}</button></div>
-  ${!w.nd&&html`<p class='text-xs text-zinc-500 text-center mt-2'>Jelölj be legalább egy sorozatot a mentéshez.</p>`}</div></div>`;
+ return html`<${KSheet} t='Gyakorlatok' onClose=${onClose} foot=${html`<${KBtn} v='sec' full=${true} ic='plus' onClick=${onPick}>Gyakorlat hozzáadása<//>
+  <div class='k-btns k-mt' style=${{marginBottom:0}}><${KBtn} disabled=${!w.nd} onClick=${finish}>Edzés befejezése<//><${KBtn} v='dan' c=${cf?'ask':''} onClick=${()=>cf?quit():setCf(true)}>${cf?'Biztosan?':'Elvetés'}<//></div>
+  ${!w.nd&&html`<p class='k-hint k-center'>Jelölj be legalább egy sorozatot a mentéshez.</p>`}`}>
+  ${w.n===0&&html`<p class='k-hint'>Még nincs gyakorlat az edzésben.</p>`}
+  <div class='k-list'>${Array.from({length:w.n},(_,j)=>j).map(j=>{const y=w.aw.ex[j],dn=y.sets.filter(z=>z.done).length;
+   return html`<div key=${j} class='k-row'><button type='button' class='k-row-main' onClick=${()=>{w.go(j);onClose()}}><span class=${'k-row-t'+(j===w.i?' cur':'')}>${y.n}</span><span class='k-row-s'>${dn} / ${y.sets.length} ${tr('sorozat')}</span></button><${KDel} on=${()=>w.rmEx(j)}/></div>`})}</div><//>`;
 }
 
 // Közös kereten kívüli lapok: gyakorlat-lista, választó, leírás
@@ -61,7 +57,7 @@ function WkSheets({w,finish,quit}){
 }
 // Üres edzés: még nincs gyakorlat
 function WkEmpty({w,cls}){
- return html`<div class=${cls}><p class='text-sm text-zinc-400 mb-4'>Add hozzá az első gyakorlatot.</p><button onClick=${()=>w.setSheet('pick')} class='w-full h-14 rounded-xl bg-lime-400 text-black font-bold flex items-center justify-center gap-2'><${Ic} n='plus' s=${20}/>Gyakorlat hozzáadása</button></div>`;
+ return html`<div class=${cls}><p class='k-lead'>Add hozzá az első gyakorlatot.</p><${KBtn} full=${true} ic='plus' onClick=${()=>w.setSheet('pick')}>Gyakorlat hozzáadása<//></div>`;
 }
 const lastTxt=(hist,n)=>{const l=lastSet(hist,n);return l?(LANG==='en'?'Last: ':'Legutóbb: ')+uiNum0(l.kg||0)+NB+'kg × '+(l.reps||0)+(maxKg(hist,n)>0?(LANG==='en'?' · record ':' · rekord ')+uiNum0(maxKg(hist,n))+NB+'kg':''):''};
 const uiNum0=v=>(+v||0).toLocaleString(LANG==='en'?'en-US':'hu-HU',{maximumFractionDigits:2});

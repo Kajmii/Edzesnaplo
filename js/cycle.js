@@ -51,74 +51,63 @@ const cycMerge=(c,d)=>({...c,starts:[...new Set([...c.starts,...d.starts])].sort
 // Fázis-címke a Terv fülön
 function CycChip({k}){
  const c=useCyc(),f=c&&cycPhase(c,k);if(!f)return null;const x=CPH[f.p];
- return html`<div class='mt-2 text-[11px] inline-block px-2 py-1 rounded-lg' style=${{background:x[3],color:f.p==='mens'?'#fff':undefined}}>${x[0]} · ${x[2]}</div>`;
-}
-// Mai javaslat a Kezdőlapon
-function CycToday({nav}){
- const c=useCyc();if(!c)return null;
- const f=cycPhase(c,dk(new Date())),x=f&&CPH[f.p];
- return html`<button onClick=${()=>nav('cycle')} class='up w-full text-left bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-4 flex gap-3 items-start'><span class='mt-0.5 shrink-0' style=${{color:x?x[3].replace(/[\d.]+\)$/,'1)'):'#f472b6'}}><${Ic} n='drop' s=${22}/></span>
-  <span>${f?html`<span class='block font-semibold'>${x[0]} · ${dayN(f.day)}</span><span class='block text-xs text-zinc-400 mt-1'>${x[1]}</span>`:html`<span class='block font-semibold'>Ciklus</span><span class='block text-xs text-zinc-400 mt-1'>Jelöld be az utolsó menstruáció első napját a javaslathoz.</span>`}</span></button>`;
+ return html`<div class='k-cyc' style=${{background:x[3],color:f.p==='mens'?'#fff':undefined}}>${x[0]} · ${x[2]}</div>`;
 }
 // Felugró ablak: a Nő kiválasztása után jelzi, hogy elérhető a funkció
 function CycPop({go}){
  const[o,setO]=useState(false);
  useEffect(()=>{const f=()=>setO(true);window.addEventListener('cycprompt',f);return()=>window.removeEventListener('cycprompt',f)},[]);
  if(!o)return null;
- return html`<div class='fade fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-6' onClick=${()=>setO(false)}><div class='up w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-3xl p-6 text-center' onClick=${e=>e.stopPropagation()}>
-  <div class='w-14 h-14 mx-auto mb-3 rounded-2xl bg-lime-400 text-black flex items-center justify-center'><${Ic} n='drop' s=${28}/></div>
-  <div class='fd text-3xl font-bold'>Elérhető a ciklus-követés</div>
-  <p class='text-sm text-zinc-400 mt-2'>Ciklus-naptár és kalkulátor, a ciklusfázishoz igazodó edzési javaslatokkal. Az adat csak ezen az eszközön marad, és bármikor kikapcsolhatod.</p>
-  <button onClick=${()=>{cycSet({...cycGet(),on:true});setO(false);go('cycle')}} class='w-full h-12 rounded-xl bg-lime-400 text-black font-bold mt-4'>Bekapcsolom</button>
-  <button onClick=${()=>setO(false)} class='w-full h-11 rounded-xl bg-zinc-800 text-sm mt-2'>Később</button></div></div>`;
+ return html`<${KSheet} t='Elérhető a ciklus-követés' onClose=${()=>setO(false)} foot=${html`<div class='k-btns' style=${{margin:0}}><${KBtn} full=${true} onClick=${()=>{cycSet({...cycGet(),on:true});setO(false);go('cycle')}}>Bekapcsolom<//><${KBtn} v='sec' full=${true} onClick=${()=>setO(false)}>Később<//></div>`}>
+  <p class='k-lead' style=${{marginBottom:0}}>Ciklus-naptár és kalkulátor, a ciklusfázishoz igazodó edzési javaslatokkal. Az adat csak ezen az eszközön marad, és bármikor kikapcsolhatod.</p><//>`;
 }
 
-const CSt=({v,on,min,max})=>html`<div class='flex items-center gap-2'><button onClick=${()=>on(Math.max(min,v-1))} class='h-10 w-10 rounded-xl bg-zinc-800 flex items-center justify-center'><${Ic} n='minus' s=${16}/></button><span class='fd text-xl font-bold w-10 text-center'>${v}</span><button onClick=${()=>on(Math.min(max,v+1))} class='h-10 w-10 rounded-xl bg-zinc-800 flex items-center justify-center'><${Ic} n='plus' s=${16}/></button></div>`;
+const CSt=({v,on,min,max})=>html`<${KStep} v=${v} on=${x=>on(Math.min(max,x))} min=${min}/>`;
 
 function Cycle({plan,hist,today}){
  const c=useCycRaw(),[mo,setMo]=useState(()=>{const d=pd(today);return new Date(d.getFullYear(),d.getMonth(),1)}),[sd,setSd]=useState(today),[bk,setBk]=useState(''),[cf,setCf]=useState(false);
- const set=o=>cycSet({...c,...o}),bt='h-11 rounded-xl bg-zinc-800 text-sm font-semibold';
- if(!cycAvail())return html`<div><h1 class='fd text-4xl font-bold mb-3'>Ciklus</h1><p class='text-sm text-zinc-400'>Ez a funkció akkor érhető el, ha a Kardió vagy Kalória számoló Profil kártyáján a Nő nemet választod.</p></div>`;
- if(!c.on)return html`<div><h1 class='fd text-4xl font-bold mb-3'>Ciklus</h1>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4'><p class='text-sm text-zinc-300'>Ciklus-naptár és kalkulátor, a ciklusfázishoz igazodó edzési javaslatokkal. Az adat csak ezen az eszközön van, nem kerül a szerverre.</p><button onClick=${()=>set({on:true})} class='w-full h-12 rounded-xl bg-lime-400 text-black font-bold mt-4'>Bekapcsolom</button></div>
-  <${Imp} c=${c} bk=${bk} setBk=${setBk} set=${set}/><p class='text-[10px] text-zinc-500 mt-3'>${CYC_NOTE}</p></div>`;
+ const set=o=>cycSet({...c,...o}),bt='k-btn sec sm';
+ if(!cycAvail())return html`<div><p class='k-hint'>Ez a funkció akkor érhető el, ha a Kardió vagy Kalória számoló Profil kártyáján a Nő nemet választod.</p></div>`;
+ if(!c.on)return html`<div>
+  <div class='up k-card'><p class='k-hint'>Ciklus-naptár és kalkulátor, a ciklusfázishoz igazodó edzési javaslatokkal. Az adat csak ezen az eszközön van, nem kerül a szerverre.</p><button onClick=${()=>set({on:true})} class='k-btn pri full k-mt'>Bekapcsolom</button></div>
+  <${Imp} c=${c} bk=${bk} setBk=${setBk} set=${set}/><p class='k-hint'>${CYC_NOTE}</p></div>`;
  const f=cycPhase(c,today),x=f&&CPH[f.p],nx=cycNext(c,today),y=mo.getFullYear(),m=mo.getMonth(),lead=(mo.getDay()+6)%7,nd=new Date(y,m+1,0).getDate();
  const cells=[...Array(lead).fill(null),...Array.from({length:nd},(_,i)=>dk(new Date(y,m,i+1)))];
  const sf=cycPhase(c,sd),sw=plan.days[pd(sd).getDay()],sx=sw&&dayOf(sw),sh=hist.filter(w=>w.date===sd);
  const toggle=()=>set({starts:c.starts.includes(sd)?c.starts.filter(s=>s!==sd):[...c.starts,sd].sort()});
- const Row=({l,v})=>html`<div class='flex justify-between text-sm py-1.5 border-b border-zinc-800'><span class='text-zinc-400'>${l}</span><span class='text-right'>${v}</span></div>`;
- return html`<div><h1 class='fd text-4xl font-bold mb-3'>Ciklus</h1>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'>
-   ${f?html`<div class='flex items-center gap-2'><span class='w-3 h-3 rounded-full' style=${{background:x[3]}}></span><span class='font-semibold'>${x[0]}</span><span class='text-xs text-zinc-400'>${dayN(f.day)} / ${f.n}</span></div><p class='text-sm text-zinc-300 mt-2'>${x[1]}</p>`:html`<div class='font-semibold'>Nincs mai becslés</div><p class='text-sm text-zinc-400 mt-1'>Jelöld be az utolsó menstruáció első napját a naptárban (válaszd ki a napot, majd nyomd meg a gombot).</p>`}
-   <p class='text-[10px] text-zinc-500 mt-2'>${CYC_NOTE}</p></div>
-  <div class='bg-zinc-900 rounded-2xl p-3 border border-zinc-800 mb-3'>
-   <div class='flex items-center justify-between mb-2'><button onClick=${()=>setMo(new Date(y,m-1,1))} class='h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n='chevL'/></button><span class='text-sm text-zinc-300'>${LANG==='en'?MNE[m]:MN[m].replace('.','')} ${y}</span><button onClick=${()=>setMo(new Date(y,m+1,1))} class='h-10 w-10 flex items-center justify-center text-zinc-400'><${Ic} n='chevL' c='rotate-180'/></button></div>
-   <div class='grid grid-cols-7 gap-1 text-center text-[11px] text-zinc-500 mb-1'>${(LANG==='en'?['M','T','W','T','F','S','S']:['H','K','Sze','Cs','P','Szo','V']).map((d,i)=>html`<span key=${i}>${d}</span>`)}</div>
-   <div class='grid grid-cols-7 gap-1'>${cells.map((k,i)=>{if(!k)return html`<span key=${i}></span>`;const p=cycPhase(c,k),cl=p&&CPH[p.p][3],lg=p&&p.p==='mens'&&p.logged,pl=plan.days[pd(k).getDay()]&&k>=today,dn=hist.some(w=>w.date===k);
-    return html`<button key=${k} onClick=${()=>setSd(k)} class=${'h-11 rounded-lg flex flex-col items-center justify-center text-sm '+(k===sd?'ring-2 ring-lime-400 ':'')+(k===today?'font-bold':'')} style=${{background:cl||'transparent',color:lg?'#fff':undefined,opacity:p&&p.p==='mens'&&!lg?.75:1}}>${+k.slice(8)}<span class='h-1.5 flex gap-0.5'>${pl&&html`<i class='w-1.5 h-1.5 rounded-full bg-lime-400'></i>`}${dn&&html`<i class='w-1.5 h-1.5 rounded-full bg-cyan-400'></i>`}</span></button>`})}</div>
-   <div class='flex flex-wrap gap-x-3 gap-y-1 mt-2 text-[10px] text-zinc-400'>${Object.entries(CPH).map(([k,v])=>html`<span key=${k} class='flex items-center gap-1'><i class='w-2 h-2 rounded-full' style=${{background:v[3]}}></i>${v[0]}</span>`)}<span class='flex items-center gap-1'><i class='w-2 h-2 rounded-full bg-lime-400'></i>Tervezett edzés</span><span class='flex items-center gap-1'><i class='w-2 h-2 rounded-full bg-cyan-400'></i>Elvégzett edzés</span></div></div>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>${fd(sd)}</div>
+ const Row=({l,v})=>html`<div class='k-tr k-tr2'><span class='k-lab'>${l}</span><span class='k-r'>${v}</span></div>`;
+ return html`<div>
+  <div class='up k-card'>
+   ${f?html`<div class='k-cph'><i class='k-dot' style=${{background:x[3]}}></i><span class='k-wh-t'>${x[0]}</span><span class='k-row-s'>${dayN(f.day)} / ${f.n}</span></div><p class='k-hint'>${x[1]}</p>`:html`<div class='k-cd-t'>Nincs mai becslés</div><p class='k-hint'>Jelöld be az utolsó menstruáció első napját a naptárban (válaszd ki a napot, majd nyomd meg a gombot).</p>`}
+   <p class='k-hint'>${CYC_NOTE}</p></div>
+  <div class='k-card'>
+   <div class='k-datenav'><button type='button' class='k-ib' aria-label=${tr('Előző nap')} onClick=${()=>setMo(new Date(y,m-1,1))}><${UiIco} n='back' s=${20}/></button><span class='k-datenav-t'>${LANG==='en'?MNE[m]:MN[m].replace('.','')} ${y}</span><button type='button' class='k-ib k-flip' aria-label=${tr('Következő nap')} onClick=${()=>setMo(new Date(y,m+1,1))}><${UiIco} n='back' s=${20}/></button></div>
+   <div class='k-cal k-cal-h'>${(LANG==='en'?['M','T','W','T','F','S','S']:['H','K','Sze','Cs','P','Szo','V']).map((d,i)=>html`<span key=${i}>${d}</span>`)}</div>
+   <div class='k-cal'>${cells.map((k,i)=>{if(!k)return html`<span key=${i}></span>`;const p=cycPhase(c,k),cl=p&&CPH[p.p][3],lg=p&&p.p==='mens'&&p.logged,pl=plan.days[pd(k).getDay()]&&k>=today,dn=hist.some(w=>w.date===k);
+    return html`<button key=${k} onClick=${()=>setSd(k)} class=${'k-cal-d'+(k===sd?' on':'')+(k===today?' td':'')} aria-pressed=${k===sd} style=${{background:cl||'transparent',color:lg?'#fff':undefined,opacity:p&&p.p==='mens'&&!lg?.75:1}}>${+k.slice(8)}<span class='k-cal-p'>${pl&&html`<i class='k-dot pl'></i>`}${dn&&html`<i class='k-dot dn'></i>`}</span></button>`})}</div>
+   <div class='k-legend'>${Object.entries(CPH).map(([k,v])=>html`<span key=${k}><i class='k-dot' style=${{background:v[3]}}></i>${v[0]}</span>`)}<span><i class='k-dot pl'></i>Tervezett edzés</span><span><i class='k-dot dn'></i>Elvégzett edzés</span></div></div>
+  <div class='up k-card'><div class='k-cd-t'>${fd(sd)}</div>
    <${Row} l='Fázis' v=${sf?CPH[sf.p][0]+' · '+dayN(sf.day):'–'}/><${Row} l='Tervezett edzés' v=${sx?sx.n:'–'}/><${Row} l='Elvégzett edzés' v=${sh.length?sh.map(w=>w.name).join(', '):'–'}/>
-   ${sf&&sd>=today&&html`<p class='text-xs text-zinc-400 mt-2'>${CPH[sf.p][2]}</p>`}
-   <button onClick=${toggle} disabled=${sd>today} class=${'w-full h-11 rounded-xl text-sm font-semibold mt-3 '+(sd>today?'bg-zinc-800 text-zinc-500':c.starts.includes(sd)?'bg-zinc-800 text-red-400':'bg-lime-400 text-black')}>${sd>today?'Jövőbeli napot nem jelölhetsz':c.starts.includes(sd)?'Menstruáció kezdetének törlése':'Itt kezdődött a menstruáció'}</button></div>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Kalkulátor</div>
-   ${nx?html`<${Row} l='Következő menstruáció (becslés)' v=${fd(nx.per)+' ('+(LANG==='en'?'in '+daysN(dd(today,nx.per)):dd(today,nx.per)+' nap múlva')+')'}/><${Row} l='Ovuláció (becslés)' v=${fd(nx.ovu)}/><${Row} l='Számolt ciklushossz' v=${daysN(nx.L)}/>`:html`<p class='text-sm text-zinc-400'>Jelöld be legalább egy menstruáció első napját.</p>`}
+   ${sf&&sd>=today&&html`<p class='k-hint'>${CPH[sf.p][2]}</p>`}
+   <button onClick=${toggle} disabled=${sd>today} class=${'k-btn sm full k-mt '+(sd>today?'sec':c.starts.includes(sd)?'dan':'pri')}>${sd>today?'Jövőbeli napot nem jelölhetsz':c.starts.includes(sd)?'Menstruáció kezdetének törlése':'Itt kezdődött a menstruáció'}</button></div>
+  <div class='up k-card'><div class='k-cd-t'>Kalkulátor</div>
+   ${nx?html`<${Row} l='Következő menstruáció (becslés)' v=${fd(nx.per)+' ('+(LANG==='en'?'in '+daysN(dd(today,nx.per)):dd(today,nx.per)+' nap múlva')+')'}/><${Row} l='Ovuláció (becslés)' v=${fd(nx.ovu)}/><${Row} l='Számolt ciklushossz' v=${daysN(nx.L)}/>`:html`<p class='k-hint'>Jelöld be legalább egy menstruáció első napját.</p>`}
    <${Row} l='Rögzített ciklusok' v=${c.starts.length}/>
-   <div class='flex items-center justify-between mt-3'><span class='text-sm'>Ciklus hossza</span><div class='flex items-center gap-2'><button onClick=${()=>set({len:0})} class=${'h-10 px-3 rounded-xl text-xs font-semibold '+(c.len?'bg-zinc-800 text-zinc-300':'bg-lime-400 text-black')}>Auto</button><${CSt} v=${c.len||cycLen(c)} on=${v=>set({len:v})} min=${21} max=${45}/></div></div>
-   <div class='flex items-center justify-between mt-3'><span class='text-sm'>Menstruáció hossza</span><${CSt} v=${c.per} on=${v=>set({per:v})} min=${2} max=${10}/></div>
-   <p class='text-[10px] text-zinc-500 mt-2'>Az ovuláció becslése nem alkalmas fogamzásgátlásra.</p></div>
+   <div class='k-wh k-mt' style=${{alignItems:'center',marginBottom:0}}><span class='k-row-t'>Ciklus hossza</span><div class='k-step'><button type='button' class=${'k-btn sm '+(c.len?'sec':'pri')} onClick=${()=>set({len:0})}>Auto</button><${CSt} v=${c.len||cycLen(c)} on=${v=>set({len:v})} min=${21} max=${45}/></div></div>
+   <div class='k-wh k-mt' style=${{alignItems:'center',marginBottom:0}}><span class='k-row-t'>Menstruáció hossza</span><${CSt} v=${c.per} on=${v=>set({per:v})} min=${2} max=${10}/></div>
+   <p class='k-hint'>Az ovuláció becslése nem alkalmas fogamzásgátlásra.</p></div>
   <${Imp} c=${c} bk=${bk} setBk=${setBk} set=${set}/>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Kikapcsolás és törlés</div><p class='text-xs text-zinc-500 mb-3'>Kikapcsolva a funkció sehol nem jelenik meg, az adat megmarad. A törlés végleges.</p>
-   <div class='grid grid-cols-2 gap-2'><button onClick=${()=>set({on:false})} class=${bt}>Kikapcsolás</button><button onClick=${()=>{if(cf){cycSet({...CYC0});setCf(false);toast('Ciklus-adatok törölve')}else setCf(true)}} class=${'h-11 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Adatok törlése'}</button></div></div></div>`;
+  <div class='up k-card'><div class='k-cd-t'>Kikapcsolás és törlés</div><p class='k-hint'>Kikapcsolva a funkció sehol nem jelenik meg, az adat megmarad. A törlés végleges.</p>
+   <div class='k-g2'><button onClick=${()=>set({on:false})} class=${bt}>Kikapcsolás</button><button onClick=${()=>{if(cf){cycSet({...CYC0});setCf(false);toast('Ciklus-adatok törölve')}else setCf(true)}} class=${'k-btn dan sm'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Adatok törlése'}</button></div></div></div>`;
 }
 // Átvitel másik eszközre: letölthető fájl vagy másolható szöveg, és visszatöltés
 function Imp({c,bk,setBk,set}){
- const bt='h-11 rounded-xl bg-zinc-800 text-sm font-semibold',
+ const bt='k-btn sec sm',
   exp=()=>{const j=cycExport(c);setBk(j);try{navigator.clipboard.writeText(j).catch(()=>{})}catch(e){}try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));a.download='ciklus-adatok.json';a.click();toast('Ciklus-adatok exportálva')}catch(e){toast('Az exportálás nem sikerült.')}},
   imp=()=>{try{const d=cycParse(bk);cycSet({...cycMerge(c,d),on:true});setBk('');toast('Ciklus-adatok betöltve')}catch(e){toast('A fájl vagy a szöveg hibás')}},
   file=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>setBk(String(r.result));r.readAsText(f)};
- return html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3 mt-3'><div class='font-semibold mb-1'>Átvitel másik eszközre</div><p class='text-xs text-zinc-500 mb-3'>Az adat nem kerül a szerverre. Exportáld fájlba, majd a másik eszközön töltsd vissza a fájlt vagy a szöveget. A betöltés hozzáadja a hiányzó dátumokat.</p>
-  <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${exp} class=${bt}>Exportálás fájlba</button><label class=${bt+' flex items-center justify-center'}>Fájl kiválasztása<input type='file' accept='.json,application/json' onChange=${file} class='hidden'/></label></div>
-  <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Az exportált szöveg ide másolható a visszatöltéshez' class='w-full h-20 rounded-xl bg-zinc-800 text-xs p-3 text-white outline-none mb-2'></textarea>
+ return html`<div class='up k-card'><div class='k-cd-t'>Átvitel másik eszközre</div><p class='k-hint'>Az adat nem kerül a szerverre. Exportáld fájlba, majd a másik eszközön töltsd vissza a fájlt vagy a szöveget. A betöltés hozzáadja a hiányzó dátumokat.</p>
+  <div class='k-g2 k-mb'><button onClick=${exp} class=${bt}>Exportálás fájlba</button><label class=${bt+' flex items-center justify-center'}>Fájl kiválasztása<input type='file' accept='.json,application/json' onChange=${file} class='hidden'/></label></div>
+  <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Az exportált szöveg ide másolható a visszatöltéshez' class='k-in k-ta k-mb'></textarea>
   <button onClick=${imp} class=${'w-full '+bt}>Visszatöltés</button></div>`;
 }

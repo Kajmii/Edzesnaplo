@@ -12,13 +12,13 @@ const socPublish=async(w,pr)=>{
 
 function ActCard({a,p,open,del}){
  const sm=a.summary||{},nm=Array.isArray(sm.names)?sm.names:[];
- return html`<div class='py-3 border-b border-zinc-800'>
-  ${p&&html`<button onClick=${()=>open&&open(p.username)} class='flex items-center gap-2 mb-2 text-left'><${Avatar} p=${p} s=${32}/><span class='text-sm font-medium'>${p.display_name}</span><span class='text-xs text-zinc-500'>@${p.username}</span></button>`}
-  <div class='font-medium'>${a.title}</div>
-  <div class='text-xs text-zinc-400 mt-0.5'>${socDay(a.created_at)} · ${socSum(sm)}</div>
-  ${+sm.prs>0&&html`<div class='text-xs text-lime-300 mt-1'>${LANG==='en'?sm.prs+(+sm.prs===1?' new record':' new records'):sm.prs+' új rekord'}</div>`}
-  ${nm.length>0&&html`<div class='text-xs text-zinc-500 mt-1'>${nm.join(', ')}</div>`}
-  ${del&&html`<button onClick=${()=>del(a)} class='mt-2 h-8 px-3 rounded-lg bg-zinc-800 text-xs text-red-400'>Aktivitás törlése</button>`}</div>`;
+ return html`<div class='k-item'>
+  ${p&&html`<button type='button' onClick=${()=>open&&open(p.username)} class='k-who' style=${{marginBottom:'8px'}}><${Avatar} p=${p} s=${32}/><span class='k-row-t k-trunc'>${p.display_name}</span><span class='k-row-s k-trunc'>@${p.username}</span></button>`}
+  <div class='k-row-t'>${a.title}</div>
+  <div class='k-row-s'>${socDay(a.created_at)} · ${socSum(sm)}</div>
+  ${+sm.prs>0&&html`<div class='k-act-pr'>${LANG==='en'?sm.prs+(+sm.prs===1?' new record':' new records'):sm.prs+' új rekord'}</div>`}
+  ${nm.length>0&&html`<div class='k-row-s'>${nm.join(', ')}</div>`}
+  ${del&&html`<${KBtn} v='dan' sm=${true} c='k-mt' onClick=${()=>del(a)}>Aktivitás törlése<//>`}</div>`;
 }
 
 // A követettek megosztott aktivitásai, időrendben (az RLS szűri, hogy melyik látszik)
@@ -31,12 +31,12 @@ function SocFeed({me,open}){
    setPm(np);setItems(x=>before?[...(x||[]),...r.j]:r.j);setMore(r.j.length>=20)}
   catch(r){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.');setItems(x=>x||[])}setBusy(false)};
  useEffect(()=>{load()},[]);
- if(items===null)return html`<p class='text-sm text-zinc-400'>Betöltés...</p>`;
- return html`<div>${msg&&html`<p class='text-sm text-amber-400 mb-3'>${msg}</p>`}
-  ${!items.length&&!msg&&html`<p class='text-sm text-zinc-400'>Itt a követett felhasználók megosztott edzései jelennek meg. Kövess valakit a Kapcsolatok fülön.</p>`}
-  ${items.length>0&&html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'>${items.map(a=>html`<${ActCard} key=${a.id} a=${a} p=${pm[a.user_id]} open=${open}/>`)}</div>`}
-  ${more&&html`<button onClick=${()=>load(items[items.length-1].created_at)} disabled=${busy} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold'>Több betöltése</button>`}
-  ${items.length===0&&html`<button onClick=${()=>load()} disabled=${busy} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold mt-3'>Frissítés</button>`}</div>`;
+ if(items===null)return html`<${KBusy} t='Betöltés'/>`;
+ return html`<div>${msg&&html`<p class='k-hint k-warn'>${msg}</p>`}
+  ${!items.length&&!msg&&html`<p class='k-hint'>Itt a követett felhasználók megosztott edzései jelennek meg. Kövess valakit a Kapcsolatok fülön.</p>`}
+  ${items.length>0&&html`<div class='up k-card'>${items.map(a=>html`<${ActCard} key=${a.id} a=${a} p=${pm[a.user_id]} open=${open}/>`)}</div>`}
+  ${more&&html`<button onClick=${()=>load(items[items.length-1].created_at)} disabled=${busy} class='k-btn sec sm full'>Több betöltése</button>`}
+  ${items.length===0&&html`<button onClick=${()=>load()} disabled=${busy} class='k-btn sec sm full k-mt'>Frissítés</button>`}</div>`;
 }
 
 // Más felhasználó profilja: fejléc, számok és aktivitás-lista. Privát profilnál idegennek csak az azonosító látszik.
@@ -48,16 +48,16 @@ function SocProfile({u,me,back}){
    if(x&&x.can_view){const a=await sbf('/rest/v1/activities?select=*&user_id=eq.'+x.user_id+'&order=created_at.desc&limit=30');if(!a.ok)throw a;if(!off)setActs(a.j)}
   }catch(r){if(!off){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.');setP(null)}}})();
   return()=>{off=true}},[u]);
- const St=({l,v})=>html`<div class='flex-1 text-center'><div class='fd text-2xl font-bold'>${v}</div><div class='text-[11px] text-zinc-400'>${l}</div></div>`;
- return html`<div><button onClick=${back} class='h-10 px-3 -ml-3 mb-2 flex items-center gap-1 text-sm text-zinc-300'><${Ic} n='chevL' s=${18}/>Vissza</button>
-  ${p===undefined&&html`<p class='text-sm text-zinc-400'>Betöltés...</p>`}
-  ${p===null&&html`<p class='text-sm text-zinc-400'>${msg||'A felhasználó nem található.'}</p>`}
-  ${p&&html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'>
-   <div class='flex items-center gap-4'><${Avatar} p=${p} s=${72}/><div class='min-w-0'><div class='fd text-2xl font-bold truncate'>${p.display_name}</div><div class='text-sm text-zinc-400 truncate'>@${p.username}</div></div></div>
-   ${p.can_view?html`<div class='flex mt-4'><${St} l='Követők' v=${p.followers}/><${St} l='Követett' v=${p.following}/><${St} l='Aktivitás' v=${p.activities}/></div>`:html`<p class='text-sm text-zinc-400 mt-4 flex items-center gap-2'><${Ic} n='lock' s=${16}/>Privát profil. A tartalmát csak a barátai látják.</p>`}
-   ${p.user_id!==me&&R.d&&R.btns(p)}${R.msg&&html`<p class='text-sm text-amber-400 mt-2'>${R.msg}</p>`}</div>
-   ${p.can_view&&html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold'>Aktivitások</div>
-    ${acts===null?html`<p class='text-sm text-zinc-400 mt-2'>Betöltés...</p>`:acts.length?acts.map(a=>html`<${ActCard} key=${a.id} a=${a}/>`):html`<p class='text-sm text-zinc-400 mt-2'>Még nincs megosztott aktivitás.</p>`}</div>`}`}</div>`;
+ const St=({l,v})=>html`<div class='k-stat'><div class='k-stat-v' style=${{justifyContent:'center'}}>${v}</div><div class='k-stat-l' style=${{textAlign:'center'}}>${l}</div></div>`;
+ return html`<div><${KBtn} v='gho' sm=${true} ic='back' onClick=${back}>Vissza<//>
+  ${p===undefined&&html`<${KBusy} t='Betöltés'/>`}
+  ${p===null&&html`<p class='k-hint'>${msg||'A felhasználó nem található.'}</p>`}
+  ${p&&html`<div class='up k-card'>
+   <div class='k-ph' style=${{marginBottom:0}}><${Avatar} p=${p} s=${72}/><div><div class='k-wh-t k-trunc'>${p.display_name}</div><div class='k-row-s k-trunc'>@${p.username}</div></div></div>
+   ${p.can_view?html`<div class='k-stats c3 k-mt'><${St} l='Követők' v=${p.followers}/><${St} l='Követett' v=${p.following}/><${St} l='Aktivitás' v=${p.activities}/></div>`:html`<p class='k-hint k-ic'><${Ic} n='lock' s=${16}/>Privát profil. A tartalmát csak a barátai látják.</p>`}
+   ${p.user_id!==me&&R.d&&R.btns(p)}${R.msg&&html`<p class='k-hint k-warn'>${R.msg}</p>`}</div>
+   ${p.can_view&&html`<div class='up k-card'><div class='k-cd-t'>Aktivitások</div>
+    ${acts===null?html`<p class='k-hint'>Betöltés...</p>`:acts.length?acts.map(a=>html`<${ActCard} key=${a.id} a=${a}/>`):html`<p class='k-hint'>Még nincs megosztott aktivitás.</p>`}</div>`}`}</div>`;
 }
 
 // Saját megosztott aktivitásaim (törölhetők)
@@ -68,8 +68,8 @@ function SocMine({me}){
  const del=async a=>{try{const r=await sbf('/rest/v1/activities?id=eq.'+a.id,{method:'DELETE',headers:{Prefer:'return=minimal'}});if(!r.ok)throw r;setItems(x=>x.filter(y=>y.id!==a.id))}catch(r){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.')}};
  const all=async()=>{if(!cf)return setCf(true);try{const r=await sbf('/rest/v1/activities?user_id=eq.'+me,{method:'DELETE',headers:{Prefer:'return=minimal'}});if(!r.ok)throw r;setItems([]);setCf(false);toast('Aktivitások törölve')}catch(r){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.')}};
  if(items===null)return null;
- return html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold'>Megosztott aktivitásaid</div>
-  ${msg&&html`<p class='text-sm text-amber-400 mt-2'>${msg}</p>`}
-  ${items.length?items.map(a=>html`<${ActCard} key=${a.id} a=${a} del=${del}/>`):html`<p class='text-sm text-zinc-400 mt-2'>Még nincs megosztott aktivitásod.</p>`}
-  ${items.length>0&&html`<button onClick=${all} class=${'w-full h-11 rounded-xl text-sm font-semibold mt-3 '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Összes aktivitás törlése'}</button>`}</div>`;
+ return html`<div class='up k-card'><div class='k-cd-t'>Megosztott aktivitásaid</div>
+  ${msg&&html`<p class='k-hint k-warn'>${msg}</p>`}
+  ${items.length?items.map(a=>html`<${ActCard} key=${a.id} a=${a} del=${del}/>`):html`<p class='k-hint'>Még nincs megosztott aktivitásod.</p>`}
+  ${items.length>0&&html`<button onClick=${all} class=${'k-btn dan sm full k-mt'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Összes aktivitás törlése'}</button>`}</div>`;
 }

@@ -70,36 +70,36 @@ function Social(){
    const b=await sbf('/rest/v1/profile_settings?user_id=eq.'+id,{method:'DELETE',headers:{Prefer:'return=minimal'}});if(!b.ok)throw b;
    setPr(null);setSe(null);setCf(false);setTerms(false);setF({username:'',display_name:'',avatar_color:'lime',avatar_icon:'initial'});setSt('none');toast('Profil törölve');
   }catch(r){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.')}setBusy(false)};
- const bt='w-full h-12 rounded-xl font-bold bg-lime-400 text-black'+(busy?' opacity-60':'');
- const Msg=()=>msg?html`<p class='text-sm text-amber-400 mt-2'>${msg}</p>`:null;
+ const bt='k-btn pri full';
+ const Msg=()=>msg?html`<p class='k-hint k-warn'>${msg}</p>`:null;
  const Form=()=>html`<div>
-  <div class='flex items-center gap-4 mb-4'><${Avatar} p=${{...f}} s=${72}/><div class='min-w-0'><div class='font-semibold truncate'>${f.display_name.trim()||'Neved'}</div><div class='text-sm text-zinc-400 truncate'>@${f.username||'felhasznalonev'}</div></div></div>
-  <span class='text-xs text-zinc-400'>Felhasználónév</span>
+  <div class='k-ph'><${Avatar} p=${{...f}} s=${72}/><div><div class='k-wh-t k-trunc'>${f.display_name.trim()||'Neved'}</div><div class='k-row-s k-trunc'>@${f.username||'felhasznalonev'}</div></div></div>
+  <span class='k-fld-l'>Felhasználónév</span>
   <input value=${f.username} onChange=${e=>set({username:socClean(e.target.value)})} placeholder='pl. edzo_anna' autoCapitalize='none' autoCorrect='off' spellCheck=${false} class=${inp+' !text-left px-4 !text-base mb-1'}/>
-  <p class='text-[11px] text-zinc-500 mb-3'>3–20 karakter: kisbetű, szám és aláhúzás. Mentés után 30 naponta egyszer módosíthatod.</p>
-  <span class='text-xs text-zinc-400'>Megjelenített név</span>
+  <p class='k-hint'>3–20 karakter: kisbetű, szám és aláhúzás. Mentés után 30 naponta egyszer módosíthatod.</p>
+  <span class='k-fld-l'>Megjelenített név</span>
   <input value=${f.display_name} onChange=${e=>set({display_name:e.target.value.slice(0,40)})} placeholder='Megjelenített név' class=${inp+' !text-left px-4 !text-base mb-3'}/>
-  <span class='text-xs text-zinc-400'>Avatar színe</span>
-  <div class='flex gap-3 flex-wrap mt-2 mb-3'>${SOC_COLORS.map(k=>html`<button key=${k} onClick=${()=>set({avatar_color:k})} style=${{background:ACCS[k][3]}} class=${'w-10 h-10 rounded-full '+(f.avatar_color===k?'ring-4 ring-white/80':'')}></button>`)}</div>
-  <span class='text-xs text-zinc-400'>Avatar jele</span>
-  <div class='flex gap-2 flex-wrap mt-2'>${SOC_ICONS.map(k=>html`<button key=${k} onClick=${()=>set({avatar_icon:k})} class=${'w-12 h-12 rounded-xl flex items-center justify-center '+(f.avatar_icon===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${k==='initial'?html`<span class='fd text-xl font-bold'>Aa</span>`:html`<${Ic} n=${k} s=${22}/>`}</button>`)}</div></div>`;
- if(st==='load')return html`<div><h1 class='fd text-4xl font-bold mb-3'>Közösség</h1><p class='text-sm text-zinc-400'>Betöltés...</p></div>`;
- if(st==='err')return html`<div><h1 class='fd text-4xl font-bold mb-3'>Közösség</h1><p class='text-sm text-amber-400'>${msg||'Nem sikerült betölteni.'}</p><button onClick=${load} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold mt-3'>Újra</button></div>`;
- if(st==='none')return html`<div><h1 class='fd text-4xl font-bold mb-1'>Közösség</h1><p class='text-sm text-zinc-400 mb-4'>Hozz létre profilt. Alapból privát: idegenek csak a felhasználónevedet, a neved és az avatarod látják, az edzéseid és más adataid nem.</p>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'>${Form()}</div>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Közösségi szabályok</div>
-   <ul class='text-xs text-zinc-400 grid gap-1 mb-3'><li>Tilos a zaklatás, a gyűlöletkeltés és a mások megsértése.</li><li>Tilos a spam és a megtévesztő vagy jogsértő tartalom.</li><li>A jelentett tartalmat és a szabályt sértő fiókot eltávolíthatjuk.</li><li>Bárkit tilthatsz, és bármit jelenthetsz.</li></ul>
-   <button onClick=${()=>setTerms(!terms)} class='w-full flex items-center gap-3 text-left text-sm'><span class=${'w-6 h-6 rounded-md flex items-center justify-center shrink-0 '+(terms?'bg-lime-400 text-black':'bg-zinc-800')}>${terms&&html`<${Ic} n='check' s=${16}/>`}</span>Elfogadom a közösségi szabályokat</button></div>
+  <span class='k-fld-l'>Avatar színe</span>
+  <div class='k-sws'>${SOC_COLORS.map(k=>html`<button type='button' key=${k} aria-pressed=${f.avatar_color===k} aria-label=${ACCS[k][0]} onClick=${()=>set({avatar_color:k})} style=${{background:ACCS[k][3]}} class='k-sw-c'></button>`)}</div>
+  <span class='k-fld-l'>Avatar jele</span>
+  <div class='k-sws'>${SOC_ICONS.map(k=>html`<button type='button' key=${k} aria-pressed=${f.avatar_icon===k} onClick=${()=>set({avatar_icon:k})} class='k-ibx'>${k==='initial'?html`<span class='fd'>Aa</span>`:html`<${Ic} n=${k} s=${22}/>`}</button>`)}</div></div>`;
+ if(st==='load')return html`<${KBusy} t='Betöltés'/>`;
+ if(st==='err')return html`<div><p class='k-hint k-warn'>${msg||'Nem sikerült betölteni.'}</p><button onClick=${load} class='k-btn sec sm full k-mt'>Újra</button></div>`;
+ if(st==='none')return html`<div><p class='k-lead'>Hozz létre profilt. Alapból privát: idegenek csak a felhasználónevedet, a neved és az avatarod látják, az edzéseid és más adataid nem.</p>
+  <div class='up k-card'>${Form()}</div>
+  <div class='up k-card'><div class='k-cd-t'>Közösségi szabályok</div>
+   <ul class='k-rules'><li>Tilos a zaklatás, a gyűlöletkeltés és a mások megsértése.</li><li>Tilos a spam és a megtévesztő vagy jogsértő tartalom.</li><li>A jelentett tartalmat és a szabályt sértő fiókot eltávolíthatjuk.</li><li>Bárkit tilthatsz, és bármit jelenthetsz.</li></ul>
+   <button type='button' role='checkbox' aria-checked=${terms} onClick=${()=>setTerms(!terms)} class='k-chk'><span class='k-chk-b'>${terms&&html`<${UiIco} n='check' s=${18}/>`}</span>Elfogadom a közösségi szabályokat</button></div>
   <button onClick=${create} disabled=${busy} class=${bt}>Profil létrehozása</button>${Msg()}</div>`;
- if(pv)return html`<div><h1 class='fd text-4xl font-bold mb-3'>Közösség</h1><${SocProfile} u=${pv} me=${id} back=${()=>setPv(null)}/></div>`;
- return html`<div><h1 class='fd text-4xl font-bold mb-3'>Közösség</h1>
-  <div class='flex gap-2 mb-3'>${[['feed','Hírfolyam'],['conn','Kapcsolatok'],['prof','Profil']].map(([k,l])=>html`<button key=${k} onClick=${()=>setTb(k)} class=${'flex-1 h-11 rounded-xl text-sm font-semibold '+(tb===k?'bg-lime-400 text-black':'bg-zinc-800 text-zinc-300')}>${l}</button>`)}</div>
+ if(pv)return html`<div><${SocProfile} u=${pv} me=${id} back=${()=>setPv(null)}/></div>`;
+ return html`<div>
+  <${KTabs} v=${tb} on=${setTb} o=${[['feed','Hírfolyam'],['conn','Kapcsolatok'],['prof','Profil']]}/>
   ${tb==='feed'?html`<${SocFeed} me=${id} open=${setPv}/>`:tb==='conn'?html`<${SocConn} me=${id} open=${setPv}/>`:html`<div>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'>${Form()}<button onClick=${save} disabled=${busy} class=${bt+' mt-4'}>Mentés</button>${Msg()}</div>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Adatvédelem</div>
+  <div class='up k-card'>${Form()}<button onClick=${save} disabled=${busy} class=${bt+' mt-4'}>Mentés</button>${Msg()}</div>
+  <div class='up k-card'><div class='k-cd-t'>Adatvédelem</div>
    <${Sw} l='Nyilvános profil' s=${se&&se.is_public?'Bárki látja a profilod és a megosztott aktivitásaid.':'Privát: idegenek csak a felhasználóneved, a neved és az avatarod látják.'} v=${!!(se&&se.is_public)} on=${v=>pub(v,'is_public')}/>
    <${Sw} l='Edzéseim megosztása' s=${se&&se.share_activity?'A befejezett edzéseid összefoglalója megjelenik a követőidnél és a barátaidnál, a profilod láthatósága szerint.':'Kikapcsolva: az edzéseid nem jelennek meg a közösségben.'} v=${!!(se&&se.share_activity)} on=${v=>pub(v,'share_activity')}/></div>
   <${SocMine} me=${id}/>
-  <div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-1'>Profil törlése</div><p class='text-xs text-zinc-500 mb-3'>A profil és a közösségi beállításaid törlődnek. Az edzéseid és a többi adatod nem érintett.</p>
-   <button onClick=${del} disabled=${busy} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Profil törlése'}</button></div></div>`}</div>`;
+  <div class='up k-card'><div class='k-cd-t'>Profil törlése</div><p class='k-hint'>A profil és a közösségi beállításaid törlődnek. Az edzéseid és a többi adatod nem érintett.</p>
+   <button onClick=${del} disabled=${busy} class=${'k-btn dan sm full'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Profil törlése'}</button></div></div>`}</div>`;
 }

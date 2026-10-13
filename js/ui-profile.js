@@ -9,22 +9,22 @@ function Profile({user,go,out}){
  const sex=x=>{sp({sex:x,sexSel:true});if(x==='f'&&!cycGet().on)window.dispatchEvent(new Event('cycprompt'))};
  const num=(k)=>x=>st({[k]:Math.max(0,Math.round(+x||0))});
  return html`<div>
-  <h1 class='fd text-4xl font-bold mb-4'>Profil</h1>
+  
   <${Cd} t='Adatok'>
    <div class='mb-3'><${Sg} v=${p.sex} on=${sex} o=${[['m','Férfi'],['f','Nő']]}/></div>
-   <div class='grid grid-cols-2 gap-2'><${F} l='Életkor' u='év' v=${p.age} on=${x=>sp({age:x})}/><${F} l='Magasság' u='cm' v=${p.cm} on=${x=>sp({cm:x})}/><${F} l='Testsúly' u='kg' v=${p.kg} on=${x=>sp({kg:x})}/><${F} l='Testzsír (opcionális)' u='%' v=${p.bf} on=${x=>sp({bf:x})}/></div>
-   ${bmi>0&&html`<div class='flex justify-between text-sm mt-3 pt-3 border-t border-zinc-800'><span class='text-zinc-400'>BMI</span><span class='fd text-xl font-bold'>${bmi.toFixed(1)}</span></div>`}
+   <div class='k-g2'><${F} l='Életkor' u='év' v=${p.age} on=${x=>sp({age:x})}/><${F} l='Magasság' u='cm' v=${p.cm} on=${x=>sp({cm:x})}/><${F} l='Testsúly' u='kg' v=${p.kg} on=${x=>sp({kg:x})}/><${F} l='Testzsír (opcionális)' u='%' v=${p.bf} on=${x=>sp({bf:x})}/></div>
+   ${bmi>0&&html`<div class='k-tr2 k-tr' style=${{marginTop:'12px'}}><span>BMI</span><b class='k-pr'>${bmi.toFixed(1)}</b></div>`}
   <//>
   <${Cd} t='Napi célok'>
-   <div class='grid grid-cols-2 gap-2'><${F} l='Kalória' u='kcal' v=${tg.k} on=${num('k')}/><${F} l='Fehérje' u='g' v=${tg.p} on=${num('p')}/><${F} l='Szénhidrát' u='g' v=${tg.c} on=${num('c')}/><${F} l='Zsír' u='g' v=${tg.f} on=${num('f')}/></div>
-   <div class='text-xs text-zinc-400 mt-3'>${LANG==='en'?'The macros add up to '+mk+' kcal.':'A makrók összesen '+mk+' kcal-t adnak.'}</div>
-   ${off&&html`<div class='text-xs text-amber-400 mt-1'>A makrók és a kalória-cél eltér.</div>`}
-   <button onClick=${()=>go('tools','k')} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold mt-3'>Célok kiszámolása a Kalória számolóban</button>
+   <div class='k-g2'><${F} l='Kalória' u='kcal' v=${tg.k} on=${num('k')}/><${F} l='Fehérje' u='g' v=${tg.p} on=${num('p')}/><${F} l='Szénhidrát' u='g' v=${tg.c} on=${num('c')}/><${F} l='Zsír' u='g' v=${tg.f} on=${num('f')}/></div>
+   <div class='k-hint'>${LANG==='en'?'The macros add up to '+mk+' kcal.':'A makrók összesen '+mk+' kcal-t adnak.'}</div>
+   ${off&&html`<div class='k-hint k-warn'>A makrók és a kalória-cél eltér.</div>`}
+   <button onClick=${()=>go('tools','k')} class='k-btn sec sm full k-mt'>Célok kiszámolása a Kalória számolóban</button>
   <//>
   <${Cd} t='Fiók'>
    <div class='text-sm break-all'>${(SESS&&SESS.user&&SESS.user.email)||user}</div>
-   <button onClick=${()=>go('social')} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold mt-3'>Közösségi profil</button>
-   <button onClick=${out} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold mt-2 text-red-400'>Kilépés</button>
+   <button onClick=${()=>go('social')} class='k-btn sec sm full k-mt'>Közösségi profil</button>
+   <button onClick=${out} class='k-btn dan sm full k-mt'>Kilépés</button>
   <//>
  </div>`;
 }

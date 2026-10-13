@@ -3,16 +3,16 @@ const ACCS={lime:['Lime','190 242 100','163 230 53','#a3e635','77 124 15','#65a3
 const THEMES={alap:['Alap','63 63 70','39 39 42','24 24 27','9 11 14'],amoled:['AMOLED','43 43 48','26 26 29','12 12 14','0 0 0'],kek:['Éjkék','45 63 94','28 42 66','17 26 43','10 16 32'],grafit:['Grafit','68 72 80','46 49 54','32 34 38','18 19 22']};
 // Világos mód: [név, z7 (kapcsoló-sáv, elválasztó), z8, z9, háttér]
 const LIGHT=['Világos','190 190 197','228 228 231','255 255 255','244 245 248'];
-const Cd=({t,children})=>html`<div class='up bg-zinc-900 border border-zinc-800 rounded-2xl p-4 mb-3'><div class='font-semibold mb-3'>${t}</div>${children}</div>`;
-const Lb=({t})=>html`<div class='text-xs text-zinc-400 mt-3 mb-2'>${t}</div>`;
-const Sw=({l,s,v,on})=>html`<button onClick=${()=>on(!v)} class='w-full flex items-center justify-between gap-3 py-2.5 text-left'><span><span class='block'>${l}</span>${s&&html`<span class='block text-xs text-zinc-500'>${s}</span>`}</span><span class=${'w-12 h-7 rounded-full p-1 shrink-0 '+(v?'bg-lime-400':'bg-zinc-700')}><span class=${'block w-5 h-5 rounded-full bg-white transition-transform '+(v?'translate-x-5':'')}></span></span></button>`;
+const Cd=({t,children})=>html`<div class='up k-card'><div class='k-cd-t'>${t}</div>${children}</div>`;
+const Lb=({t})=>html`<div class='k-lb'>${t}</div>`;
+const Sw=KSw;
 function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,delAcc}){
  const[bk,setBk]=useState(''),[cf,setCf]=useState(false),[cd,setCd]=useState(false),o=x=>setOpt(p=>({...p,...x}));
  const exp=()=>{const j=JSON.stringify({hist,plan,opt});setBk(j);try{navigator.clipboard.writeText(j).then(()=>toast('Mentés a vágólapra másolva')).catch(()=>{})}catch(e){}};
  const imp=()=>{try{const d=JSON.parse(bk);if(d.hist)setHist(d.hist);if(d.plan)setPlan(d.plan);if(d.opt)setOpt(d.opt);toast('Adatok visszatöltve')}catch(e){toast('A mentés szövege hibás')}};
- const bt='h-11 rounded-xl bg-zinc-800 text-sm font-semibold';
+ const bt='k-btn sec sm';
  useEffect(()=>{if(anchor==='data')setTimeout(()=>{try{document.getElementById('opt-data').scrollIntoView({block:'start'})}catch(e){}},60)},[]);
- return html`<div><h1 class='fd text-4xl font-bold mb-4'>Beállítások</h1>
+ return html`<div>
   <${UiSwitcher} opt=${opt} o=${o}/>
   <${Cd} t='Megjelenés'>
    <${Lb} t='Nyelv / Language'/><${Sg} v=${opt.lang} on=${x=>{try{localStorage.setItem('en_lang',x)}catch(e){}o({lang:x})}} o=${[['hu','Magyar'],['en','English']]}/>
@@ -32,12 +32,12 @@ function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,d
   ${cycAvail()&&html`<${Cd} t='Ciklus-követés'><${Sw} l='Ciklus-követés' s='Naptár és edzési javaslatok. Az adat csak ezen az eszközön van.' v=${cycGet().on} on=${x=>cycSet({...cycGet(),on:x})}/><//>`}
   <div id='opt-data'></div>
   <${Cd} t='Adatok'>
-   <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
-   <div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>
-   <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Másold ide a mentés szövegét a visszatöltéshez' class='w-full h-24 rounded-xl bg-zinc-800 text-xs p-3 text-white outline-none mb-2'></textarea>
-   <button onClick=${()=>{if(cf){setHist([]);setCf(false);toast('Előzmények törölve')}else setCf(true)}} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cf?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cf?'Biztosan törlöd?':'Összes edzés törlése'}</button>
+   <div class='k-g2 k-mb'><button onClick=${()=>exportCSV(hist)} class=${bt}>Exportálás (Excel/CSV)</button><button onClick=${()=>exportPDF(hist)} class=${bt}>PDF / nyomtatás</button></div>
+   <div class='k-g2 k-mb'><button onClick=${exp} class=${bt}>Mentés másolása</button><button onClick=${imp} class=${bt}>Visszatöltés</button></div>
+   <textarea value=${bk} onChange=${e=>setBk(e.target.value)} placeholder='Másold ide a mentés szövegét a visszatöltéshez' class='k-in k-ta k-mb'></textarea>
+   <button onClick=${()=>{if(cf){setHist([]);setCf(false);toast('Előzmények törölve')}else setCf(true)}} class=${'k-btn dan sm full'+(cf?' ask':'')}>${cf?'Biztosan törlöd?':'Összes edzés törlése'}</button>
   <//>
-  <${Cd} t='Fiók és szinkron'><div class='text-zinc-300 text-sm break-all'>${(SESS&&SESS.user&&SESS.user.email)||user}</div><div class='text-xs text-zinc-400 mt-1 mb-3'>${sy.s==='ok'?'Utoljára szinkronizálva: '+sy.t:sy.s==='busy'?'Szinkronizálás...':sy.s==='off'?'Offline, a változások később szinkronizálódnak.':sy.s==='err'?'Szinkronhiba':'Még nem szinkronizált'}</div><div class='grid grid-cols-2 gap-2 mb-2'><button onClick=${syncNow} class=${bt}>Szinkronizálás most</button><button onClick=${out} class=${bt}>Kilépés</button></div><button onClick=${()=>{if(cd)delAcc();else setCd(true)}} class=${'w-full h-11 rounded-xl text-sm font-semibold '+(cd?'bg-red-500 text-white':'bg-zinc-800 text-red-400')}>${cd?'Biztosan törlöd a fiókot és minden adatot?':'Fiók törlése'}</button><//>
+  <${Cd} t='Fiók és szinkron'><div class='k-row-t' style=${{overflowWrap:'anywhere'}}>${(SESS&&SESS.user&&SESS.user.email)||user}</div><div class='k-hint k-mb'>${sy.s==='ok'?'Utoljára szinkronizálva: '+sy.t:sy.s==='busy'?'Szinkronizálás...':sy.s==='off'?'Offline, a változások később szinkronizálódnak.':sy.s==='err'?'Szinkronhiba':'Még nem szinkronizált'}</div><div class='k-g2 k-mb'><button onClick=${syncNow} class=${bt}>Szinkronizálás most</button><button onClick=${out} class=${bt}>Kilépés</button></div><button onClick=${()=>{if(cd)delAcc();else setCd(true)}} class=${'k-btn dan sm full'+(cd?' ask':'')}>${cd?'Biztosan törlöd a fiókot és minden adatot?':'Fiók törlése'}</button><//>
  </div>`;
 }
 

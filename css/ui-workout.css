@@ -55,7 +55,7 @@ html[data-ui] .gw-back{width:48px;min-height:48px;height:48px;padding:0;display:
 .gw-timer{width:64px;text-align:right;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
 .gw-main{display:flex;flex-direction:column;gap:16px;padding:18px var(--ui-px) 16px}
 .gw-eh{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
-html[data-ui] .gw-ek{min-height:0;padding:0;border:0;background:transparent;font-family:inherit;font-weight:800;font-size:12px;letter-spacing:.16em;color:rgb(var(--ui-accent-text));text-transform:uppercase;cursor:pointer}
+html[data-ui] .gw-ek{min-height:0;padding:13px 0;margin:-13px 0;border:0;background:transparent;font-family:inherit;font-weight:800;font-size:12px;letter-spacing:.16em;color:rgb(var(--ui-accent-text));text-transform:uppercase;cursor:pointer}
 .gw-h{margin:0;font-family:var(--ui-font-head);font-weight:400;font-size:38px;line-height:1;letter-spacing:.01em;text-transform:uppercase;overflow-wrap:break-word;min-width:0}
 html[data-ui] .gw-hb{min-height:0;padding:0;border:0;background:transparent;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;text-align:left;cursor:pointer}
 .gw-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-family:var(--ui-font-head)}
