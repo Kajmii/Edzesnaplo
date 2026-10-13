@@ -116,6 +116,7 @@ function HomeX({c,hist,today,opt,setOpt,ui}){
   ${on('home.easy')&&html`<${KSec} t='Könnyű mozdulatok'><${KCard}><div class='k-list'>${UI_EASY.map((t,i)=>html`<button key=${i} type='button' role='checkbox' aria-checked=${easy.includes(i)} class='k-row' onClick=${()=>tgl(i)}><span class='k-row-tx'><span class=${'k-row-t'+(easy.includes(i)?' cur':'')}>${t}</span></span>${easy.includes(i)&&html`<span class='k-row-ic'><${UiIco} n='check' s=${22}/></span>`}</button>`)}</div><//><//>`}
   ${on('home.fontsize')&&html`<${KCard}><${KRow} ic='sliders' t='Betűméret' s='Koppints a váltáshoz' r=${fsl[opt.fs]||'Normál'} onClick=${cycFs}/><//>`}
   <${KCard}><${KRow} ic='sliders' t='Kezdőlap testreszabása' s='Válaszd ki, mit lássál itt' go=${true} onClick=${homeCardsOpen}/><//>
+  ${isGuest()&&html`<${GuestNote}/>`}
  <//>`;
 }
 

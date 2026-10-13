@@ -64,6 +64,7 @@ const FEAT_IMPL=(()=>{const S=m=>[m,m,m],G=p=>({gap:p});return{
  'opt.motion':S('function Opts('),
  'opt.vibrate':S('function Opts('),
  'opt.level':S('function LevelPick('),
+ 'acct.guest':S('const GUEST='),
  'opt.home':S('function HomeCardsSheet('),
  'opt.contrast':S('Opts:opt.hc'),
  'opt.quiet':S('Opts:qh.on'),

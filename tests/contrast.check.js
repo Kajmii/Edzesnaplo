@@ -26,6 +26,6 @@ assert.deepStrictEqual(fails,[],'kontraszt: '+fails.join(' | '));
 assert.strictEqual(n,9);
 // bekötés: a CSS be van kötve, az alkalmazás az opt.hc-t a data-hc attribútumra és a korai scriptbe is tükrözi
 assert.ok(idx.includes('css/ui-contrast.css')&&idx.indexOf('css/ui-contrast.css')>idx.indexOf('css/tokens.css'),'a ui-contrast.css a tokens.css után kell');
-assert.ok(/data-hc/.test(core)&&/en_hc/.test(core)&&/en_hc/.test(idx),'az opt.hc nincs bekötve (core.js, korai script)');
+assert.ok(/data-hc/.test(core)&&/en_contrast/.test(core)&&/en_contrast/.test(idx)&&!/setItem\('en_hc'/.test(core),'az opt.hc nincs bekötve (core.js, korai script)');
 assert.ok(/uiApply\(opt\)/.test(app));
 console.log('rendben: nagy kontraszt (9 séma, 7:1 szöveg, 3:1 vonal)');

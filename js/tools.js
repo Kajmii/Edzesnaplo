@@ -99,6 +99,6 @@ function Body({setP}){
    <${KCard}><${Chart} pts=${pts} dec=${1}/><//>`}
    <${KCard}><div class='k-list'>${bw.slice(-5).reverse().map(e=>html`<div key=${e.d} class='k-row'><span class='k-row-tx'><span class='k-row-t'>${fd(e.d)}</span><span class='k-row-s'>${MS.filter(([k])=>e[k]).map(([k,n,un])=>e[k]+' '+un).join(' · ')}</span></span><${KDel} on=${()=>setBw(b=>b.filter(x=>x.d!==e.d))}/></div>`)}</div><//>`}
   ${!bw.length&&html`<p class='k-hint'>Mérd meg magad és mentsd el: a grafikon a változást mutatja.</p>`}</div>`;
- return html`<div>${lvlOn('body.photos')&&html`<${KTabs} v=${bt} on=${setBt} o=${[['m','Mérések'],['f','Fotók']]}/>`}${bt==='f'?html`<${Photos}/>`:mi}</div>`;
+ return html`<div>${lvlOn('body.photos')&&html`<${KTabs} v=${bt} on=${setBt} o=${[['m','Mérések'],['f','Fotók']]}/>`}${bt==='f'?(isGuest()?html`<${GuestGate}/>`:html`<${Photos}/>`):mi}</div>`;
 }
 

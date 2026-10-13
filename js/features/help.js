@@ -59,6 +59,7 @@ const HELP={
  "opt.motion":["Az animációk ki- és bekapcsolása.",["Kikapcsolva gyorsabb és kíméli az akkut."],"",""],
  "opt.vibrate":["Rezgés érintéskor és a pihenő végén.",["Kapcsold ki, ha zavar."],"",""],
  "opt.level":["A szint azt szabja, mennyi funkció látszik: lényeg, ajánlott vagy minden.",["Válassz szintet, a menü és a képernyők azonnal igazodnak."],"","A rejtett funkciók a keresésből továbbra is elérhetők."],
+ "acct.guest":["Vendégként fiók nélkül használhatod az appot, az adataid csak ezen a készüléken vannak.",["A közösségi funkciók és a fotók fiókkal érhetők el.","Fiókot később is létrehozhatsz: a Beállításokban vagy a Kezdőlapon."],"","Később fiókot is létrehozhatsz, az adataidat átviheted."],
  "opt.home":["A Kezdőlapon azt látod, amit kérsz: a kártyák egyenként be- és kikapcsolhatók.",["Koppints a „Kezdőlap tartalma” sorra.","Kapcsold a kártyákat egyenként."],"","Bármikor visszakapcsolhatod, az adataid nem változnak."],
  "opt.contrast":["Nagy kontrasztú mód a jobb olvashatóságért.",["Kapcsold be a Beállításokban."],"","Bármikor kikapcsolható."],
  "opt.quiet":["Csendes órák: ilyenkor nem szól az app.",["Add meg a kezdő és a záró időpontot."],"",""],

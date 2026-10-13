@@ -76,8 +76,8 @@ function UiMenu({open,setOpen,home,go}){
    <span class='ui-mnum' aria-hidden='true'>${String(i+1).padStart(2,'0')}</span><span class='ui-mbar' aria-hidden='true'></span>
    <span class='ui-mico' aria-hidden='true'><${UiIco} n=${m.ic}/></span>
    <span class='ui-mtx'><span class='ui-mt'>${m.t}</span><span class='ui-md'>${d}</span>${tag&&html`<span class='ui-mtag'>${tag}</span>`}</span></button></li>`};
- const resEl=res&&res.map(m=>row(m,m.path,m.hidden&&tr('Nem látszik a szinteden')));
- const grEl=!res&&UI_GROUPS.map(([g,t])=>{const it=items.filter(m=>m.g===g);return it.length>0&&html`<section key=${g} class='ui-mg' aria-label=${tr(t)}><h2 class='ui-mgh'>${t}</h2><ul class='ui-mgl ui-stagger' role='list'>${it.map(m=>row(m,m.d[ui]))}</ul></section>`});
+ const resEl=res&&res.map(m=>row(m,m.path,isGuest()&&featNeedsAcct(m.id)?tr('Fiókkal elérhető'):m.hidden&&tr('Nem látszik a szinteden')));
+ const grEl=!res&&UI_GROUPS.map(([g,t])=>{const it=items.filter(m=>m.g===g);return it.length>0&&html`<section key=${g} class='ui-mg' aria-label=${tr(t)}><h2 class='ui-mgh'>${t}</h2><ul class='ui-mgl ui-stagger' role='list'>${it.map(m=>row(m,m.d[ui],isGuest()&&featNeedsAcct(m.id)&&tr('Fiókkal elérhető')))}</ul></section>`});
  const ftEl=!res&&items.filter(m=>m.g==='me').map(m=>row(m,m.d[ui]));
  return html`<${React.Fragment}>
   ${home&&html`<div class='ui-bar-wrap'><button ref=${bar} type='button' class='ui-bar' aria-expanded=${open} aria-controls='ui-menu-list' onClick=${()=>setOpen(true)}>

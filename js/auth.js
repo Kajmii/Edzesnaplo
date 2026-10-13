@@ -15,7 +15,7 @@ async function sbf(path,o={},auth=true,retry=true){
  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(e){}
  return{ok:r.ok,status:r.status,j};
 }
-const BUILD='13okt-6';let DBG=[],DBGF=null;
+const BUILD='13okt-7';let DBG=[],DBGF=null;
 const dbg=m=>{const d=new Date();DBG=[...DBG,String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+' '+m].slice(-6);DBGF&&DBGF()};
 const PL={};const getPl=n=>{try{return NATIVE()&&Capacitor.registerPlugin?(PL[n]=PL[n]||Capacitor.registerPlugin(n)):null}catch(e){return null}};
 const PLA=n=>{try{return NATIVE()&&Capacitor.isPluginAvailable&&Capacitor.isPluginAvailable(n)?1:0}catch(e){return 0}};
@@ -48,7 +48,7 @@ function Reset({done}){
  return html`<div class='k-auth'><div class='up k-auth-in k-stack'><h1 class='k-brand-t'>Új jelszó</h1><input class=${inp+' !text-left'} type='password' placeholder='Új jelszó' value=${p} onChange=${e=>setP(e.target.value)}/>${er&&html`<p class='k-hint k-err'>${er}</p>`}<${KBtn} full=${true} onClick=${go}>Jelszó mentése<//></div></div>`;
 }
 const Fld=({ic,children})=>html`<div class='k-fld-w'><span class='k-ico-i'><${Ic} n=${ic} s=${20}/></span>${children}</div>`;
-function Auth({on,note,gstart,wt,chk,dbgl}){
+function Auth({on,note,gstart,wt,chk,dbgl,guest}){
  const[lg,setLg]=useState(LANG),[m,setM]=useState('in'),[em,setEm]=useState(''),[p,setP]=useState(''),[p2,setP2]=useState(''),[sh,setSh]=useState(false),[er,setEr]=useState(''),[ok,setOk]=useState(''),[bz,setBz]=useState(false);
  const fail=j=>{const t=((j&&(j.error_description||j.msg||j.message))||'')+'';return /invalid login|invalid_grant/i.test(t)?'Hibás e-mail vagy jelszó.':/not confirmed/i.test(t)?'Az e-mail cím még nincs megerősítve.':/already registered|already exists/i.test(t)?'Ehhez az e-mail címhez már tartozik fiók. Lépj be, vagy használd az „Elfelejtett jelszó?” opciót.':/at least|weak/i.test(t)?'A jelszó legalább 6 karakter legyen.':/valid email|invalid format/i.test(t)?'Érvénytelen e-mail cím.':/rate limit/i.test(t)?'Túl sok próba, várj egy kicsit.':t||'Hálózati hiba, próbáld újra.'};
  const em2=()=>em.trim().toLowerCase(),bad=()=>!/^\S+@\S+\.\S+$/.test(em2());
@@ -81,6 +81,7 @@ function Auth({on,note,gstart,wt,chk,dbgl}){
     ${er&&html`<p class='up k-hint k-err'>${er}</p>`}${ok&&html`<p class='up k-hint k-ok'>${ok}</p>`}${note&&html`<p class='up k-hint k-warn' style=${{overflowWrap:'anywhere'}}>${note}</p>`}
     <${KBtn} full=${true} disabled=${bz} onClick=${go}>${bz?'...':m==='in'?'Belépés':'Fiók létrehozása'}<//>
     ${m==='in'&&html`<${KBtn} v='gho' sm=${true} full=${true} onClick=${rec}>Elfelejtett jelszó?<//>`}</div><//>
+  ${guest&&html`<div class='k-or'><span></span>vagy<span></span></div><${KBtn} v='sec' full=${true} onClick=${guest}>Folytatás vendégként<//><p class='k-hint k-center'>Vendégként az adataid csak ezen a készüléken tárolódnak.</p>`}
   <p class='k-hint k-center'>Az adataid a fiókodhoz kötve, titkosított kapcsolaton szinkronizálódnak.</p>
   <p class='k-hint k-center k-dbg'>${dbgl}</p></div></div>`;
 }
@@ -102,8 +103,9 @@ function Handoff({hash,cont}){
   <p class='k-hint k-dbg'>v${BUILD}</p></div></div>`;
 }
 function Root(){
- const[u,setU]=useState(()=>{sload();return SESS&&SESS.user?SESS.user:null}),[rs,setRs]=useState(false),[gm,setGm]=useState(''),[ho,setHo]=useState(null),[wt,setWt]=useState(()=>NATIVE()&&!!hcGet()),[,tk]=useState(0);
+ const[u,setU]=useState(()=>{sload();return SESS&&SESS.user?SESS.user:guestOn()?GUEST:null}),[rs,setRs]=useState(false),[gm,setGm]=useState(''),[ho,setHo]=useState(null),[wt,setWt]=useState(()=>NATIVE()&&!!hcGet()),[,tk]=useState(0);
  DBGF=()=>tk(n=>n+1);
+ useEffect(()=>{const f=()=>{try{localStorage.setItem('en_guest_pending','1');localStorage.removeItem('en_guest')}catch(e){}setU(null)};window.addEventListener('guestacct',f);return()=>window.removeEventListener('guestacct',f)},[]);
  LANG=(()=>{try{return localStorage.getItem('en_lang')||'hu'}catch(e){return'hu'}})();
  if(u)CU=u.id;
  const feed=hsh=>{const hp=new URLSearchParams(hsh.replace(/^[#?]/,'')),t=hp.get('access_token');
@@ -129,8 +131,9 @@ function Root(){
   SESS={access_token:t,refresh_token:hp.get('refresh_token'),expires_at:+hp.get('expires_at')||Math.floor(Date.now()/1000)+3600,user:null};
   history.replaceState(null,'',location.pathname+location.search);
   sbf('/auth/v1/user').then(r=>{if(r.ok){SESS.user=r.j;ssave();hp.get('type')==='recovery'?setRs(true):setU(r.j)}else{SESS=null;ssave()}})},[]);
- const out=async()=>{try{SESS&&await sbf('/auth/v1/logout',{method:'POST'})}catch(e){}SESS=null;ssave();setU(null)};
+ const out=async()=>{try{SESS&&await sbf('/auth/v1/logout',{method:'POST'})}catch(e){}SESS=null;ssave();try{localStorage.removeItem('en_guest')}catch(e){}setU(null)};
  if(ho)return html`<${Handoff} hash=${ho} cont=${()=>{const h=ho;history.replaceState(null,'',location.pathname);setHo(null);feed(h)}}/>`;
  if(rs)return html`<${Reset} done=${()=>{setRs(false);setU(SESS.user)}}/>`;
- return u?html`<${App} key=${u.id} user=${(u.email||'').split('@')[0]} out=${out}/>`:html`<${Auth} on=${x=>setU(x)} note=${gm||(wt?tr('Várakozás a belépésre a Chrome-ban...'):'')} gstart=${gstart} wt=${wt} chk=${chk2} dbgl=${'v'+BUILD+' app:'+(NATIVE()?1:0)+' browser:'+PLA('Browser')+' appplugin:'+PLA('App')+(DBG.length?' | '+DBG.join(' · '):'')}/>`;
+ if(u&&!u.guest&&guestPending()&&guestHasData())return html`<${GuestTransfer} uid=${u.id} onDone=${()=>{try{localStorage.removeItem('en_guest_pending')}catch(e){}tk(n=>n+1)}}/>`;
+ return u?html`<${App} key=${u.id} user=${(u.email||'').split('@')[0]} out=${out}/>`:html`<${Auth} on=${x=>setU(x)} guest=${()=>{try{localStorage.setItem('en_guest','1')}catch(e){}setU(GUEST)}} note=${gm||(wt?tr('Várakozás a belépésre a Chrome-ban...'):'')} gstart=${gstart} wt=${wt} chk=${chk2} dbgl=${'v'+BUILD+' app:'+(NATIVE()?1:0)+' browser:'+PLA('Browser')+' appplugin:'+PLA('App')+(DBG.length?' | '+DBG.join(' · '):'')}/>`;
 }

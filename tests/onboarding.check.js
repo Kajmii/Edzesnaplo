@@ -25,7 +25,7 @@ assert.ok(/homeOn\('home\.week','pro'\)/.test(home)&&/homeOn\('home\.week','fami
 for(const ui of ['pro','gym','family'])assert.ok(new RegExp("<\\$\\{HomeX\\} [^>]*ui='"+ui+"'").test(home),ui+': hiányzik a HomeX');
 assert.ok(/homeCardsOpen/.test(home)&&/homeCardsOpen/.test(rd('js/settings.js')),'a Kezdőlap testreszabása sor és a Beállítások sor is megnyitja a lapot');
 // 5. bekötés: a szint-választó az első szinkron után jelenik meg (a felhőből jövő választás ne villanjon), csak ha nincs választás és a felület már kész; a bemutató csak új felhasználónak
-assert.ok(/opt\.uiChosen&&!opt\.lvlSet&&\(sy\.s==='ok'\|\|sy\.s==='err'\|\|sy\.s==='off'\)\)setLvShown\(true\)/.test(app),'a szint-választó feltétele');
+assert.ok(/opt\.uiChosen&&!opt\.lvlSet&&\((isGuest\(\)\|\|)?sy\.s==='ok'\|\|sy\.s==='err'\|\|sy\.s==='off'\)\)setLvShown\(true\)/.test(app),'a szint-választó feltétele');
 assert.ok(/opt\.uiChosen&&!opt\.lvlSet&&lvShown&&html`<\$\{LevelScreen\}/.test(app));
 assert.ok(/\[fresh\]=useState\(\(\)=>!gj\('opt',\{\}\)\.uiChosen\)/.test(app)&&/if\(fresh\)setTour\(0\)/.test(app),'a bemutató csak új felhasználónak indul');
 assert.ok(/window\.addEventListener\('homecards'/.test(app)&&/HomeCardsSheet/.test(app));

@@ -8,6 +8,8 @@ const featFindable=(f,cyc)=>!/^(home|workout)\./.test(f.id)&&f.id!=='nav.search'
 const sNorm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 // hová visz: a Számolók a "focus" fülre nyílnak, a többi a képernyőre és almenüre
 const featNav=f=>({tab:f.tab,sub:f.tab==='tools'&&f.sub==='c'?f.focus:f.sub});
+// fiókhoz kötött funkció (vendég módban nem érhető el): a közösségi funkciók és a fotók
+const featNeedsAcct=id=>/^social\./.test(id)||id==='body.photos';
 // "Test és mérések › Haladási fotók": a szülő menüsor és a funkció; a menüsornál a csoport neve
 const featPath=f=>{
  if(f.m)return tr(FEAT_GROUP_LBL[f.group]);

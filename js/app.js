@@ -4,7 +4,7 @@ function App({user,out}){
  const today=dk(new Date());
  const[tab,setTab]=useState('home'),[sel,setSel]=useState(today),[hist,setHist]=useState(ld),[aw,setAw]=useState(null),[rest,setRest]=useState(null),[rd,setRd]=useState(()=>gj('opt',{}).rest||90),[fin,setFin]=useState(null),[ts,setTs]=useState(null),[plan,setPlan]=useState(()=>gj('plan',{days:{},time:'07:00',on:false})),[opt,setOpt]=useState(()=>({lang:(()=>{try{return localStorage.getItem('en_lang')||'hu'}catch(e){return'hu'}})(),wg:3,ac:'lime',th:'alap',mode:(()=>{try{return localStorage.getItem('en_mode')==='light'?'light':'dark'}catch(e){return'dark'}})(),fs:16,an:true,rest:90,auto:true,snd:true,vib:true,wake:true,step:1.25,pct:2.5,...gj('opt',{})}));
  ACC=(ACCS[opt.ac]||ACCS.lime)[opt.mode==='light'?5:3];OPT=opt;LANG=opt.lang;{const u=uiState(opt);if(u.def)ACC=u.def.txt}
- const[ldr,setLdr]=useState(()=>gj('ts',0)===0&&ld().length===0),[sy,setSy]=useState({s:'idle',t:''}),[ct,setCt]=useState(()=>gj('ct',[])),[menu,setMenu]=useState(false),[sub,setSub]=useState('');CTG=ct;sjt('ct',ct);
+ const[ldr,setLdr]=useState(()=>!isGuest()&&gj('ts',0)===0&&ld().length===0),[sy,setSy]=useState({s:'idle',t:''}),[ct,setCt]=useState(()=>gj('ct',[])),[menu,setMenu]=useState(false),[sub,setSub]=useState('');CTG=ct;sjt('ct',ct);
  useEffect(()=>sv(hist),[hist]);
  const setHistT=v=>{const nv=typeof v==='function'?v(hist):v,gone=hist.filter(w=>!nv.some(x=>x.id===w.id)).map(w=>w.id);if(gone.length)sjt('del',[...new Set([...gj('del',[]),...gone])]);setHist(nv)};
  const syncNow=async()=>{if(!SESS||SYB)return;SYB=true;setSy(x=>({...x,s:'busy'}));try{
@@ -22,10 +22,10 @@ function App({user,out}){
  const[help,setHelp]=useState(null);
  useEffect(()=>{const f=e=>setHelp(e.detail);window.addEventListener('helpopen',f);return()=>window.removeEventListener('helpopen',f)},[]);
  const[pkShown,setPkShown]=useState(false); // a választó az első szinkron után jelenik meg, és a döntésig nem tűnik el (a későbbi szinkronok ne indítsák újra)
- useEffect(()=>{if(!opt.uiChosen&&(sy.s==='ok'||sy.s==='err'||sy.s==='off'))setPkShown(true)},[sy.s,opt.uiChosen]);
+ useEffect(()=>{if(!opt.uiChosen&&(isGuest()||sy.s==='ok'||sy.s==='err'||sy.s==='off'))setPkShown(true)},[sy.s,opt.uiChosen]);
  // szint-választó (új és meglévő felhasználó egyszer, az első szinkron után: a felhőből jövő lvlSet ne villanjon fel), bemutató, Kezdőlap tartalma
  const[lvShown,setLvShown]=useState(false),[tour,setTour]=useState(null),[fresh]=useState(()=>!gj('opt',{}).uiChosen),[hcs,setHcs]=useState(false);
- useEffect(()=>{if(opt.uiChosen&&!opt.lvlSet&&(sy.s==='ok'||sy.s==='err'||sy.s==='off'))setLvShown(true)},[sy.s,opt.uiChosen,opt.lvlSet]);
+ useEffect(()=>{if(opt.uiChosen&&!opt.lvlSet&&(isGuest()||sy.s==='ok'||sy.s==='err'||sy.s==='off'))setLvShown(true)},[sy.s,opt.uiChosen,opt.lvlSet]);
  useEffect(()=>{const f=()=>setHcs(true);window.addEventListener('homecards',f);return()=>window.removeEventListener('homecards',f)},[]);
  useEffect(()=>{if(!ldr)return;if(sy.s==='ok'||sy.s==='err'||sy.s==='off'){const t=setTimeout(()=>setLdr(false),900);return()=>clearTimeout(t)}const t=setTimeout(()=>setLdr(false),6000);return()=>clearTimeout(t)},[sy.s,ldr]);
  useEffect(()=>{const t=setTimeout(syncNow,2500);return()=>clearTimeout(t)},[hist,plan,opt,ct,tab]);
@@ -61,7 +61,7 @@ function App({user,out}){
    ${tab==='hist'&&html`<${Hist} hist=${hist} del=${id=>setHistT(hist.filter(w=>w.id!==id))}/>`}${tab==='stats'&&html`<${Stats} hist=${hist} today=${today}/>`}
    ${tab==='plan'&&html`<${Plan} plan=${plan} setPlan=${setPlan} hist=${hist} today=${today} begin=${(...a)=>{begin(...a);setTab('log')}} edit=${()=>go2('edit')}/>`}
    ${tab==='tools'&&html`<${Tools} key=${sub} init=${sub}/>`}
-   ${tab==='social'&&html`<${Social}/>`}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='profile'&&html`<${Profile} user=${user} go=${go2} out=${out}/>`}${tab==='food'&&html`<${Food} init=${sub}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}${tab==='help'&&html`<${Help}/>`}
+   ${tab==='social'&&(isGuest()?html`<${GuestGate}/>`:html`<${Social}/>`)}${tab==='cycle'&&html`<${Cycle} plan=${plan} hist=${hist} today=${today}/>`}${tab==='profile'&&html`<${Profile} user=${user} go=${go2} out=${out}/>`}${tab==='food'&&html`<${Food} init=${sub}/>`}${tab==='edit'&&html`<${Editor} ct=${ct} setCt=${setCt}/>`}${tab==='help'&&html`<${Help}/>`}
    ${tab==='opt'&&html`<${Opts} anchor=${sub} opt=${opt} setOpt=${setOpt} hist=${hist} setHist=${setHistT} plan=${plan} setPlan=${setPlan} user=${user} out=${out} sy=${sy} syncNow=${syncNow} delAcc=${delAcc}/>`}
   </div>
   ${help&&html`<${HelpSheet} id=${help} onClose=${()=>setHelp(null)} onAll=${tab==='help'?null:()=>{setHelp(null);go2('help')}}/>`}

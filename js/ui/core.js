@@ -39,7 +39,7 @@ const uiApply=opt=>{
  const{ui,sc,def}=uiState(opt),r=document.documentElement;
  try{r.setAttribute('data-ui',ui);r.setAttribute('data-scheme',sc)}catch(e){}
  try{localStorage.setItem('en_ui',ui);localStorage.setItem('en_scheme',sc)}catch(e){}
- try{if(opt.hc)r.setAttribute('data-hc','1');else r.removeAttribute('data-hc');localStorage.setItem('en_hc',opt.hc?'1':'0')}catch(e){}
+ try{if(opt.hc)r.setAttribute('data-hc','1');else r.removeAttribute('data-hc');localStorage.setItem('en_contrast',opt.hc?'1':'0')}catch(e){}
  uiLoadFonts(ui);
  return{ui,sc,def};
 };

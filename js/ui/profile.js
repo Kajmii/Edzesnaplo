@@ -21,10 +21,10 @@ function Profile({user,go,out}){
    ${off&&html`<div class='k-hint k-warn'>A makrók és a kalória-cél eltér.</div>`}
    <button onClick=${()=>go('tools','k')} class='k-btn sec sm full k-mt'>Célok kiszámolása a Kalória számolóban</button>
   <//>
-  <${Cd} t='Fiók'>
+  ${isGuest()?html`<${Cd} t='Fiók'><div class='k-hint k-mb'>Vendég · csak helyi adat</div><${KBtn} full=${true} onClick=${guestToAccount}>Fiók létrehozása<//><//>`:html`<${Cd} t='Fiók'>
    <div class='text-sm break-all'>${(SESS&&SESS.user&&SESS.user.email)||user}</div>
    <button onClick=${()=>go('social')} class='k-btn sec sm full k-mt'>Közösségi profil</button>
    <button onClick=${out} class='k-btn dan sm full k-mt'>Kilépés</button>
-  <//>
+  <//>`}
  </div>`;
 }
