@@ -17,7 +17,7 @@ function App({user,out}){
   if(M.food)sj('food',M.food);if(M.ct&&ss(M.ct)!==ss(L.ct)){sj('ct',M.ct);setCt(M.ct)}if(M.prof)sj('prof',M.prof);sj('bw',M.bw);sj('del',M.del);sj('ts',M.ts);
   if(!R||ss(M)!==ss(R)){const w=await sbf('/rest/v1/user_data?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:SESS.user.id,data:M,updated_at:new Date().toISOString()})});if(!w.ok)throw 0}
   const d=new Date();setSy({s:'ok',t:pad(d.getHours())+':'+pad(d.getMinutes())})}catch(e){setSy(x=>({...x,s:navigator.onLine?'err':'off'}))}SYB=false};
- const delAcc=async()=>{const r=await sbf('/rest/v1/rpc/delete_my_account',{method:'POST',body:'{}'});if(!r.ok)return toast('A fiók törlése nem sikerült.');try{Object.keys(localStorage).filter(k=>k.startsWith('en:'+CU+':')).forEach(k=>localStorage.removeItem(k))}catch(e){}toast('Fiók és minden adat törölve');out()};
+ const delAcc=async()=>{try{await phPurge()}catch(e){}const r=await sbf('/rest/v1/rpc/delete_my_account',{method:'POST',body:'{}'});if(!r.ok)return toast('A fiók törlése nem sikerült.');try{Object.keys(localStorage).filter(k=>k.startsWith('en:'+CU+':')).forEach(k=>localStorage.removeItem(k))}catch(e){}toast('Fiók és minden adat törölve');out()};
  useEffect(()=>{if(!opt.uiChosen||ldr)syncNow()},[]);
  const[pkShown,setPkShown]=useState(false); // a választó az első szinkron után jelenik meg, és a döntésig nem tűnik el (a későbbi szinkronok ne indítsák újra)
  useEffect(()=>{if(!opt.uiChosen&&(sy.s==='ok'||sy.s==='err'||sy.s==='off'))setPkShown(true)},[sy.s,opt.uiChosen]);

@@ -93,8 +93,8 @@ function Social(){
   <button onClick=${create} disabled=${busy} class=${bt}>Profil létrehozása</button>${Msg()}</div>`;
  if(pv)return html`<div><${SocProfile} u=${pv} me=${id} back=${()=>setPv(null)}/></div>`;
  return html`<div>
-  <${KTabs} v=${tb} on=${setTb} o=${[['feed','Hírfolyam'],['conn','Kapcsolatok'],['prof','Profil']]}/>
-  ${tb==='feed'?html`<${SocFeed} me=${id} open=${setPv}/>`:tb==='conn'?html`<${SocConn} me=${id} open=${setPv}/>`:html`<div>
+  <${KTabs} v=${tb} on=${setTb} o=${[['feed','Hírfolyam'],['conn','Kapcsolatok'],['grp','Csoportok'],['prof','Profil']]}/>
+  ${tb==='feed'?html`<${SocFeed} me=${id} open=${setPv}/>`:tb==='conn'?html`<${SocConn} me=${id} open=${setPv}/>`:tb==='grp'?html`<${SocGroups} me=${id} open=${setPv}/>`:html`<div>
   <div class='up k-card'>${Form()}<button onClick=${save} disabled=${busy} class=${bt+' mt-4'}>Mentés</button>${Msg()}</div>
   <div class='up k-card'><div class='k-cd-t'>Adatvédelem</div>
    <${Sw} l='Nyilvános profil' s=${se&&se.is_public?'Bárki látja a profilod és a megosztott aktivitásaid.':'Privát: idegenek csak a felhasználóneved, a neved és az avatarod látják.'} v=${!!(se&&se.is_public)} on=${v=>pub(v,'is_public')}/>

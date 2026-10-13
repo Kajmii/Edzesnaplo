@@ -49,7 +49,7 @@ function SocProfile({u,me,back}){
   }catch(r){if(!off){setMsg(r&&r.status!==undefined?socErr(r):'Nincs kapcsolat. Próbáld újra.');setP(null)}}})();
   return()=>{off=true}},[u]);
  const St=({l,v})=>html`<div class='k-stat'><div class='k-stat-v' style=${{justifyContent:'center'}}>${v}</div><div class='k-stat-l' style=${{textAlign:'center'}}>${l}</div></div>`;
- return html`<div><${KBtn} v='gho' sm=${true} ic='back' onClick=${back}>Vissza<//>
+ return html`<div><${KBtn} v='gho' sm=${true} ic='back' c='k-mb' onClick=${back}>Vissza<//>
   ${p===undefined&&html`<${KBusy} t='Betöltés'/>`}
   ${p===null&&html`<p class='k-hint'>${msg||'A felhasználó nem található.'}</p>`}
   ${p&&html`<div class='up k-card'>
@@ -57,7 +57,7 @@ function SocProfile({u,me,back}){
    ${p.can_view?html`<div class='k-stats c3 k-mt'><${St} l='Követők' v=${p.followers}/><${St} l='Követett' v=${p.following}/><${St} l='Aktivitás' v=${p.activities}/></div>`:html`<p class='k-hint k-ic'><${Ic} n='lock' s=${16}/>Privát profil. A tartalmát csak a barátai látják.</p>`}
    ${p.user_id!==me&&R.d&&R.btns(p)}${R.msg&&html`<p class='k-hint k-warn'>${R.msg}</p>`}</div>
    ${p.can_view&&html`<div class='up k-card'><div class='k-cd-t'>Aktivitások</div>
-    ${acts===null?html`<p class='k-hint'>Betöltés...</p>`:acts.length?acts.map(a=>html`<${ActCard} key=${a.id} a=${a}/>`):html`<p class='k-hint'>Még nincs megosztott aktivitás.</p>`}</div>`}`}</div>`;
+    ${acts===null?html`<p class='k-hint'>Betöltés...</p>`:acts.length?acts.map(a=>html`<${ActCard} key=${a.id} a=${a}/>`):html`<p class='k-hint'>Még nincs megosztott aktivitás.</p>`}</div>`}${p.can_view&&html`<${PhGrid} uid=${p.user_id}/>`}`}</div>`;
 }
 
 // Saját megosztott aktivitásaim (törölhetők)
