@@ -1,0 +1,31 @@
+/* ---------- Töltőképernyők (ciklusos animációk, az események közben nem zavarnak) ---------- */
+.ui-ldr{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;background:rgb(var(--ui-bg));color:rgb(var(--ui-text));animation:ui-fade var(--dur-scrim) linear backwards}
+.ui-ldr-in{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:0 32px}
+.ui-ldr-t{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.ldr-st{height:12px;flex-shrink:0}
+/* Pro: a vonal kirajzolódik, a pont megjelenik */
+.ldr-psvg{max-width:100%;height:auto}
+.ldr-pdraw{stroke:rgb(var(--ui-text));stroke-width:2;stroke-dasharray:420;stroke-dashoffset:420;animation:ldrPro 1.8s cubic-bezier(.65,0,.35,1) infinite}
+.ldr-pdot{fill:rgb(var(--ui-accent));opacity:0;animation:ldrProDot 1.8s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes ldrPro{0%{stroke-dashoffset:420}60%,100%{stroke-dashoffset:0}}
+@keyframes ldrProDot{0%,55%{opacity:0}65%,100%{opacity:1}}
+.ldr-pt{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.ldr-ps{font-family:var(--ui-font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+/* Gym: a tárcsák becsúsznak a rúdra */
+.ldr-gsvg{max-width:100%;height:auto}
+.gl{animation:ldrGL 2.4s cubic-bezier(.2,.9,.2,1) infinite}
+.gl-r1,.gl-r2,.gl-r3{animation-name:ldrGR}
+.gl-l2,.gl-r2{animation-delay:.15s}.gl-l3,.gl-r3{animation-delay:.3s}
+@keyframes ldrGL{0%{transform:translateX(-160px);opacity:0}30%,80%{transform:translateX(0);opacity:1}100%{transform:translateX(0);opacity:0}}
+@keyframes ldrGR{0%{transform:translateX(160px);opacity:0}30%,80%{transform:translateX(0);opacity:1}100%{transform:translateX(0);opacity:0}}
+.ldr-gt{font-family:var(--ui-font-head);font-size:56px;line-height:1;letter-spacing:.02em;text-transform:uppercase;color:rgb(var(--ui-accent-text))}
+.ldr-gs{font-weight:800;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgb(var(--ui-muted))}
+/* Family: lélegző kör */
+.ldr-fc{position:relative;width:150px;height:150px}
+.ldr-halo{position:absolute;inset:0;border-radius:50%;background:rgb(var(--ui-accent));animation:ldrHalo 4s ease-in-out infinite}
+.ldr-breath{position:absolute;inset:25px;border-radius:50%;border:8px solid rgb(var(--ui-accent));box-sizing:border-box;animation:ldrBreath 4s ease-in-out infinite}
+@keyframes ldrBreath{0%,100%{transform:scale(.86)}50%{transform:scale(1)}}
+@keyframes ldrHalo{0%,100%{transform:scale(.9);opacity:.25}50%{transform:scale(1.12);opacity:.08}}
+.ldr-ft{font-size:24px;font-weight:700}
+.ldr-fs{font-size:16px;color:rgb(var(--ui-muted))}
+@media (prefers-reduced-motion:reduce){.ldr-pdraw{animation:none;stroke-dashoffset:0}.ldr-pdot{animation:none;opacity:1}.gl{animation:none;opacity:1;transform:none}.ldr-halo,.ldr-breath{animation:none}.ui-ldr{animation:none}}

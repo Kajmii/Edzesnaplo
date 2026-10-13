@@ -1,6 +1,6 @@
 /* ---------- Profil: személyes adatok és napi célok (Menü: "Adatok és célok") ----------
    Ugyanazt a `prof` tárolót használja, mint a Kardió/Kalória számolók profilkártyája és az Étel fül (tg = napi cél), ezért szinkronban vannak. */
-function Profile({user,go}){
+function Profile({user,go,out}){
  const[p,setP]=useState(()=>gj('prof',{sex:'m',age:'',cm:'',kg:'',bf:''}));
  useEffect(()=>sjt('prof',p),[p]);
  const sp=o=>setP(x=>({...x,...o})),tg=p.tg||{k:2200,p:150,c:250,f:70},st=o=>sp({tg:{...tg,...o}});
@@ -24,6 +24,7 @@ function Profile({user,go}){
   <${Cd} t='Fiók'>
    <div class='text-sm break-all'>${(SESS&&SESS.user&&SESS.user.email)||user}</div>
    <button onClick=${()=>go('social')} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold mt-3'>Közösségi profil</button>
+   <button onClick=${out} class='w-full h-11 rounded-xl bg-zinc-800 text-sm font-semibold mt-2 text-red-400'>Kilépés</button>
   <//>
  </div>`;
 }

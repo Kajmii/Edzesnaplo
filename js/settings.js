@@ -16,7 +16,7 @@ function Opts({anchor,opt,setOpt,hist,setHist,plan,setPlan,user,out,sy,syncNow,d
   <${UiSwitcher} opt=${opt} o=${o}/>
   <${Cd} t='Megjelenés'>
    <${Lb} t='Nyelv / Language'/><${Sg} v=${opt.lang} on=${x=>{try{localStorage.setItem('en_lang',x)}catch(e){}o({lang:x})}} o=${[['hu','Magyar'],['en','English']]}/>
-   <${Lb} t='Betűméret'/><${Sg} v=${opt.fs} on=${x=>o({fs:+x})} o=${[[14,'Kicsi'],[16,'Normál'],[18,'Nagy']]}/>
+   <${Lb} t='Betűméret'/><${Sg} v=${opt.fs} on=${x=>o({fs:+x})} o=${[[14,'Kicsi'],[16,'Normál'],[18,'Nagy'],[20,'Nagyon nagy']]}/>
    <${Sw} l='Animációk' s='Kikapcsolva gyorsabb, kíméli az akkut' v=${opt.an} on=${x=>o({an:x})}/>
   <//>
   <${Cd} t='Edzés'>

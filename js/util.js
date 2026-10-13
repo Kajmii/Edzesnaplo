@@ -13,7 +13,7 @@ const fmt=n=>Math.round(n).toLocaleString(LANG==='en'?'en-US':'hu-HU');
 let CU='',OPT={snd:true,vib:true,step:1.25,pct:2.5},ACC='#a3e635';const gj=(k,d)=>{try{return JSON.parse(localStorage.getItem('en:'+CU+':'+k))||d}catch(e){return d}};const sj=(k,v)=>{try{localStorage.setItem('en:'+CU+':'+k,JSON.stringify(v))}catch(e){}};const sjt=(k,v)=>{try{const q='en:'+CU+':'+k,n=JSON.stringify(v),o=localStorage.getItem(q);if(o===n)return;localStorage.setItem(q,n);if(o!==null)localStorage.setItem('en:'+CU+':ts',JSON.stringify(Date.now()))}catch(e){}};const ld=()=>gj('h',[]);
 const sv=v=>sj('h',v);
 const lastSet=(hist,n)=>{for(const w of hist){const e=w.ex.find(x=>x.n===n);if(e)return e.sets[e.sets.length-1]}return null};
-const newEx=(n,hist,g)=>{const l=g&&g.kg?g:lastSet(hist,n);return{n,sets:[{kg:l?l.kg:'',reps:l?l.reps:'',rpe:'',done:false}]}};
+const newEx=(n,hist,g)=>{const l=g&&g.kg?g:lastSet(hist,n);return{n,sets:[0,1,2].map(()=>({kg:l?l.kg:'',reps:l?l.reps:'',rpe:'',done:false}))}};
 const inp='w-full min-w-0 h-12 rounded-xl bg-zinc-800 text-center text-lg font-semibold text-white placeholder-zinc-600 outline-none focus:ring-2 focus:ring-lime-400';
 
 const buzz=()=>{try{OPT.vib&&navigator.vibrate&&navigator.vibrate(12)}catch(e){}};
